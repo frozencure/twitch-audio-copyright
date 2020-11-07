@@ -1,0 +1,17 @@
+version: "3"
+services:
+  db:
+    ports:
+      - '30003:5432'
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+    environment:
+      - "POSTGRES_USER=twitch"
+      - "POSTGRES_PASSWORD=1q2w3e"
+      - "POSTGRES_DB=twitch-fingerprint"
+    restart: always
+    image: postgres:11-alpine
+    networks:
+      - twitch-network
+networks:
+  twitch-network:
