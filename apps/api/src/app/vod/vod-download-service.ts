@@ -1,6 +1,6 @@
 import { HttpService, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { bufferCount, map, mergeMap } from 'rxjs/operators';
 import * as fs from 'fs';
 import { VodQuality } from '../model/VodQuality';
 import { VodToken } from '../model/VodToken';
@@ -49,24 +49,47 @@ export class VodDownloadService {
     );
   }
 
-  public downloadVod(vodId: number, quality: string, outputPath: string): Observable<number> {
-    return this.getVodPlaylist(vodId, quality).pipe(
-      map(playlist => playlist.vodChunks),
-      mergeMap(chunks => {
+  public downloadVod(vodId: number, quality: string, outputPath: string, batchSize: number): Observable<number> {
+    const proxy = new BehaviorSubject<number>(0);
+    let offset = 0;
+    let totalCount = 0;
+    const chunks = this.getVodPlaylist(vodId, quality).pipe(
+      map(playlist => playlist.vodChunks));
+    chunks.subscribe(chunks => {
+      totalCount = chunks.length;
+    });
+    const batch = chunks.pipe(
+      map(chunks => {
+        if (offset > chunks.length) {
+          return chunks.slice(offset, chunks.length);
+        } else {
+          return chunks.slice(offset, offset += batchSize);
+        }
+      }),
+      mergeMap(c => c),
+      mergeMap(chunk => {
         if (!fs.existsSync(`${outputPath}${vodId}`)) {
           fs.mkdirSync(`${outputPath}${vodId}`);
         }
-        return new Observable<Observable<number>>(subscriber => {
-          chunks.map((chunk, index) => {
-            subscriber.next(this.downloadFile(chunk.downloadUrl, `${outputPath}${vodId}`, `${index}.ts`, chunks.length - 1));
-          });
-        });
+        return this.downloadFile(chunk.downloadUrl,
+          `${outputPath}${vodId}`, chunk.fileName);
       }),
-      mergeMap(o => o)
+      bufferCount(batchSize),
+      map(arr => arr.length)
     );
+    proxy.subscribe(() => {
+      batch.subscribe(() => {
+        if (offset > totalCount) {
+          proxy.complete();
+        } else {
+          proxy.next(offset / totalCount);
+        }
+      });
+    });
+    return proxy;
   }
 
-  private downloadFile(downloadUrl: string, outputPath: string, fileName: string, progress: number): Observable<number> {
+  private downloadFile(downloadUrl: string, outputPath: string, fileName: string): Observable<string> {
     return this.httpService.request({
       url: downloadUrl,
       method: 'GET',
@@ -76,11 +99,11 @@ export class VodDownloadService {
         return new Observable(subscriber => {
           response.data.pipe(fs.createWriteStream(`${outputPath}/${fileName}`))
             .on('finish', () => {
-              subscriber.next(progress);
+              subscriber.next(fileName);
             });
         });
       })
-    ) as Observable<number>;
+    ) as Observable<string>;
   }
 
   private getVodChunks(vodQualityChannels: Array<VodQuality>, quality: string): Observable<VodPlaylist> {
@@ -103,7 +126,8 @@ export class VodDownloadService {
     const vodChunks = vodChunksResponse.match(/(#EXTINF:)(\d+.\d+)(,\n)(\d+.ts)/gm).map(match => {
       const duration = match.match(/\d+.\d+/);
       const file = match.match(/\d+.ts/);
-      return new VodChunk(Number.parseFloat(duration.toString()), downloadUrBase + file.toString());
+      return new VodChunk(Number.parseFloat(duration.toString()), downloadUrBase + file.toString(),
+        file.toString());
     });
     const vodDuration = VodDownloadService.parseVodDuration(vodChunksResponse);
     return new VodPlaylist(vodChunks, vodDuration);

@@ -3,15 +3,15 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { VodDownloadController } from './vod/VodDownloadController';
-import { VodDownloadService } from './vod/VodDownloadService';
+import { VodDownloadController } from './vod/vod-download-controller';
+import { VodDownloadService } from './vod/vod-download-service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './config/typeorm-config.service';
 import config from './config/config';
 
 @Module({
   imports: [HttpModule.register({
-    timeout: 5000,
+    timeout: 50000,
     maxRedirects: 5
   }),
     TypeOrmModule.forRootAsync({
