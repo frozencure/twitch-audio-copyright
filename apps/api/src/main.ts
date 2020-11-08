@@ -7,6 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
+import * as cookieParser from 'cookie-parser'
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,7 +21,7 @@ async function bootstrap() {
     allowedHeaders: '*',
     optionsSuccessStatus: 204
   });
-
+  app.use(cookieParser());
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3333;

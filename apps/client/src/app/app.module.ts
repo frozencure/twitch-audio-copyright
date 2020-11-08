@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginModule } from './login/login.module';
 import { AppRoutingModule } from './app.routing.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpErrorInterceptor } from './http-error.interceptor';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -16,7 +18,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     LoginModule,
     DashboardModule
   ],
-  providers: [],
+  providers: [ { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true } ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {

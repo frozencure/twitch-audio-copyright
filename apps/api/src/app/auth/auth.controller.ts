@@ -2,6 +2,7 @@ import { Controller, Get, HttpStatus, Logger, Req, Res, UseGuards } from '@nestj
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
+import { TokenGuard } from './token-guard.service';
 
 @Controller('auth')
 export class AuthController {
@@ -11,20 +12,26 @@ export class AuthController {
 
   @Get('/twitch')
   @UseGuards(AuthGuard('twitch'))
-  async twitchLogin(): Promise<any> {
+  async twitchLogin(): Promise<HttpStatus> {
     return HttpStatus.OK;
   }
 
   @Get('/twitch/redirect')
   @UseGuards(AuthGuard('twitch'))
-  async twitchLoginRedirect(@Res() res: Response, @Req() req: Request): Promise<any> {
+  async twitchLoginRedirect(@Res() res: Response, @Req() req: Request): Promise<void> {
     Logger.log({
       statusCode: HttpStatus.OK,
       data: (req as any).user
     });
 
     res.cookie('token', (req as any).user.accessToken);
-    return res.redirect(`${ this.config.get('frontendUrl') }/dashboard`);
+    res.redirect(`${ this.config.get('frontendUrl') }/dashboard`);
+  }
+
+  @Get('sync')
+  @UseGuards(TokenGuard)
+  async sync(@Req() req: Request): Promise<boolean> {
+    return true;
   }
 
 }
