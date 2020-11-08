@@ -1,7 +1,9 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { VodDownloadController } from './vod/vod-download-controller';
+import { VodDownloadService } from './vod/vod-download-service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './config/typeorm-config.service';
 import config from './config/config';
@@ -9,17 +11,20 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    AuthModule,
+    HttpModule.register({
+      timeout: 50000,
+      maxRedirects: 5
+    }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService
     }),
+    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [ config ]
-    })
-  ],
-  controllers: [ AppController ],
-  providers: [ AppService ]
+    }) ],
+  controllers: [ AppController, VodDownloadController ],
+  providers: [ AppService, VodDownloadService ]
 })
 export class AppModule {
 }
