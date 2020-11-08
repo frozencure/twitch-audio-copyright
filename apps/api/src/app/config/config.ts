@@ -6,6 +6,7 @@ export default () => ({
   env: process.env.NODE_ENV,
   host: ip.address(),
   routePrefix: 'api',
+  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:4200/',
   database: {
     type: 'postgres',
     username: process.env.POSTGRES_USER || 'twitch',

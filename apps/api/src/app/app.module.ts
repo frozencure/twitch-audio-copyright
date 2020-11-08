@@ -5,13 +5,15 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './config/typeorm-config.service';
 import config from './config/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [ TypeOrmModule.forRootAsync({
-    useClass: TypeOrmConfigService
-  }),
+  imports: [
+    AuthModule,
+    TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService
+    }),
     ConfigModule.forRoot({
-      ignoreEnvFile: true,
       isGlobal: true,
       load: [ config ]
     })
