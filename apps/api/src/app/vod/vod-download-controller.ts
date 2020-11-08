@@ -1,7 +1,7 @@
 import { Controller, Get, Logger, Param, Query } from '@nestjs/common';
 import { VodDownloadService } from './vod-download-service';
 import { Observable } from 'rxjs';
-import { VodPlaylist } from '../model/VodPlaylist';
+import { VodPlaylist } from './model/VodPlaylist';
 
 @Controller('/vod')
 export class VodDownloadController {

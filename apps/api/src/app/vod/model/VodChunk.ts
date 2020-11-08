@@ -7,9 +7,6 @@ export class VodChunk {
     return this._downloadUrl;
   }
 
-  set downloadUrl(value: string) {
-    this._downloadUrl = value;
-  }
 
   get duration(): number {
     return this._duration;

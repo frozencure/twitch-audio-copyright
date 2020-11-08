@@ -1,0 +1,50 @@
+import { Controller, Get, HttpStatus, Logger, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { TokenGuard } from './token-guard.service';
+import { AuthService } from './auth.service';
+import { SuccessDto } from '@twitch-audio-copyright/data';
+
+@Controller('auth')
+export class AuthController {
+
+  constructor(private config: ConfigService, private authService: AuthService) {
+  }
+
+  @Get('/twitch')
+  @UseGuards(AuthGuard('twitch'))
+  async twitchLogin(): Promise<HttpStatus> {
+    return HttpStatus.OK;
+  }
+
+  @Get('/twitch/redirect')
+  @UseGuards(AuthGuard('twitch'))
+  async twitchLoginRedirect(@Res() res: Response, @Req() req: Request): Promise<void> {
+    Logger.log({
+      statusCode: HttpStatus.OK,
+      data: (req as any).user
+    });
+
+    res.cookie('token', (req as any).user.accessToken);
+    res.redirect(`${ this.config.get('frontendUrl') }/dashboard`);
+  }
+
+  @Get('sync')
+  @UseGuards(TokenGuard)
+  async sync(): Promise<SuccessDto> {
+    return new SuccessDto();
+  }
+
+  @Get('logout')
+  @UseGuards(TokenGuard)
+  async logout(@Req() req: Request): Promise<SuccessDto> {
+    try {
+      await this.authService.revokeToken((req as any).cookies.token);
+      return new SuccessDto('LOGOUT');
+    } catch (e) {
+      Logger.error(e);
+    }
+  }
+
+}

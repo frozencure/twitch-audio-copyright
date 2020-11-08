@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+//<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+@import "assets/styles/icon-style";
+@import "assets/styles/theme";
+@import "~material-design-icons/iconfont/material-icons.css";
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+body {
+  background: black;
+}
+
+.material-icons{
+  font-family: 'Material Icons', serif !important;
+}
+

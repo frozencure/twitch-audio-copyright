@@ -2,10 +2,10 @@ import { HttpService, Injectable } from '@nestjs/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { bufferCount, map, mergeMap } from 'rxjs/operators';
 import * as fs from 'fs';
-import { VodQuality } from '../model/VodQuality';
-import { VodToken } from '../model/VodToken';
-import { VodChunk } from '../model/VodChunk';
-import { VodPlaylist } from '../model/VodPlaylist';
+import { VodQuality } from './model/VodQuality';
+import { VodToken } from './model/VodToken';
+import { VodChunk } from './model/VodChunk';
+import { VodPlaylist } from './model/VodPlaylist';
 
 @Injectable()
 export class VodDownloadService {

@@ -17,5 +17,4 @@ export class VodPlaylist {
   private _vodChunks: Array<VodChunk>;
   private _durationInSecs: number;
 
-
 }

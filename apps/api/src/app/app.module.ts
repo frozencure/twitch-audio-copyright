@@ -1,29 +1,27 @@
-import { HttpModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { VodDownloadController } from './vod/vod-download-controller';
-import { VodDownloadService } from './vod/vod-download-service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './config/typeorm-config.service';
 import config from './config/config';
+import { AuthModule } from './auth/auth.module';
+import { VodDownloadModule } from './vod/vod-download.module';
 
 @Module({
-  imports: [HttpModule.register({
-    timeout: 50000,
-    maxRedirects: 5
-  }),
+  imports: [
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService
     }),
     ConfigModule.forRoot({
-      ignoreEnvFile: true,
       isGlobal: true,
-      load: [config]
-    })],
-  controllers: [AppController, VodDownloadController],
-  providers: [AppService, VodDownloadService]
+      load: [ config ]
+    }),
+    AuthModule,
+    VodDownloadModule
+  ],
+  controllers: [ AppController ],
+  providers: [ AppService ]
 })
 export class AppModule {
 }
