@@ -13,7 +13,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {
   }
 
-  public isLoggedIn(): Observable<boolean> {
+  public isLoggedIn(): Observable<SuccessDto> {
     return this.http.get<SuccessDto>('api/auth/sync').pipe(first());
   }
 
@@ -21,7 +21,7 @@ export class AuthService {
     this.router.navigate([ 'login' ]);
   }
 
-  public logout(): Observable<any> {
+  public logout(): Observable<void> {
     return this.http.get<SuccessDto>('api/auth/logout').pipe(first(), map(_ => this.redirectToLogin()));
   }
 }

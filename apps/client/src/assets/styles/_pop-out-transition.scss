@@ -1,0 +1,40 @@
+@import "variables";
+
+%pop-out-inner {
+  position: relative;
+  transition: all .15s ease;
+  border-radius: inherit;
+
+  &:hover {
+    transform: translate3d(4px, -4px, 0);
+    cursor: pointer;
+
+    %overlay {
+      opacity: 0.2;
+    }
+  }
+}
+
+%overlay {
+  position: absolute;
+  transition: all .15s ease;
+  border-radius: inherit;
+  opacity: 0;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+
+%pop-out-container {
+  width: 100%;
+  height: 100%;
+  background: $box-gradient;
+  border-radius: 5px;
+
+  &:before, &:after {
+    transition: all 0.15s ease;
+  }
+}

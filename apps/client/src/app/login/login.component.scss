@@ -1,0 +1,20 @@
+.wrapper {
+  padding-top: 124px;
+  margin: auto;
+  display: block;
+  text-align: center;
+  width: 320px;
+}
+
+.logo {
+  font-weight: 200;
+  padding-bottom: 124px;
+  display: inline-block;
+  background: linear-gradient(to right, #ca042f, #d14ae0);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent;
+
+  i {
+    font-size: 200px;
+  }
+}
