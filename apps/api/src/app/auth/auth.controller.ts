@@ -3,11 +3,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { TokenGuard } from './token-guard.service';
+import { AuthService } from './auth.service';
+import { SuccessDto } from '@twitch-audio-copyright/data';
 
 @Controller('auth')
 export class AuthController {
 
-  constructor(private config: ConfigService) {
+  constructor(private config: ConfigService, private authService: AuthService) {
   }
 
   @Get('/twitch')
@@ -30,8 +32,19 @@ export class AuthController {
 
   @Get('sync')
   @UseGuards(TokenGuard)
-  async sync(@Req() req: Request): Promise<boolean> {
-    return true;
+  async sync(): Promise<SuccessDto> {
+    return new SuccessDto();
+  }
+
+  @Get('logout')
+  @UseGuards(TokenGuard)
+  async logout(@Req() req: Request): Promise<SuccessDto> {
+    try {
+      await this.authService.revokeToken((req as any).cookies.token);
+      return new SuccessDto('LOGOUT');
+    } catch (e) {
+      Logger.error(e);
+    }
   }
 
 }

@@ -1,10 +1,24 @@
-import { ForbiddenException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, HttpService, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import fetch, { RequestInit } from 'node-fetch';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
 
-  constructor() {
+  constructor(private httpService: HttpService, private config: ConfigService) {
+  }
+
+  public async revokeToken(accessToken: string): Promise<any> {
+    return await this.httpService.post('https://id.twitch.tv/oauth2/revoke', null, {
+      params: {
+        client_id: this.config.get('CLIENT_ID'),
+        token: accessToken
+      },
+      headers: {
+        Accept: '*/*'
+      }
+    }).toPromise();
+
   }
 
   public async validateToken(accessToken: string): Promise<boolean> {

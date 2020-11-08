@@ -23,7 +23,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   private handleError(err: HttpErrorResponse) {
     switch (err.status) {
       case (401):
-        this.auth.logout();
+        this.auth.redirectToLogin();
         return throwError('CANCEL');
       case (406):
         return throwError(err.error.statusCode + err.error.message);
