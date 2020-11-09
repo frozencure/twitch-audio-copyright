@@ -10,18 +10,12 @@ import { VodPlaylist } from './model/VodPlaylist';
 @Injectable()
 export class VodDownloadService {
 
-  private count = 0;
-
   constructor(private httpService: HttpService) {
-  }
-
-  getData(): { message: string } {
-    return { message: 'Welcome to vod downloads!' };
   }
 
   private getVodToken(vodId: number): Observable<VodToken> {
     const headersRequest = {
-      'Content-Type': 'application/json', // afaik this one is not needed
+      'Content-Type': 'application/json',
       'Client-ID': 'kimne78kx3ncx6brgo4mv6wki5h1ko'
     };
     return this.httpService.get(`https://api.twitch.tv/api/vods/${vodId}/access_token`, {
@@ -60,11 +54,9 @@ export class VodDownloadService {
     });
     const batch = chunks.pipe(
       map(chunks => {
-        if (offset > chunks.length) {
-          return chunks.slice(offset, chunks.length);
-        } else {
-          return chunks.slice(offset, offset += batchSize);
-        }
+        const slicedChunks = this.batchFromDuration(offset, chunks, 60);
+        offset += slicedChunks.length;
+        return slicedChunks;
       }),
       mergeMap(c => c),
       mergeMap(chunk => {
@@ -79,7 +71,7 @@ export class VodDownloadService {
     );
     proxy.subscribe(() => {
       batch.subscribe(() => {
-        if (offset > totalCount) {
+        if (offset >= totalCount) {
           proxy.complete();
         } else {
           proxy.next(offset / totalCount);
@@ -87,6 +79,15 @@ export class VodDownloadService {
       });
     });
     return proxy;
+  }
+
+
+  private batchFromDuration(offset: number, chunks: Array<VodChunk>, duration: number): Array<VodChunk> {
+    let currentDuration = 0;
+    return chunks.slice(offset).filter(chunk => {
+      currentDuration += chunk.duration;
+      return currentDuration < duration;
+    })
   }
 
   private downloadFile(downloadUrl: string, outputPath: string, fileName: string): Observable<string> {

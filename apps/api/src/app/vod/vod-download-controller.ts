@@ -9,12 +9,12 @@ export class VodDownloadController {
   }
 
   @Get('playlist/:id')
-  getVodPlaylist(@Param('id') id, @Query('quality') quality = 'chunked'): Observable<VodPlaylist> {
+  public getVodPlaylist(@Param('id') id, @Query('quality') quality = 'chunked'): Observable<VodPlaylist> {
     return this.vodService.getVodPlaylist(id, quality);
   }
 
   @Get('download/:id')
-  downloadVod(@Param('id') id,
+  public downloadVod(@Param('id') id,
               @Query('quality') quality = '360p30',
               @Query('output') outputPath = '/home/iancu/Downloads/m3u8/',
               @Query('batch') batchSize = 50): string {
