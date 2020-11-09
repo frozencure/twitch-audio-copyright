@@ -9,14 +9,13 @@ import * as path from 'path';
 @Injectable()
 export class FfmpegService {
 
-
   public createSingleAudioFileFromBatch(downloadedFiles: Observable<DownloadProgress>,
                                         outputPath: string, deleteTempFiles = true): Observable<string> {
     const audioChunks = this.extractAudioFromBatch(downloadedFiles, deleteTempFiles);
     const audioFilesList = audioChunks.pipe(mergeMap(files => this.writeFileListForBatch(files, outputPath)));
-    return audioFilesList.pipe(fileList => this.mergeFiles(audioChunks, fileList, outputPath, deleteTempFiles));
+    return zip(audioChunks, audioFilesList).pipe(audioChunksAndFileList =>
+      this.mergeFiles(audioChunksAndFileList, outputPath, deleteTempFiles));
   }
-
 
   private extractAudioFromBatch(downloadedFiles: Observable<DownloadProgress>, deleteTempFiles: boolean): Observable<string[]> {
     return downloadedFiles.pipe(
@@ -70,8 +69,8 @@ export class FfmpegService {
     return `${firstChunkIndex}_${lastChunkIndex}.${extension}`;
   }
 
-  private mergeFiles(audioChunks: Observable<string[]>, audioFilesList: Observable<string>, outputPath: string, deleteTempFiles: boolean): Observable<string> {
-    return zip(audioChunks, audioFilesList).pipe(
+  private mergeFiles(audioChunksAndFileList: Observable<[string[], string]>, outputPath: string, deleteTempFiles: boolean): Observable<string> {
+    return audioChunksAndFileList.pipe(
       mergeMap(chunksAndFileList => {
           const chunks = chunksAndFileList[0];
           const fileList = chunksAndFileList[1];
