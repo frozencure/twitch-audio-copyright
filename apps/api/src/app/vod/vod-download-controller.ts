@@ -17,7 +17,7 @@ export class VodDownloadController {
   @Get('download/:id')
   public downloadVod(@Param('id') id,
                      @Query('quality') quality = '360p30',
-                     @Query('output') outputPath = '/home/iancu/Downloads/m3u8/',
+                     @Query('output') outputPath = '/Users/andyradulescu/Desktop/ceva',
                      @Query('batch_duration') batchDurationInSecs = 60): string {
     const downloadProgress = this.vodService.downloadVod(id, quality, outputPath, batchDurationInSecs);
     downloadProgress.subscribe(downloadProgress => {

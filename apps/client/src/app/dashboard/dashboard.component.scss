@@ -1,0 +1,12 @@
+section {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .example-container {
+    margin-top: 64px;
+    flex-grow: 1;
+  }
+
+}
+
