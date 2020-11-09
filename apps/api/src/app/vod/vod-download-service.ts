@@ -1,27 +1,22 @@
-import { HttpService, Injectable } from '@nestjs/common';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { bufferCount, map, mergeMap } from 'rxjs/operators';
+import { HttpService, Injectable, Logger } from '@nestjs/common';
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import * as fs from 'fs';
-import { VodQuality } from './model/VodQuality';
-import { VodToken } from './model/VodToken';
-import { VodChunk } from './model/VodChunk';
-import { VodPlaylist } from './model/VodPlaylist';
+import { VodQuality } from './model/vod-quality';
+import { VodToken } from './model/vod-token';
+import { VodChunk } from './model/vod-chunk';
+import { VodPlaylist } from './model/vod-playlist';
+import { DownloadProgress } from './model/download-progress';
 
 @Injectable()
 export class VodDownloadService {
 
-  private count = 0;
-
   constructor(private httpService: HttpService) {
-  }
-
-  getData(): { message: string } {
-    return { message: 'Welcome to vod downloads!' };
   }
 
   private getVodToken(vodId: number): Observable<VodToken> {
     const headersRequest = {
-      'Content-Type': 'application/json', // afaik this one is not needed
+      'Content-Type': 'application/json',
       'Client-ID': 'kimne78kx3ncx6brgo4mv6wki5h1ko'
     };
     return this.httpService.get(`https://api.twitch.tv/api/vods/${vodId}/access_token`, {
@@ -49,44 +44,64 @@ export class VodDownloadService {
     );
   }
 
-  public downloadVod(vodId: number, quality: string, outputPath: string, batchSize: number): Observable<number> {
-    const proxy = new BehaviorSubject<number>(0);
-    let offset = 0;
+  public downloadVod(vodId: number, quality: string, outputPath: string, batchDuration: number): Observable<DownloadProgress> {
+    const offset = { value: 0 };
     let totalCount = 0;
-    const chunks = this.getVodPlaylist(vodId, quality).pipe(
-      map(playlist => playlist.vodChunks));
+    const chunks = this.getChunksFromPlaylist(vodId, quality);
     chunks.subscribe(chunks => {
       totalCount = chunks.length;
     });
-    const batch = chunks.pipe(
-      map(chunks => {
-        if (offset > chunks.length) {
-          return chunks.slice(offset, chunks.length);
+    const progressSubject = new BehaviorSubject<DownloadProgress>(new DownloadProgress([], 1, 0));
+    const batch = this.writeChunkBatchToFiles(vodId, chunks, outputPath, batchDuration, offset);
+    progressSubject.subscribe(() => {
+      batch.subscribe((files) => {
+        if (offset.value >= totalCount) {
+          progressSubject.next(new DownloadProgress(files, totalCount, offset.value));
+          progressSubject.complete();
         } else {
-          return chunks.slice(offset, offset += batchSize);
-        }
-      }),
-      mergeMap(c => c),
-      mergeMap(chunk => {
-        if (!fs.existsSync(`${outputPath}${vodId}`)) {
-          fs.mkdirSync(`${outputPath}${vodId}`);
-        }
-        return this.downloadFile(chunk.downloadUrl,
-          `${outputPath}${vodId}`, chunk.fileName);
-      }),
-      bufferCount(batchSize),
-      map(arr => arr.length)
-    );
-    proxy.subscribe(() => {
-      batch.subscribe(() => {
-        if (offset > totalCount) {
-          proxy.complete();
-        } else {
-          proxy.next(offset / totalCount);
+          progressSubject.next(new DownloadProgress(files, totalCount, offset.value));
         }
       });
     });
-    return proxy;
+    return progressSubject;
+  }
+
+
+  private getChunksFromPlaylist(vodId: number, quality: string): Observable<VodChunk[]> {
+    return this.getVodPlaylist(vodId, quality).pipe(
+      map(playlist => playlist.vodChunks));
+  }
+
+  private writeChunkBatchToFiles(vodId: number, chunks: Observable<VodChunk[]>, outputPath: string,
+                                 batchDurationInSecs: number, offset: { value: number }) {
+    return chunks.pipe(
+      map(chunks => {
+        const slicedChunks = this.batchFromDuration(offset.value, chunks, batchDurationInSecs);
+        offset.value += slicedChunks.length;
+        return slicedChunks;
+      }),
+      map(chunks => {
+        if (!fs.existsSync(`${outputPath}${vodId}`)) {
+          fs.mkdirSync(`${outputPath}${vodId}`);
+        }
+        const downloadJobs = new Array<Observable<string>>();
+        chunks.map(chunk => {
+          downloadJobs.push(this.downloadFile(chunk.downloadUrl,
+            `${outputPath}${vodId}/`, chunk.fileName));
+        });
+        return forkJoin(downloadJobs);
+      }),
+      mergeMap(files => files)
+    );
+  }
+
+
+  private batchFromDuration(offset: number, chunks: Array<VodChunk>, duration: number): Array<VodChunk> {
+    let currentDuration = 0;
+    return chunks.slice(offset).filter(chunk => {
+      currentDuration += chunk.duration;
+      return currentDuration <= duration;
+    });
   }
 
   private downloadFile(downloadUrl: string, outputPath: string, fileName: string): Observable<string> {
@@ -99,7 +114,8 @@ export class VodDownloadService {
         return new Observable(subscriber => {
           response.data.pipe(fs.createWriteStream(`${outputPath}/${fileName}`))
             .on('finish', () => {
-              subscriber.next(fileName);
+              subscriber.next(`${outputPath}${fileName}`);
+              subscriber.complete();
             });
         });
       })
@@ -107,10 +123,20 @@ export class VodDownloadService {
   }
 
   private getVodChunks(vodQualityChannels: Array<VodQuality>, quality: string): Observable<VodPlaylist> {
-    const selectedPlaylist = vodQualityChannels.filter(playlist => playlist.quality == quality)[0];
-    return this.httpService.get(selectedPlaylist.downloadUrl).pipe(
-      map(resp => this.parseVodChunks(selectedPlaylist.downloadUrl, resp.data))
-    );
+    try {
+      const selectedPlaylist = vodQualityChannels.filter(playlist => playlist.quality == quality)[0];
+
+      return this.httpService.get(selectedPlaylist.downloadUrl).pipe(
+        map(resp => this.parseVodChunks(selectedPlaylist.downloadUrl, resp.data))
+      );
+    } catch (e) {
+      if (e instanceof TypeError) {
+        Logger.error(`Selected quality is not available. Error: ${e}`);
+      } else {
+        Logger.error(e);
+      }
+    }
+
   }
 
   private parseVodQualityChannels(vodPlaylistResponse: string): Array<VodQuality> {

@@ -1,4 +1,4 @@
-import { VodChunk } from './VodChunk';
+import { VodChunk } from './vod-chunk';
 
 export class VodPlaylist {
   constructor(vodChunks: Array<VodChunk>, durationInSecs: number) {
