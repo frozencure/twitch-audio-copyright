@@ -7,6 +7,7 @@ import { TypeOrmConfigService } from './config/typeorm-config.service';
 import config from './config/config';
 import { AuthModule } from './auth/auth.module';
 import { VodDownloadModule } from './vod/vod-download.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -18,7 +19,13 @@ import { VodDownloadModule } from './vod/vod-download.module';
       load: [ config ]
     }),
     AuthModule,
-    VodDownloadModule
+    VodDownloadModule,
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
   ],
   controllers: [ AppController ],
   providers: [ AppService ]
