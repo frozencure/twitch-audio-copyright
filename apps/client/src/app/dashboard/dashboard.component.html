@@ -1,1 +1,16 @@
-<button mat-raised-button color="primary" (click)="onLogout()">Log out!</button>
+<section>
+  <app-navbar [drawer]="drawer"></app-navbar>
+
+  <mat-drawer-container class="example-container">
+    <mat-drawer #drawer class="example-sidenav" mode="side" opened="true">
+      <p>Auto-resizing sidenav</p>
+      <p>Lorem, ipsum dolor sit amet consectetur.</p>
+    </mat-drawer>
+
+    <div class="frow">
+
+    </div>
+
+  </mat-drawer-container>
+</section>
+
