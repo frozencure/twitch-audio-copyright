@@ -7,6 +7,8 @@ import { LoginModule } from './login/login.module';
 import { AppRoutingModule } from './app.routing.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './http-error.interceptor';
+import { NgxsStoreModule } from './store/store.module';
+import { DashboardResolver } from './dashboard/dashboard.resolver.service';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -14,9 +16,10 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    NgxsStoreModule,
     LoginModule
   ],
-  providers: [ { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true } ],
+  providers: [ { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }, DashboardResolver ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {

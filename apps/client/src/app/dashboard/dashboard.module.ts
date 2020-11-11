@@ -7,6 +7,8 @@ import { NavbarModule } from './navbar/navbar.module';
 import { MatListModule } from '@angular/material/list';
 import { VideoContainerModule } from './video-container/video-container.module';
 import { DashboardRoutingModule } from './dashboard-routing.module';
+import { CookieService } from 'ngx-cookie-service';
+import { DashboardService } from './dashboard.service';
 
 @NgModule({
   declarations: [ DashboardComponent ],
@@ -19,6 +21,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
     NavbarModule,
     VideoContainerModule
   ],
+  providers: [ CookieService, DashboardService ],
   exports: [ DashboardComponent ]
 })
 export class DashboardModule {

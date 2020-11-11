@@ -33,11 +33,7 @@ export class TwitchStrategy extends PassportStrategy(Strategy, 'twitch') {
       display_name,
       profile_image_url
     };
-    const payload = {
-      user,
-      accessToken
-    };
 
-    done(null, payload);
+    done(null, user);
   }
 }

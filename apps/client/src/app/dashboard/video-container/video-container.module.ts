@@ -5,7 +5,7 @@ import { VideoResolver } from './video.resolver.service';
 @NgModule({
   declarations: [ VideoContainerComponent ],
   exports: [ VideoContainerComponent ],
-  providers:[VideoResolver]
+  providers: [ VideoResolver ]
 })
 export class VideoContainerModule {
 }
