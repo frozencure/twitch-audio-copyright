@@ -5,17 +5,19 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { NavbarModule } from './navbar/navbar.module';
 import { MatListModule } from '@angular/material/list';
-import { RouterModule } from '@angular/router';
+import { VideoContainerModule } from './video-container/video-container.module';
+import { DashboardRoutingModule } from './dashboard-routing.module';
 
 @NgModule({
   declarations: [ DashboardComponent ],
   imports: [
     MatButtonModule,
     MatSidenavModule,
-    NavbarModule,
     MatListModule,
     MatIconModule,
-    RouterModule
+    DashboardRoutingModule,
+    NavbarModule,
+    VideoContainerModule
   ],
   exports: [ DashboardComponent ]
 })
