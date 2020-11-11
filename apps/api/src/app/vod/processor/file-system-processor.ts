@@ -1,7 +1,7 @@
-import { InjectQueue, OnQueueCompleted, Process, Processor } from '@nestjs/bull';
-import { Job, Queue } from 'bull';
-import { VodChunkFile } from '../model/vod-chunk-file';
-import { AudioConcatFile } from '../model/audio-concat-file';
+import { Process, Processor } from '@nestjs/bull';
+import { Job } from 'bull';
+import { AudioChunkFile } from '../model/vod-chunk-file';
+import { AudioConcatTextList } from '../model/audio-concat-file';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Logger } from '@nestjs/common';
@@ -10,11 +10,8 @@ import { Logger } from '@nestjs/common';
 export class FileSystemProcessor {
 
 
-  constructor(@InjectQueue('ffmpeg') private readonly ffmpegQueue: Queue) {
-  }
-
   @Process('create-concat-list')
-  async createConcatAudioList(job: Job<VodChunkFile[]>): Promise<AudioConcatFile> {
+  async createConcatAudioList(job: Job<AudioChunkFile[]>): Promise<AudioConcatTextList> {
     return await this.createAudioConcatList(job.data);
   }
 
@@ -29,23 +26,18 @@ export class FileSystemProcessor {
     }
   }
 
-  @OnQueueCompleted({ name: 'create-concat-list' })
-  async scheduleAudioFilesConcat(_: Job, result: AudioConcatFile): Promise<Job<AudioConcatFile>> {
-    return this.ffmpegQueue.add('audio-concat', result);
-  }
-
-  private createAudioConcatList(audioFiles: VodChunkFile[]): Promise<AudioConcatFile> {
+  private createAudioConcatList(audioFiles: AudioChunkFile[]): Promise<AudioConcatTextList> {
     const fileContent = audioFiles.reduce((acc, val) => acc + `file '${val.filePath}'\n`, '');
     const fileName = FileSystemProcessor.createOutputFilename(audioFiles.map(f => f.filePath), 'txt');
     const outputPath = path.dirname(audioFiles[0].filePath);
     const shouldDeleteFile = audioFiles[0].shouldDeleteFile;
     const fileFullPath = `${outputPath}/${fileName}`;
-    return new Promise<AudioConcatFile>((resolve, reject) => {
+    return new Promise<AudioConcatTextList>((resolve, reject) => {
       fs.writeFile(fileFullPath, fileContent, err => {
         if (err) {
           reject(err);
         } else {
-          resolve(new AudioConcatFile(fileFullPath, audioFiles, shouldDeleteFile));
+          resolve(new AudioConcatTextList(fileFullPath, audioFiles, shouldDeleteFile));
         }
       });
     });

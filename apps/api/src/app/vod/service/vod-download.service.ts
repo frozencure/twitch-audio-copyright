@@ -6,25 +6,22 @@ import { VodToken } from '../model/vod-token';
 import { VodChunk } from '../model/vod-chunk';
 import { VodPlaylist } from '../model/vod-playlist';
 import { Job, Queue } from 'bull';
-import { InjectQueue, OnQueueCompleted, Processor } from '@nestjs/bull';
-import { AudioConcatFile } from '../model/audio-concat-file';
+import { InjectQueue } from '@nestjs/bull';
 
 @Injectable()
-@Processor('ffmpeg')
-export class VodProccessingService {
+export class VodDownloadService {
 
   constructor(private httpService: HttpService,
               @InjectQueue('download') private readonly downloadQueue: Queue) {
   }
 
-  @OnQueueCompleted({ name: 'audio-concat' })
-  private logProgress(job: Job<AudioConcatFile>) {
-    const lastAudioChunk = job.data.audioChunks.reverse()[0];
-    const progress = (lastAudioChunk.chunkNumber / lastAudioChunk.totalNumberOfChunks * 100).toFixed(2);
-    Logger.debug(`Processing VOD ${lastAudioChunk.vodId}.
-      Progress: ${progress}%`);
-  }
 
+  public getVodPlaylist(vodId: number, quality: string): Observable<VodPlaylist> {
+    return this.getVodToken(vodId).pipe(
+      mergeMap(token => this.getVodQualityChannels(token, vodId)),
+      mergeMap(playlist => this.getVodChunks(vodId, playlist, quality))
+    );
+  }
 
   public scheduleDownloadJobs(vodId: number, quality: string, outputPath: string, batchSize: number, deleteTempFiles = true): Observable<Job<VodChunk[]>> {
     return this.getVodPlaylist(vodId, quality).pipe(
@@ -45,13 +42,6 @@ export class VodProccessingService {
         });
         return from(this.downloadQueue.add('download', batch)) as Observable<Job<VodChunk[]>>;
       })
-    );
-  }
-
-  public getVodPlaylist(vodId: number, quality: string): Observable<VodPlaylist> {
-    return this.getVodToken(vodId).pipe(
-      mergeMap(token => this.getVodQualityChannels(token, vodId)),
-      mergeMap(playlist => this.getVodChunks(vodId, playlist, quality))
     );
   }
 
@@ -111,7 +101,7 @@ export class VodProccessingService {
       return new VodChunk(vodId, Number.parseFloat(duration.toString()), downloadUrBase + file.toString(),
         file.toString(), index, arr.length);
     });
-    const vodDuration = VodProccessingService.parseVodDuration(vodChunksResponse);
+    const vodDuration = VodDownloadService.parseVodDuration(vodChunksResponse);
     return new VodPlaylist(vodId, vodChunks, vodDuration);
   }
 
