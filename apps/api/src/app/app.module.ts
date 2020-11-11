@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,14 +18,18 @@ import { BullModule } from '@nestjs/bull';
       isGlobal: true,
       load: [ config ]
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('redis.host'),
+          port: +configService.get('redis.port'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     AuthModule,
     VodDownloadModule,
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
-    }),
   ],
   controllers: [ AppController ],
   providers: [ AppService ]
