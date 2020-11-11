@@ -3,12 +3,26 @@
 
   <mat-drawer-container class="example-container">
     <mat-drawer #drawer class="example-sidenav" mode="side" opened="true">
-      <p>Auto-resizing sidenav</p>
-      <p>Lorem, ipsum dolor sit amet consectetur.</p>
+      <mat-selection-list [multiple]="false">
+        <mat-list-option class="px-40 hover" routerLink="videos">
+          <mat-icon mat-list-icon>videocam</mat-icon>
+          Videos
+        </mat-list-option>
+        <mat-divider></mat-divider>
+        <mat-list-option class="px-40" routerLink="videos">
+          <mat-icon mat-list-icon>camera</mat-icon>
+          Clips
+        </mat-list-option>
+        <mat-divider></mat-divider>
+        <mat-list-option class="px-40" routerLink="videos">
+          <mat-icon mat-list-icon>done</mat-icon>
+          Analyzed
+        </mat-list-option>
+      </mat-selection-list>
     </mat-drawer>
 
     <div class="frow">
-
+      <router-outlet></router-outlet>
     </div>
 
   </mat-drawer-container>
