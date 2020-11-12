@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../dashboard.service';
+import { Observable } from 'rxjs';
+import { Video } from '../model/Video';
 
 @Component({
   selector: 'app-video-container',
@@ -7,14 +9,13 @@ import { DashboardService } from '../dashboard.service';
   styleUrls: [ './video-container.component.scss' ]
 })
 export class VideoContainerComponent implements OnInit {
+  public videos$: Observable<Video[]>;
 
   constructor(private videos: DashboardService) {
   }
 
   ngOnInit(): void {
-    this.videos.getVideos().subscribe(data => {
-      console.log(data);
-    });
+    this.videos$ = this.videos.getVideos();
   }
 
 }

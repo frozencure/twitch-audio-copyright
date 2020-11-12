@@ -1,1 +1,7 @@
-videos
+<div class="videos-container">
+  <div class="frow gutters justify-start">
+    <div class="col-md-1-4" *ngFor="let video of videos$ | async">
+      <app-video-item [video]="video"></app-video-item>
+    </div>
+  </div>
+</div>
