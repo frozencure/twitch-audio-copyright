@@ -1,5 +1,6 @@
 <div class="frow start my-25">
   <div class="col-sm-1-2 col-md-1-3 col-lg-1-4 col-xlg-1-5" *ngFor="let video of videos$ | async">
-    <app-video-item [video]="video"></app-video-item>
+    <app-video-item *ngIf="type==='videos'" [video]="video"></app-video-item>
+    <app-clip-item *ngIf="type==='clips'" [clip]="video"></app-clip-item>
   </div>
 </div>

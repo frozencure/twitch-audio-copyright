@@ -9,9 +9,9 @@ const routes: Routes = [
     path: '', component: DashboardComponent,
     children: [
       {
-        path: 'videos', component: VideoContainerComponent, resolve: { routeResolver: VideoResolver }
+        path: 'container/:type', component: VideoContainerComponent, resolve: { routeResolver: VideoResolver }
       },
-      { path: '', redirectTo: 'videos' }
+      { path: '', redirectTo: 'container/videos' }
     ]
   }
 ];

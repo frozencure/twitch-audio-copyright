@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { take } from 'rxjs/operators';
+import { DashboardService } from '../dashboard.service';
 
 @Injectable()
 export class VideoResolver implements Resolve<any> {
 
-  constructor(/*private dashboardService: DashboardService*/) {
+  constructor(private videos: DashboardService) {
   }
 
   resolve(route: ActivatedRouteSnapshot) {
-    console.log('video resolved');
-    // return this.componentService.getComponents(route.paramMap.get('tag')).pipe(take(1));
+    const type = route.paramMap.get('type');
+    switch (type) {
+      case 'videos':
+        return { type, stream: this.videos.getVideos() };
+      case 'clips':
+        return { type, stream: this.videos.getClips() };
+    }
   }
 
 }

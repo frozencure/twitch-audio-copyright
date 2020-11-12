@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DashboardService } from '../dashboard.service';
 import { Observable } from 'rxjs';
 import { Video } from '../model/Video';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-video-container',
@@ -10,12 +10,17 @@ import { Video } from '../model/Video';
 })
 export class VideoContainerComponent implements OnInit {
   public videos$: Observable<Video[]>;
+  public type: string;
 
-  constructor(private videos: DashboardService) {
+  constructor(private actRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    this.videos$ = this.videos.getVideos();
+    this.actRoute.data.subscribe(data => {
+      console.log(data);
+      this.type = data.routeResolver.type;
+      this.videos$ = data.routeResolver.stream;
+    }, err => console.log(err));
   }
 
 }

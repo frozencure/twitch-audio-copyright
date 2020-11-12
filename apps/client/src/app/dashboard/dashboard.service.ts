@@ -14,7 +14,19 @@ export class DashboardService {
   }
 
   public getVideos(type = 'all', sort = 'time'): Observable<Array<Video>> {
+    const user = this.store.selectSnapshot<UserModel>((state: any) => state.auth?.user);
+    const token = this.store.selectSnapshot<UserModel>((state: any) => state.auth?.token);
+    return this.http.get<HelixWrapper<Video>>
+               (`https://api.twitch.tv/helix/videos?user_id=${ user.id }&type=${ type }&sort=${ sort }`, {
+                 headers: {
+                   'Authorization': `Bearer ${ token }`,
+                   'Client-Id': '2nbrngul34u21ei0lqq3hxv7w9iyix'
+                 }
+               })
+               .pipe(first(), map(w => w.data.concat(w.data.concat(w.data))));
+  }
 
+  public getClips(type = 'all', sort = 'time'): Observable<Array<Video>> {
     const user = this.store.selectSnapshot<UserModel>((state: any) => state.auth?.user);
     const token = this.store.selectSnapshot<UserModel>((state: any) => state.auth?.token);
     return this.http.get<HelixWrapper<Video>>
