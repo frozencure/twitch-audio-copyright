@@ -24,6 +24,6 @@ export class DashboardService {
                    'Client-Id': '2nbrngul34u21ei0lqq3hxv7w9iyix'
                  }
                })
-               .pipe(first(), map(w => w.data));
+               .pipe(first(), map(w => w.data.concat(w.data.concat(w.data))));
   }
 }
