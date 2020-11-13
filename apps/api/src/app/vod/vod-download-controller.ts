@@ -1,32 +1,28 @@
 import { Controller, Get, Logger, Param, Query } from '@nestjs/common';
-import { VodDownloadService } from './vod-download-service';
+import { VodDownloadService } from './service/vod-download.service';
 import { Observable } from 'rxjs';
 import { VodPlaylist } from './model/vod-playlist';
-import { FfmpegService } from '../ffmpeg/ffmpeg-service';
 
 @Controller('/vod')
 export class VodDownloadController {
-  constructor(private readonly vodService: VodDownloadService, private readonly ffmpegService: FfmpegService) {
+  constructor(private readonly vodDownloadService: VodDownloadService) {
   }
 
   @Get('playlist/:id')
   public getVodPlaylist(@Param('id') id, @Query('quality') quality = '360p30'): Observable<VodPlaylist> {
-    return this.vodService.getVodPlaylist(id, quality);
+    return this.vodDownloadService.getVodPlaylist(id, quality);
   }
 
   @Get('download/:id')
-  public downloadVod(@Param('id') id,
-                     @Query('quality') quality = '360p30',
-                     @Query('output') outputPath = '/Users/andyradulescu/Desktop/ceva',
-                     @Query('batch_duration') batchDurationInSecs = 60): string {
-    const downloadProgress = this.vodService.downloadVod(id, quality, outputPath, batchDurationInSecs);
-    downloadProgress.subscribe(downloadProgress => {
-      Logger.debug(`Download progress:
-        ${(downloadProgress.currentCount / downloadProgress.totalCount * 100).toFixed(2)}%`);
+  public async downloadVod(@Param('id') id,
+                           @Query('quality') quality = '360p30',
+                           @Query('output') outputPath = '/home/iancu/Downloads/m3u8',
+                           @Query('batch_size') batchSize = 6,
+                           @Query('delete_temp_files') deleteTempFiles = true) {
+    this.vodDownloadService.scheduleDownloadJobs(id, quality, outputPath, batchSize, deleteTempFiles).subscribe(() => {
+      Logger.log('Added new download job.');
     });
-    this.ffmpegService.createSingleAudioFileFromBatch(downloadProgress, `/home/iancu/Downloads/m3u8/${id}/`).subscribe(file => {
-      console.log(file);
-    });
-    return `Vod download started`;
+
   }
+
 }

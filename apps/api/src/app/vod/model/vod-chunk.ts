@@ -1,25 +1,24 @@
 export class VodChunk {
-  get fileName(): string {
-    return this._fileName;
+
+  vodId: number;
+  duration: number;
+  downloadUrl: string;
+  fileName: string;
+  chunkNumber: number;
+  totalNumberOfChunks: number;
+  outputPath: string;
+  /**
+   * When true, file will be deleted after it is used for the next processing step.
+   */
+  shouldDeleteFile: boolean;
+
+  constructor(vodId: number, duration: number, downloadUrl: string, fileName: string,
+              chunkNumber: number, totalNumberOfChunks: number) {
+    this.vodId = vodId;
+    this.duration = duration;
+    this.downloadUrl = downloadUrl;
+    this.fileName = fileName;
+    this.chunkNumber = chunkNumber;
+    this.totalNumberOfChunks = totalNumberOfChunks;
   }
-
-  get downloadUrl(): string {
-    return this._downloadUrl;
-  }
-
-
-  get duration(): number {
-    return this._duration;
-  }
-
-  private _duration: number;
-  private _downloadUrl: string;
-  private _fileName: string;
-
-  constructor(duration: number, downloadUrl: string, fileName: string) {
-    this._downloadUrl = downloadUrl;
-    this._duration = duration;
-    this._fileName = fileName;
-  }
-
 }

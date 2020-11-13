@@ -15,5 +15,9 @@ export default () => ({
     ssl: false,
     port: parseInt(process.env.DB_PORT, 10) || 30003,
     host: process.env.DB_HOST || 'localhost'
+  },
+  redis: {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: parseInt(process.env.REDIS_PORT, 10) || 6379
   }
 });

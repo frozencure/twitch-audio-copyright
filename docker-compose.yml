@@ -13,5 +13,10 @@ services:
     image: postgres:11-alpine
     networks:
       - twitch-network
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    restart: always
 networks:
   twitch-network:
