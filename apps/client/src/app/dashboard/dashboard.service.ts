@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HelixWrapper } from './model/HelixWrapper';
 import { Video } from './model/Video';
+import { Clip } from './model/Clip';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { Store } from '@ngxs/store';
@@ -14,28 +15,33 @@ export class DashboardService {
   }
 
   public getVideos(type = 'all', sort = 'time'): Observable<Array<Video>> {
-    const user = this.store.selectSnapshot<UserModel>((state: any) => state.auth?.user);
-    const token = this.store.selectSnapshot<UserModel>((state: any) => state.auth?.token);
+    const credentials = this.getTokenAncUser();
     return this.http.get<HelixWrapper<Video>>
-               (`https://api.twitch.tv/helix/videos?user_id=${ user.id }&type=${ type }&sort=${ sort }`, {
+               (`https://api.twitch.tv/helix/videos?user_id=${ credentials.user.id }&type=${ type }&sort=${ sort }`, {
                  headers: {
-                   'Authorization': `Bearer ${ token }`,
+                   'Authorization': `Bearer ${ credentials.token }`,
                    'Client-Id': '2nbrngul34u21ei0lqq3hxv7w9iyix'
                  }
                })
                .pipe(first(), map(w => w.data.concat(w.data.concat(w.data))));
   }
 
-  public getClips(type = 'all', sort = 'time'): Observable<Array<Video>> {
-    const user = this.store.selectSnapshot<UserModel>((state: any) => state.auth?.user);
-    const token = this.store.selectSnapshot<UserModel>((state: any) => state.auth?.token);
-    return this.http.get<HelixWrapper<Video>>
-               (`https://api.twitch.tv/helix/videos?user_id=${ user.id }&type=${ type }&sort=${ sort }`, {
+  public getClips(firstString = '100'): Observable<Array<Clip>> {
+    const credentials = this.getTokenAncUser();
+    return this.http.get<HelixWrapper<Clip>>
+               (`https://api.twitch.tv/helix/clips?broadcaster_id=${ credentials.user.id }&first=${ firstString } `, {
                  headers: {
-                   'Authorization': `Bearer ${ token }`,
+                   'Authorization': `Bearer ${ credentials.token }`,
                    'Client-Id': '2nbrngul34u21ei0lqq3hxv7w9iyix'
                  }
                })
                .pipe(first(), map(w => w.data.concat(w.data.concat(w.data))));
+  }
+
+  private getTokenAncUser(): { user: UserModel, token: string } {
+    return {
+      user: this.store.selectSnapshot<UserModel>((state: any) => state.auth?.user),
+      token: this.store.selectSnapshot<string>((state: any) => state.auth?.token)
+    };
   }
 }
