@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { NavbarModule } from './components/navbar/navbar.module';
+import { FooterModule } from './components/footer/footer.module';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -13,7 +14,7 @@ import { NavbarModule } from './components/navbar/navbar.module';
     AppRoutingModule,
     NgbModule,
     NavbarModule,
-    NavbarModule
+    FooterModule
   ],
   providers: [],
   bootstrap: [ AppComponent ]
