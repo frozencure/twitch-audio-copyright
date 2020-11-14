@@ -6,6 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { NavbarModule } from './components/navbar/navbar.module';
 import { FooterModule } from './components/footer/footer.module';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -14,6 +15,7 @@ import { FooterModule } from './components/footer/footer.module';
     AppRoutingModule,
     NgbModule,
     NavbarModule,
+    HomeModule,
     FooterModule
   ],
   providers: [],
