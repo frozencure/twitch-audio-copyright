@@ -1,0 +1,9 @@
+$darkColor: #343a40;
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 100vw 50px 0;
+  border-color: transparent transparent $darkColor transparent;
+}
