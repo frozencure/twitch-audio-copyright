@@ -2,17 +2,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [ AppComponent ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
-    RouterModule.forRoot([], { initialNavigation: 'enabled' }),
-    NgbModule,
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [ AppComponent ]
 })
-export class AppModule {}
+export class AppModule {
+}
