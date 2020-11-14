@@ -21,12 +21,15 @@ export class AuthController {
   @Get('/twitch/redirect')
   @UseGuards(AuthGuard('twitch'))
   async twitchLoginRedirect(@Res() res: Response, @Req() req: Request): Promise<void> {
+    const user = (req as any).user;
     Logger.log({
       statusCode: HttpStatus.OK,
-      data: (req as any).user
+      data: user
     });
 
-    res.cookie('token', (req as any).user.accessToken);
+    res.cookie('token', user.accessToken);
+    res.cookie('user',
+      JSON.stringify({ id: user.id, login: user.login, display_name: user.display_name, profilePic: user.profile_image_url }));
     res.redirect(`${ this.config.get('frontendUrl') }/dashboard`);
   }
 

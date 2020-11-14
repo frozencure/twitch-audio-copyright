@@ -1,0 +1,18 @@
+.videos-container {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 30em) {
+  .flex-container::after {
+    content:"";
+    display: block;
+    margin-left: 48.38%;
+  }
+}
+
+@media (min-width:48em) {
+  .flex-container {
+    margin-left: 31.91%;
+  }
+}

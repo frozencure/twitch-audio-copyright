@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  client_id: '2nbrngul34u21ei0lqq3hxv7w9iyix'
 };
 
 /*
