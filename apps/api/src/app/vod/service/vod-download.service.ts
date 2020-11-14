@@ -7,6 +7,7 @@ import { VodChunk } from '../model/vod-chunk';
 import { VodPlaylist } from '../model/vod-playlist';
 import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
+import { VodDownloadModel } from '../model/vod-download-model';
 
 @Injectable()
 export class VodDownloadService {
@@ -15,34 +16,17 @@ export class VodDownloadService {
               @InjectQueue('download') private readonly downloadQueue: Queue) {
   }
 
-
-  public getVodPlaylist(vodId: number, quality: string): Observable<VodPlaylist> {
-    return this.getVodToken(vodId).pipe(
-      mergeMap(token => this.getVodQualityChannels(token, vodId)),
-      mergeMap(playlist => this.getVodChunks(vodId, playlist, quality))
-    );
-  }
-
-  public scheduleDownloadJobs(vodId: number, quality: string, outputPath: string, batchSize: number, deleteTempFiles = true): Observable<Job<VodChunk[]>> {
-    return this.getVodPlaylist(vodId, quality).pipe(
-      mergeMap(playlist => {
-        const batches = new Array<Array<VodChunk>>();
-        let offset = 0;
-        while (offset < playlist.vodChunks.length) {
-          const limit = offset + batchSize > playlist.vodChunks.length ? playlist.vodChunks.length : offset + batchSize;
-          batches.push(playlist.vodChunks.slice(offset, limit));
-          offset += batchSize;
-        }
-        return batches;
-      }),
-      mergeMap(batch => {
-        batch.forEach(chunk => {
-          chunk.outputPath = `${outputPath}/${vodId}`;
-          chunk.shouldDeleteFile = deleteTempFiles;
-        });
-        return from(this.downloadQueue.add('download', batch)) as Observable<Job<VodChunk[]>>;
-      })
-    );
+  private getVodDownloadModel(vodId: number, authToken: string): Observable<VodDownloadModel> {
+    const headersRequest = {
+      'Content-Type': 'application/json',
+      'Authorization': `OAuth ${authToken}`
+    };
+    return this.httpService.get(`https://api.twitch.tv/v5/vods/${vodId}/download`, {
+      headers: headersRequest
+    })
+      .pipe(
+        map(r => r.data)
+      );
   }
 
   private getVodToken(vodId: number): Observable<VodToken> {
