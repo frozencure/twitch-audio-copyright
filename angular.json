@@ -211,7 +211,7 @@
       },
       "root": "apps/landing-page",
       "sourceRoot": "apps/landing-page/src",
-      "prefix": "twitch-audio-copyright",
+      "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
