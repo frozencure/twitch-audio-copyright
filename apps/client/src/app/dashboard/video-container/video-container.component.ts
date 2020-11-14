@@ -17,7 +17,6 @@ export class VideoContainerComponent implements OnInit {
 
   ngOnInit(): void {
     this.actRoute.data.subscribe(data => {
-      console.log(data);
       this.type = data.routeResolver.type;
       this.videos$ = data.routeResolver.stream;
     }, err => console.log(err));
