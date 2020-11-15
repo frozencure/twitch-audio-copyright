@@ -1,0 +1,40 @@
+<section class="py-4 bg-light">
+  <div class="container">
+    <h2 class="text-primary">Services</h2>
+    <h3>Automated clips & VOD analysis</h3>
+
+    <div class="row">
+      <div class="col-lg-3 mt-5" *ngFor="let card of cards">
+        <div class="card " style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">{{card.title}}</h5>
+            <img [src]="card.image" class="card-img-top" alt="...">
+            <h5 class="card-title">card.subTitle</h5>
+            <p class="card-text">{{card.content}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="triangle bg-light"></div>
+<section class="py-4 bg-dark">
+  <div class="container">
+    <h4 class="text-light">Real-time stream analysis</h4>
+    <div class="row">
+      <div class="col-lg-6 mt-5" *ngFor="let card of bigCards">
+        <div class="big-card-color p-3">
+          <h5 class="text-light">{{card.title}}</h5>
+          <div class="row w-100">
+            <div class="col-9">
+              <p class="text-light">{{card.content}}</p>
+            </div>
+            <div class="col-3">
+              <img [src]="card.image" class="card-img-top" alt="...">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

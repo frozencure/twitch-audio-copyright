@@ -1,13 +1,15 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmConfigService } from './config/typeorm-config.service';
+import {Module} from '@nestjs/common';
+import {ConfigModule, ConfigService} from '@nestjs/config';
+import {AppController} from './app.controller';
+import {AppService} from './app.service';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {TypeOrmConfigService} from './config/typeorm-config.service';
 import config from './config/config';
-import { AuthModule } from './auth/auth.module';
-import { VodDownloadModule } from './vod/vod-download.module';
-import { BullModule } from '@nestjs/bull';
+import {AuthModule} from './auth/auth.module';
+import {VodDownloadModule} from './vod/vod-download.module';
+import {BullModule} from '@nestjs/bull';
+import {ServeStaticModule} from "@nestjs/serve-static";
+import {join} from "path";
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { BullModule } from '@nestjs/bull';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [ config ]
+      load: [config]
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
@@ -28,11 +30,14 @@ import { BullModule } from '@nestjs/bull';
       }),
       inject: [ConfigService],
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'apps/api/src/assets/public'),
+    }),
     AuthModule,
     VodDownloadModule,
   ],
-  controllers: [ AppController ],
-  providers: [ AppService ]
+  controllers: [AppController],
+  providers: [AppService]
 })
 export class AppModule {
 }
