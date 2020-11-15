@@ -1,9 +1,9 @@
 import { Process, Processor } from '@nestjs/bull';
-import { VodChunk } from '../model/vod-chunk';
 import { HttpService } from '@nestjs/common';
 import { Job } from 'bull';
-import { VideoChunkFile } from '../model/vod-chunk-file';
 import * as fs from 'fs';
+import { VodVideoFile } from '../model/vod-file';
+import * as path from 'path';
 
 @Processor('download')
 export class DownloadProcessor {
@@ -11,27 +11,34 @@ export class DownloadProcessor {
   constructor(private readonly httpService: HttpService) {
   }
 
-  @Process({ name: 'download', concurrency: 1 })
-  async downloadBatch(job: Job<VodChunk[]>): Promise<VideoChunkFile[]> {
-    return await Promise.all(job.data.map(chunk => this.downloadFile(chunk)));
+  @Process({ name: 'download-vod', concurrency: 1 })
+  async downloadVod(job: Job<VodVideoFile>): Promise<VodVideoFile> {
+    return await this.downloadFile(job);
   }
 
-  private downloadFile(vodChunk: VodChunk): Promise<VideoChunkFile> {
+  private downloadFile(job: Job<VodVideoFile>): Promise<VodVideoFile> {
     return this.httpService.request({
-      url: vodChunk.downloadUrl,
+      url: job.data.downloadUrl,
       method: 'GET',
       responseType: 'stream'
     }).toPromise().then(response => {
-      return new Promise<VideoChunkFile>((resolve, reject) => {
-        if (!fs.existsSync(vodChunk.outputPath)) {
-          fs.mkdirSync(vodChunk.outputPath);
+      return new Promise<VodVideoFile>((resolve, reject) => {
+        if (!fs.existsSync(path.dirname(job.data.filePath))) {
+          fs.mkdirSync(path.dirname(job.data.filePath));
         }
-        response.data.pipe(fs.createWriteStream(`${vodChunk.outputPath}/${vodChunk.fileName}`))
+        const totalBytes = response.headers['content-length'];
+        let receivedBytes = 0;
+        response.data.on('data', chunk => {
+          receivedBytes += chunk.length;
+          const prog = (receivedBytes/totalBytes) * 100;
+          if(prog % 1 == 0) {
+            job.progress(prog.toFixed());
+          }
+        }).pipe(fs.createWriteStream(job.data.filePath))
           .on('finish', () => {
-            resolve(new VideoChunkFile(`${vodChunk.outputPath}/${vodChunk.fileName}`,
-              vodChunk.chunkNumber, vodChunk.vodId, vodChunk.totalNumberOfChunks,
-              vodChunk.shouldDeleteFile));
+            resolve(job.data);
           }).on('error', err => {
+          fs.unlinkSync(job.data.filePath);
           reject(err);
         });
       });

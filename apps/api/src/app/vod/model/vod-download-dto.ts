@@ -1,4 +1,4 @@
-export interface VodDownloadModel {
+export interface VodDownloadDto {
   video_id: number,
   download_url: string,
   status: string,
