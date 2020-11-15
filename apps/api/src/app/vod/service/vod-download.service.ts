@@ -27,7 +27,7 @@ export class VodDownloadService {
     return interval(intervalPeriod).pipe(
       mergeMap(() => vodDownloadObs),
       takeWhile(vodDownload => vodDownload.download_url === '', true),
-      filter(vodDownloadModel => vodDownloadModel.download_url != '')
+      filter(vodDownloadModel => vodDownloadModel.download_url !== '')
     );
   }
 
