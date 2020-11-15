@@ -201,6 +201,147 @@
           }
         }
       }
+    },
+    "landing-page": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/landing-page",
+      "sourceRoot": "apps/landing-page/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/landing-page/browser",
+            "index": "apps/landing-page/src/index.html",
+            "main": "apps/landing-page/src/main.ts",
+            "polyfills": "apps/landing-page/src/polyfills.ts",
+            "tsConfig": "apps/landing-page/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/landing-page/src/favicon.ico",
+              "apps/landing-page/src/assets"
+            ],
+            "styles": [
+              "apps/landing-page/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/landing-page/src/environments/environment.ts",
+                  "with": "apps/landing-page/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "landing-page:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "landing-page:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "landing-page:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/landing-page/src/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/landing-page/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/landing-page/server",
+            "main": "apps/landing-page/server.ts",
+            "tsConfig": "apps/landing-page/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "apps/landing-page/src/environments/environment.ts",
+                  "with": "apps/landing-page/src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "landing-page:build",
+            "serverTarget": "landing-page:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "landing-page:build:production",
+              "serverTarget": "landing-page:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "landing-page:build:production",
+            "serverTarget": "landing-page:server:production",
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {}
+          }
+        }
+      }
     }
   },
   "cli": {
