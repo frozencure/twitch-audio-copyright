@@ -1,4 +1,4 @@
-export class VodChunkFile {
+export class AudioChunkFile {
 
   filePath: string;
   chunkNumber: number;
@@ -15,10 +15,4 @@ export class VodChunkFile {
     this.totalNumberOfChunks = totalNumberOfChunks;
     this.shouldDeleteFile = shouldDeleteFile;
   }
-}
-
-export class AudioChunkFile extends VodChunkFile {
-}
-
-export class VideoChunkFile extends VodChunkFile {
 }
