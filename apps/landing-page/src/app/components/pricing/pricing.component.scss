@@ -4,6 +4,6 @@ $darkColor: #343a40;
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 0 100vw 50px 0;
+  border-width: 0 calc(100vw - 15px) 50px 0;
   border-color: transparent transparent $darkColor transparent;
 }
