@@ -1,52 +1,63 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import * as FfmpegCommand from 'fluent-ffmpeg';
-import { AudioChunkFile, VideoChunkFile } from '../model/vod-chunk-file';
-import { AudioConcatTextList, ConcatenatedAudioBatchFile } from '../model/audio-concat-file';
+import { VodAudioFile, VodVideoFile } from '../model/vod-file';
+import * as path from 'path';
+import { VodSegmentList } from '../model/vod-segment-list';
 
 @Processor('ffmpeg')
 export class FfmpegProcessor {
 
   @Process({ name: 'extract-audio', concurrency: 1 })
-  async extractAudioFromVideoFile(job: Job<VideoChunkFile[]>): Promise<AudioChunkFile[]> {
-    return await Promise.all(job.data.map(videoFile => this.extractAudioFromFile(videoFile)));
+  async extractAudioFromVideoFile(job: Job<VodVideoFile>): Promise<VodAudioFile> {
+    return await this.extractAudioFromFile(job);
   }
 
-  @Process('concat-audio')
-  async concatAudioFiles(job: Job<AudioConcatTextList>): Promise<ConcatenatedAudioBatchFile> {
-    return this.mergeAudioFiles(job.data);
+  @Process('split-audio')
+  async splitAudioFile(job: Job<VodAudioFile>): Promise<VodSegmentList> {
+    return await this.splitVodAudioFile(job);
   }
 
-  private mergeAudioFiles(audioConcantList: AudioConcatTextList): Promise<ConcatenatedAudioBatchFile> {
-    let mergeCommand = FfmpegCommand();
-    mergeCommand = mergeCommand.input(audioConcantList.fileFullPath)
-      .inputFormat('concat')
-      .inputOptions('-safe 0');
-    const outFileFullPath = audioConcantList.fileFullPath.replace('.txt', '.ogg');
-    mergeCommand = mergeCommand.output(outFileFullPath);
+  private splitVodAudioFile(vodAudioFileJob: Job<VodAudioFile>): Promise<VodSegmentList> {
     return new Promise((resolve, reject) => {
-      mergeCommand.run();
-      mergeCommand.on('end', () => {
-        resolve(new ConcatenatedAudioBatchFile(outFileFullPath, audioConcantList.audioChunks, audioConcantList.shouldDeleteFile));
-      }).on('error', err => {
+      const mergeCommand = FfmpegCommand();
+      const listFilePath = `${path.dirname(vodAudioFileJob.data.filePath)}/${vodAudioFileJob.data.vodId}.txt`;
+      mergeCommand.input(vodAudioFileJob.data.filePath)
+        .addOutputOption(['-f segment', `-segment_time ${vodAudioFileJob.data.chunkLength}`])
+        .addOutputOption([`-segment_list ${listFilePath}`])
+        .addOutputOption(['-c copy'])
+        .output(`${path.dirname(vodAudioFileJob.data.filePath)}/${vodAudioFileJob.data.vodId}_%01d.ogg`)
+        .on('progress', progress => {
+          if (progress.percent % 1 == 0) {
+            vodAudioFileJob.progress(progress.percent);
+          }
+        })
+        .on('end', () => {
+          resolve(new VodSegmentList(listFilePath, vodAudioFileJob.data.vodId,
+            vodAudioFileJob.data.shouldDeleteFile, vodAudioFileJob.data.downloadUrl));
+        }).on('error', err => {
         reject(err);
-      });
+      }).run();
     });
   }
 
 
-  private extractAudioFromFile(videoChunkFile: VideoChunkFile): Promise<AudioChunkFile> {
-    const outputPath = videoChunkFile.filePath.replace('.ts', '.ogg');
-    const mergeCommand = FfmpegCommand(videoChunkFile.filePath).outputOptions('-vn').output(outputPath);
-    return new Promise<AudioChunkFile>((resolve, reject) => {
-      mergeCommand.run();
-      mergeCommand.on('end', () => {
-        resolve(new AudioChunkFile(outputPath, videoChunkFile.chunkNumber,
-          videoChunkFile.vodId, videoChunkFile.totalNumberOfChunks,
-          videoChunkFile.shouldDeleteFile));
+  private extractAudioFromFile(job: Job<VodVideoFile>): Promise<VodAudioFile> {
+    return new Promise<VodAudioFile>((resolve, reject) => {
+      const outputPath = job.data.filePath.replace('.mp4', '.ogg');
+      const mergeCommand = FfmpegCommand(job.data.filePath);
+      mergeCommand.outputOptions('-vn').output(outputPath)
+        .on('end', () => {
+          resolve(new VodAudioFile(outputPath, job.data.vodId,
+            job.data.chunkLength, job.data.shouldDeleteFile,
+            job.data.downloadUrl));
+        }).on('progress', progress => {
+        if (progress.percent % 1 == 0) {
+          job.progress(progress.percent);
+        }
       }).on('error', err => {
         reject(err);
-      });
+      }).run();
     });
   }
 }
