@@ -5,18 +5,23 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { NavbarModule } from './navbar/navbar.module';
 import { MatListModule } from '@angular/material/list';
-import { RouterModule } from '@angular/router';
+import { VideoContainerModule } from './video-container/video-container.module';
+import { DashboardRoutingModule } from './dashboard-routing.module';
+import { CookieService } from 'ngx-cookie-service';
+import { DashboardService } from './dashboard.service';
 
 @NgModule({
   declarations: [ DashboardComponent ],
   imports: [
     MatButtonModule,
     MatSidenavModule,
-    NavbarModule,
     MatListModule,
     MatIconModule,
-    RouterModule
+    DashboardRoutingModule,
+    NavbarModule,
+    VideoContainerModule
   ],
+  providers: [ CookieService, DashboardService ],
   exports: [ DashboardComponent ]
 })
 export class DashboardModule {

@@ -5,9 +5,10 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginModule } from './login/login.module';
 import { AppRoutingModule } from './app.routing.module';
-import { DashboardModule } from './dashboard/dashboard.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './http-error.interceptor';
+import { NgxsStoreModule } from './store/store.module';
+import { DashboardResolver } from './dashboard/dashboard.resolver.service';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -15,10 +16,10 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    LoginModule,
-    DashboardModule
+    NgxsStoreModule,
+    LoginModule
   ],
-  providers: [ { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true } ],
+  providers: [ { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }, DashboardResolver ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {
