@@ -1,10 +1,10 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { from, interval, Observable } from 'rxjs';
-import { filter, map, mergeMap, takeWhile, tap } from 'rxjs/operators';
+import { filter, map, mergeMap, takeWhile } from 'rxjs/operators';
 import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
-import { VodDownloadDto } from '../model/vod-download-dto';
 import { VodVideoFile } from '../model/vod-file';
+import { VodDownloadDto } from '../model/vod-download-dto';
 
 @Injectable()
 export class VodDownloadService {

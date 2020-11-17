@@ -8,6 +8,7 @@ import config from './config/config';
 import { AuthModule } from './auth/auth.module';
 import { VodDownloadModule } from './vod/vod-download.module';
 import { BullModule } from '@nestjs/bull';
+import { AudioProcessingModule } from './acr_cloud/audio-processing.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { BullModule } from '@nestjs/bull';
     }),
     AuthModule,
     VodDownloadModule,
+    AudioProcessingModule
   ],
   controllers: [ AppController ],
   providers: [ AppService ]

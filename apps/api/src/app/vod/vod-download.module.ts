@@ -2,9 +2,9 @@ import { HttpModule, Module } from '@nestjs/common';
 import { VodDownloadService } from './service/vod-download.service';
 import { VodDownloadController } from './vod-download-controller';
 import { BullModule } from '@nestjs/bull';
-import { FfmpegProcessor } from './processor/ffmpeg-processor';
-import { DownloadProcessor } from './processor/download-processor';
-import { FileSystemProcessor } from './processor/file-system-processor';
+import { FfmpegProcessor } from '../ffmpeg/ffmpeg-processor';
+import { DownloadProcessor } from '../io/download-processor';
+import { FileSystemProcessor } from '../io/file-system-processor';
 import { VodProcessCoordinator } from './service/vod-process-coordinator';
 
 @Module({

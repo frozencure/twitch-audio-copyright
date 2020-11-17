@@ -24,7 +24,7 @@ export class VodProcessCoordinator {
   private scheduleAudioExtractionJobs(): void {
     this.downloadQueue.on('completed', (job: Job<VodVideoFile>, result: VodVideoFile) => {
       if (job.name == 'download-vod') {
-        this.ffmpegQueue.add('extract-audio', result, {
+        this.ffmpegQueue.add('extract-acr_cloud', result, {
           removeOnComplete: true
         });
       }
@@ -33,8 +33,8 @@ export class VodProcessCoordinator {
 
   private scheduleSplitAudioJobs(): void {
     this.ffmpegQueue.on('completed', (job: Job<VodVideoFile>, result: VodAudioFile) => {
-      if (job.name == 'extract-audio') {
-        this.ffmpegQueue.add('split-audio', result, {
+      if (job.name == 'extract-acr_cloud') {
+        this.ffmpegQueue.add('split-acr_cloud', result, {
           removeOnComplete: true
         });
       }
@@ -43,7 +43,7 @@ export class VodProcessCoordinator {
 
   private scheduleVideoDeletionJobs(): void {
     this.ffmpegQueue.on('completed', (job: Job<VodVideoFile>) => {
-      if (job.name == 'extract-audio') {
+      if (job.name == 'extract-acr_cloud') {
         this.fileSystemQueue.add('delete-file', job.data.filePath, {
           removeOnComplete: true
         });
@@ -53,7 +53,7 @@ export class VodProcessCoordinator {
 
   private scheduleAudioDeletionJobs(): void {
     this.ffmpegQueue.on('completed', (job: Job<VodAudioFile>) => {
-      if (job.name == 'split-audio') {
+      if (job.name == 'split-acr_cloud') {
         this.fileSystemQueue.add('delete-file', job.data.filePath, {
           removeOnComplete: true
         });
@@ -64,7 +64,7 @@ export class VodProcessCoordinator {
 
   private logProgress() {
     this.ffmpegQueue.on('completed', (job: Job<VodAudioFile>, result: VodSegmentList) => {
-      if (job.name == 'split-audio') {
+      if (job.name == 'split-acr_cloud') {
         const audioChunks = result.getAudioChunks();
         audioChunks.then(chunks => {
           chunks.forEach(chunk => Logger.debug(`Created ${chunk.filePath}`))
