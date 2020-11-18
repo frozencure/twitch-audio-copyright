@@ -9,7 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { VodDownloadModule } from './vod/vod-download.module';
 import { BullModule } from '@nestjs/bull';
 import { AudioProcessingModule } from './acr_cloud/audio-processing.module';
-
+import {ServeStaticModule} from "@nestjs/serve-static";
+import {join} from "path";
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -28,6 +29,9 @@ import { AudioProcessingModule } from './acr_cloud/audio-processing.module';
         },
       }),
       inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'apps/api/src/assets/public'),
     }),
     AuthModule,
     VodDownloadModule,
