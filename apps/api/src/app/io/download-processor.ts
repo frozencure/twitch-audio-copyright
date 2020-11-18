@@ -16,31 +16,34 @@ export class DownloadProcessor {
     return await this.downloadFile(job);
   }
 
-  private downloadFile(job: Job<VodVideoFile>): Promise<VodVideoFile> {
-    return this.httpService.request({
+  private static createDirectoryIfNotExists(filePath: string) {
+    if (!fs.existsSync(path.dirname(filePath))) {
+      fs.mkdirSync(path.dirname(filePath));
+    }
+  }
+
+  private async downloadFile(job: Job<VodVideoFile>): Promise<VodVideoFile> {
+    const response = await this.httpService.request({
       url: job.data.downloadUrl,
       method: 'GET',
       responseType: 'stream'
-    }).toPromise().then(response => {
-      return new Promise<VodVideoFile>((resolve, reject) => {
-        if (!fs.existsSync(path.dirname(job.data.filePath))) {
-          fs.mkdirSync(path.dirname(job.data.filePath));
+    }).toPromise();
+    return new Promise<VodVideoFile>((resolve, reject) => {
+      DownloadProcessor.createDirectoryIfNotExists(job.data.filePath);
+      const totalBytes = response.headers['content-length'];
+      let receivedBytes = 0;
+      response.data.on('data', chunk => {
+        receivedBytes += chunk.length;
+        const prog = (receivedBytes / totalBytes) * 100;
+        if (prog % 1 == 0) {
+          job.progress(prog.toFixed());
         }
-        const totalBytes = response.headers['content-length'];
-        let receivedBytes = 0;
-        response.data.on('data', chunk => {
-          receivedBytes += chunk.length;
-          const prog = (receivedBytes/totalBytes) * 100;
-          if(prog % 1 == 0) {
-            job.progress(prog.toFixed());
-          }
-        }).pipe(fs.createWriteStream(job.data.filePath))
-          .on('finish', () => {
-            resolve(job.data);
-          }).on('error', err => {
-          fs.unlinkSync(job.data.filePath);
-          reject(err);
-        });
+      }).pipe(fs.createWriteStream(job.data.filePath))
+        .on('finish', () => {
+          resolve(job.data);
+        }).on('error', err => {
+        fs.unlinkSync(job.data.filePath);
+        reject(err);
       });
     });
   }

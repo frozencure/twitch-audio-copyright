@@ -8,12 +8,12 @@ import { VodSegmentList } from '../vod/model/vod-segment-list';
 @Processor('ffmpeg')
 export class FfmpegProcessor {
 
-  @Process({ name: 'extract-acr_cloud', concurrency: 1 })
+  @Process({ name: 'extract-audio', concurrency: 1 })
   async extractAudioFromVideoFile(job: Job<VodVideoFile>): Promise<VodAudioFile> {
     return await this.extractAudioFromFile(job);
   }
 
-  @Process('split-acr_cloud')
+  @Process('split-audio')
   async splitAudioFile(job: Job<VodAudioFile>): Promise<VodSegmentList> {
     return await this.splitVodAudioFile(job);
   }
@@ -40,7 +40,6 @@ export class FfmpegProcessor {
       }).run();
     });
   }
-
 
   private extractAudioFromFile(job: Job<VodVideoFile>): Promise<VodAudioFile> {
     return new Promise<VodAudioFile>((resolve, reject) => {
