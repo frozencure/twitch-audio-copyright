@@ -15,7 +15,5 @@ export class VodDownloadController {
     this.vodDownloadService.scheduleDownloadJob(id, authToken, outputPath, batchSize, deleteTempFiles).subscribe(() => {
       Logger.log('Added new download job.');
     });
-
   }
-
 }
