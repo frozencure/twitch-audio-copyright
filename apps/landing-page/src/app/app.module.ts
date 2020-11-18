@@ -7,19 +7,21 @@ import { AppRoutingModule } from './app-routing.module';
 import { NavbarModule } from './components/navbar/navbar.module';
 import { FooterModule } from './components/footer/footer.module';
 import { HomeModule } from './home/home.module';
+import { NotFoundModule } from './not-found/not-found.module';
 
 @NgModule({
-  declarations: [ AppComponent ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     NgbModule,
     NavbarModule,
     HomeModule,
-    FooterModule
+    FooterModule,
+    NotFoundModule
   ],
   providers: [],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }
