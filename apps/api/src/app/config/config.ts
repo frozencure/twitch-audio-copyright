@@ -27,7 +27,6 @@ export default () => ({
     secret_key: process.env.ACR_SECRET_KEY,
     endpoint: '/v1/identify',
     signature_version: '1',
-    secure: true,
     data_type: 'fingerprint'
   }
 });
