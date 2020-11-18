@@ -3,14 +3,14 @@
  * This is only a minimal backend to get started.
  */
 
-import {Logger} from '@nestjs/common';
-import {NestApplication, NestFactory} from '@nestjs/core';
+import { Logger } from '@nestjs/common';
+import { NestApplication, NestFactory } from '@nestjs/core';
 
-import {AppModule} from './app/app.module';
-import * as cookieParser from 'cookie-parser'
+import { AppModule } from './app/app.module';
+import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
-import {join} from "path";
-import * as path from "path";
+import * as path from 'path';
+import { ServeStaticExceptionFilter } from './app/http-exception.filter';
 
 dotenv.config();
 
@@ -28,7 +28,9 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
-  app.useStaticAssets(path.join(process.cwd(), 'apps/api/src/assets'))
+  app.useStaticAssets(path.join(process.cwd(), 'apps/api/src/assets/public'));
+  app.useGlobalFilters(new ServeStaticExceptionFilter());
+
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
   });
