@@ -24,11 +24,11 @@ async function bootstrap() {
     optionsSuccessStatus: 204
   });
   app.use(cookieParser());
+  const port = process.env.PORT || 3333;
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  console.log(path.join(process.cwd(), 'apps/api/src/assets'))
+
   app.useStaticAssets(path.join(process.cwd(), 'apps/api/src/assets'))
-  const port = process.env.PORT || 3333;
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);
   });
