@@ -1,7 +1,8 @@
-import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, OneToMany, PrimaryColumn } from 'typeorm';
+import Video from './video.entity';
 
-@Entity('user')
-export default class UserEntity {
+@Entity('streamer')
+export default class Streamer {
 
   @Index({ unique: true })
   @PrimaryColumn({ type: 'text', unique: true }) id: string;
@@ -14,5 +15,8 @@ export default class UserEntity {
   @Column({ type: 'text', unique: true }) offline_image_url: string;
   @Column('int') view_count: string;
   @Column('text') email: string;
+
+  @OneToMany(() => Video, video => video.streamer)
+  videos: Video[];
 
 }

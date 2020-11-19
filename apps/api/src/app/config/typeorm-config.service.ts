@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import UserEntity from '../database/entity/user.entity';
+import Streamer from '../database/entity/streamer.entity';
 import { ConfigService } from '@nestjs/config';
 
 export enum DBTypes {
@@ -27,11 +27,12 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: this.configService.get<string>('database.username'),
       password: this.configService.get<string>('database.password'),
       database: this.configService.get<string>('database.name'),
-      entities: [ UserEntity ],
+      entities: [ Streamer ],
       ssl: this.configService.get<string>('database.ssl'),
 
       logging: true,
-      synchronize: true
+      synchronize: true,
+      autoLoadEntities: true
     };
     Logger.debug(typeormConfig);
     return typeormConfig;
