@@ -1,6 +1,20 @@
 import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import Streamer from './streamer.entity';
+import User from './user.entity';
 import IdentifiedSong from './identified-song.entity';
+
+
+export enum VideoType {
+  UPLOAD = 'upload',
+  ARCHIVE = 'archive',
+  HIGHLIGHT = 'highlight'
+}
+
+export enum VideoProgress {
+  QUEUED = 'queued',
+  IN_PROGRESS = 'in-progress',
+  COMPLETED = 'completed'
+}
+
 
 @Entity('video')
 export default class Video {
@@ -9,7 +23,7 @@ export default class Video {
   @PrimaryColumn({ type: 'int', unique: true }) id: number;
   @Column('text') title: string;
   @Column({ type: 'text', nullable: true }) description: string;
-  @Column('text') type: string;
+  @Column({ type: 'enum', enum: VideoType, default: VideoType.ARCHIVE }) type: VideoType;
   @Column('text') url: string;
   @Column('int') views: number;
   @Column('text') viewable: string;
@@ -17,11 +31,12 @@ export default class Video {
   @Column('text') language: string;
   @Column('timestamp') createdAt: Date;
   @Column('timestamp') publishedAt: Date;
+  @Column({ type: 'enum', enum: VideoProgress, default: VideoProgress.QUEUED }) progress: VideoProgress;
 
-  @ManyToOne(() => Streamer, streamer => streamer.videos)
-  streamer: Streamer;
+  @ManyToOne(() => User, user => user.videos)
+  user: User;
 
-  @OneToMany(() => IdentifiedSong, song => song.video)
+  @OneToMany('IdentifiedSong', 'video')
   identifiedSongs: IdentifiedSong[];
 
 }

@@ -8,7 +8,7 @@ export default class Album {
 
   @Column('text') name: string;
 
-  @OneToMany(() => IdentifiedSong, song => song.album)
+  @OneToMany('IdentifiedSong', 'album')
   identifiedSongs: IdentifiedSong[];
 
 }

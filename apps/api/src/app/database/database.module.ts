@@ -1,6 +1,6 @@
 import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import Streamer from './entity/streamer.entity';
+import User from './entity/user.entity';
 import Album from './entity/album.entity';
 import Artist from './entity/artist.entity';
 import IdentifiedSong from './entity/identified-song.entity';
@@ -9,7 +9,7 @@ import Video from './entity/video.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Album, Artist,
-    IdentifiedSong, Label, Streamer, Video]), HttpModule],
+    IdentifiedSong, Label, Video, User]), HttpModule],
   providers: [],
   exports: []
 })

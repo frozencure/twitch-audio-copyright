@@ -17,16 +17,16 @@ export default class IdentifiedSong {
   @Column('int') identificationStart: number;
   @Column('int') identificationEnd: number;
 
-  @ManyToOne(() => Video, video => video.identifiedSongs)
+  @ManyToOne('Video', 'identifiedSongs')
   video: Video;
 
-  @ManyToOne(() => Label, label => label.identifiedSongs)
+  @ManyToOne('Label', 'identifiedSongs')
   label: Label;
 
-  @ManyToOne(() => Album, album => album.identifiedSongs)
+  @ManyToOne('Album', 'identifiedSongs')
   album: Album;
 
-  @ManyToMany(() => Artist, artist => artist.identifiedSongs)
+  @ManyToMany('Artist', 'identifiedSongs')
   artists: Artist[];
 
 }

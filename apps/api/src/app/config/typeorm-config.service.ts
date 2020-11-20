@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import Streamer from '../database/entity/streamer.entity';
+import User from '../database/entity/user.entity';
 import { ConfigService } from '@nestjs/config';
+import Artist from '../database/entity/artist.entity';
+import IdentifiedSong from '../database/entity/identified-song.entity';
+import Video from '../database/entity/video.entity';
+import Label from '../database/entity/label.entity';
+import Album from '../database/entity/album.entity';
 
 export enum DBTypes {
   postgres = 'postgres',
@@ -27,7 +32,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: this.configService.get<string>('database.username'),
       password: this.configService.get<string>('database.password'),
       database: this.configService.get<string>('database.name'),
-      entities: [ Streamer ],
+      entities: [ Album, Artist, IdentifiedSong, Label, User, Video ],
       ssl: this.configService.get<string>('database.ssl'),
 
       logging: true,

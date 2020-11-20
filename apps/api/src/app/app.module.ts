@@ -15,7 +15,7 @@ import { join } from 'path';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      useClass: TypeOrmConfigService
+      useClass: TypeOrmConfigService,
     }),
     ConfigModule.forRoot({
       isGlobal: true,

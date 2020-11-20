@@ -7,7 +7,7 @@ export default class Artist {
 
   @Column('text') name: string;
 
-  @ManyToMany(() => IdentifiedSong, song => song.artists)
+  @ManyToMany('IdentifiedSong', 'artists')
   identifiedSongs: IdentifiedSong[];
 
 }

@@ -9,7 +9,7 @@ export default class Label {
   @Column('text') name: string;
   @Column({ default: true }) isCopyright: boolean;
 
-  @OneToMany(() => IdentifiedSong, song => song.label)
+  @OneToMany('IdentifiedSong', 'label')
   identifiedSongs: IdentifiedSong[];
 
 }
