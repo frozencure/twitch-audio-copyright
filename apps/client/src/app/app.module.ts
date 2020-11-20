@@ -3,12 +3,12 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoginModule } from './login/login.module';
+import { LoginModule } from './core/authentication/login.module';
 import { AppRoutingModule } from './app.routing.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './http-error.interceptor';
 import { NgxsStoreModule } from './store/store.module';
-import { DashboardResolver } from './dashboard/dashboard.resolver.service';
+import { DashboardResolver } from './core/resolver/dashboard.resolver.service';
 
 @NgModule({
   declarations: [ AppComponent ],

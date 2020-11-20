@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { timeSince, views, withWidthAndHeight } from '../../utils/video.manager';
-import { Clip } from '../model/Clip';
+import { Clip } from '../../shared/model/Clip';
 
 @Component({
   selector: 'app-clip-item',

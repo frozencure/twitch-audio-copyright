@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Video } from '../model/Video';
+import { Video } from '../../shared/model/Video';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
