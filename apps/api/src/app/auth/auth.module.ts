@@ -5,12 +5,13 @@ import { TwitchStrategy } from './twitch.strategy';
 import { AuthService } from './auth.service';
 
 @Module({
-  controllers: [ AuthController ],
+  controllers: [AuthController],
   imports: [
     PassportModule,
     HttpModule
   ],
-  providers: [ TwitchStrategy, AuthService ]
+  providers: [TwitchStrategy, AuthService],
+  exports: [AuthService]
 })
 export class AuthModule {
 }

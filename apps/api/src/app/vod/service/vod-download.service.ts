@@ -5,6 +5,8 @@ import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { VodVideoFile } from '../model/vod-file';
 import { VodDownloadDto } from '../model/vod-download-dto';
+import { ClipDto } from '@twitch-audio-copyright/data';
+import { getClipUrl } from '../../utils/url.manager';
 
 @Injectable()
 export class VodDownloadService {
@@ -13,17 +15,19 @@ export class VodDownloadService {
               @InjectQueue('download') private readonly downloadQueue: Queue) {
   }
 
-  private getVodDownloadModel(vodId: number, authToken: string, intervalPeriod: number): Observable<VodDownloadDto> {
-    const headersRequest = {
+  private createHeaders(authToken: string) {
+    return {
       'Content-Type': 'application/json',
       'Authorization': `OAuth ${authToken}`
     };
+  }
+
+  private getVodDownloadModel(vodId: number, authToken: string, intervalPeriod: number): Observable<VodDownloadDto> {
     const vodDownloadObs = this.httpService.get(`https://api.twitch.tv/v5/vods/${vodId}/download`, {
-      headers: headersRequest
-    })
-      .pipe(
-        map(r => r.data)
-      ) as Observable<VodDownloadDto>;
+      headers: this.createHeaders(authToken)
+    }).pipe(
+      map(r => r.data)
+    ) as Observable<VodDownloadDto>;
     return interval(intervalPeriod).pipe(
       mergeMap(() => vodDownloadObs),
       takeWhile(vodDownload => vodDownload.download_url === '', true),
@@ -41,5 +45,13 @@ export class VodDownloadService {
           return from(this.downloadQueue.add('download-vod', vodDownload)) as Observable<Job<VodVideoFile>>;
         }
       ));
+  }
+
+  public scheduleClipDownloadJob(clip: ClipDto, authToken: string, outputPath: string,
+                                 chunkLength: number, deleteTempFiles = true,
+                                 intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
+    const clipDownload = new VodVideoFile(`${outputPath}/${clip.id}.mp4`,
+      null, chunkLength, deleteTempFiles, getClipUrl(clip.thumbnail_url));
+    return from(this.downloadQueue.add('download-clip', clipDownload)) as Observable<Job<VodVideoFile>>;
   }
 }

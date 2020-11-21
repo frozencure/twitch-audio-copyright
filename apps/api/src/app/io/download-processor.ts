@@ -16,6 +16,11 @@ export class DownloadProcessor {
     return await this.downloadFile(job);
   }
 
+  @Process({ name: 'download-clip', concurrency: 1 })
+  async downloadClip(job: Job<VodVideoFile>): Promise<VodVideoFile> {
+    return await this.downloadFile(job);
+  }
+
   private static createDirectoryIfNotExists(filePath: string) {
     if (!fs.existsSync(path.dirname(filePath))) {
       fs.mkdirSync(path.dirname(filePath));

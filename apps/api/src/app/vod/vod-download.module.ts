@@ -6,6 +6,7 @@ import { FfmpegProcessor } from '../ffmpeg/ffmpeg-processor';
 import { DownloadProcessor } from '../io/download-processor';
 import { FileSystemProcessor } from '../io/file-system-processor';
 import { VodProcessCoordinator } from './service/vod-process-coordinator';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   controllers: [VodDownloadController],
@@ -20,7 +21,8 @@ import { VodProcessCoordinator } from './service/vod-process-coordinator';
       name: 'ffmpeg'
     }, {
       name: 'file-system'
-    })
+    }),
+    AuthModule
   ],
   providers: [VodDownloadService, DownloadProcessor, FfmpegProcessor, FileSystemProcessor, VodProcessCoordinator]
 })

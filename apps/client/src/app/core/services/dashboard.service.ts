@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HelixWrapper } from '../../shared/model/HelixWrapper';
 import { Video } from '../../shared/model/Video';
-import { Clip } from '../../shared/model/Clip';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { Store } from '@ngxs/store';
 import { UserModel } from '../../store/auth.state';
 import { environment } from '../../../environments/environment';
+import { ClipDto, SuccessDto } from '@twitch-audio-copyright/data';
 
 @Injectable()
 export class DashboardService {
@@ -27,9 +27,9 @@ export class DashboardService {
       .pipe(first(), map(w => w.data));
   }
 
-  public getClips(firstString = '100'): Observable<Array<Clip>> {
+  public getClips(firstString = '100'): Observable<Array<ClipDto>> {
     const credentials = this.getTokenAndUser();
-    return this.http.get<HelixWrapper<Clip>>
+    return this.http.get<HelixWrapper<ClipDto>>
     (`https://api.twitch.tv/helix/clips?broadcaster_id=${credentials.user.id}&first=${firstString} `, {
       headers: {
         'Authorization': `Bearer ${credentials.token}`,
@@ -37,6 +37,10 @@ export class DashboardService {
       }
     })
       .pipe(first(), map(w => w.data));
+  }
+
+  public processClip(clip: ClipDto): Observable<SuccessDto> {
+    return this.http.post<SuccessDto>('api/download/clip', clip).pipe(first());
   }
 
   private getTokenAndUser(): { user: UserModel, token: string } {
