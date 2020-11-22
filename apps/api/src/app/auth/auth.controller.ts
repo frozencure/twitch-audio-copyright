@@ -49,6 +49,7 @@ export class AuthController {
   @UseGuards(TokenGuard)
   async logout(@Token() token: string): Promise<SuccessDto> {
     try {
+      // TODO maybe redirect to login and delete token and user from cookies?!
       await this.authService.revokeToken(token);
       return new SuccessDto('LOGOUT');
     } catch (e) {
