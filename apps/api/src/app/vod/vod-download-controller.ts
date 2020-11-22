@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Logger, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { VodDownloadService } from './service/vod-download.service';
 import { ClipDto, SuccessDto } from '@twitch-audio-copyright/data';
 import { TokenGuard } from '../auth/token-guard.service';
+import { Token } from '../utils/decorators';
 
 @Controller('/download')
 export class VodDownloadController {
@@ -24,14 +25,14 @@ export class VodDownloadController {
   // TODO: put the token decorator
   @Post('/clip')
   @UseGuards(TokenGuard)
-  public async downloadClip(@Req() req: Request,
+  public async downloadClip(@Token() token: string,
                             @Body() clip: ClipDto,
                             @Query('output') outputPath = '/Users/andyradulescu/Desktop/twitchDownlaods',
                             @Query('split') batchSize = 60,
                             @Query('delete_temp_files') deleteTempFiles = true): Promise<SuccessDto> {
 
     this.vodDownloadService.scheduleClipDownloadJob(clip,
-      (req as any).cookies.token, outputPath, batchSize, deleteTempFiles).subscribe(() => {
+      token, outputPath, batchSize, deleteTempFiles).subscribe(() => {
       Logger.log('Added new download job.');
     });
     return new SuccessDto('DOWNLOAD_STARTED');
