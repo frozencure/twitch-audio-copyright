@@ -3,7 +3,7 @@ import { from, interval, Observable } from 'rxjs';
 import { filter, map, mergeMap, takeWhile } from 'rxjs/operators';
 import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
-import { VodVideoFile } from '../model/vod-file';
+import { VodClipFile, VodVideoFile } from '../model/vod-file';
 import { VodDownloadDto } from '../model/vod-download-dto';
 import { ClipDto } from '@twitch-audio-copyright/data';
 import { getClipUrl } from '../../utils/url.manager';
@@ -13,6 +13,25 @@ export class VodDownloadService {
 
   constructor(private httpService: HttpService,
               @InjectQueue('download') private readonly downloadQueue: Queue) {
+  }
+
+  public scheduleDownloadJob(vodId: number, authToken: string, outputPath: string,
+                             chunkLength: number, deleteTempFiles = true,
+                             intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
+    return this.getVodDownloadModel(vodId, authToken, intervalPeriod).pipe(
+      mergeMap(downloadModelDto => {
+          const vodDownload = new VodVideoFile(`${outputPath}/${vodId}/${vodId}.mp4`,
+            vodId, chunkLength, deleteTempFiles, downloadModelDto.download_url);
+          return from(this.downloadQueue.add('download-vod', vodDownload)) as Observable<Job<VodVideoFile>>;
+        }
+      ));
+  }
+
+  public scheduleClipDownloadJob(clip: ClipDto, authToken: string, outputPath: string,
+                                 deleteTempFiles = true): Observable<Job<VodVideoFile>> {
+    const clipDownload = new VodClipFile(`${outputPath}/${clip.id}.mp4`,
+      clip.id, deleteTempFiles, getClipUrl(clip.thumbnail_url));
+    return from(this.downloadQueue.add('download-clip', clipDownload)) as Observable<Job<VodVideoFile>>;
   }
 
   private createHeaders(authToken: string) {
@@ -33,25 +52,5 @@ export class VodDownloadService {
       takeWhile(vodDownload => vodDownload.download_url === '', true),
       filter(vodDownloadModel => vodDownloadModel.download_url !== '')
     );
-  }
-
-  public scheduleDownloadJob(vodId: number, authToken: string, outputPath: string,
-                             chunkLength: number, deleteTempFiles = true,
-                             intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
-    return this.getVodDownloadModel(vodId, authToken, intervalPeriod).pipe(
-      mergeMap(downloadModelDto => {
-          const vodDownload = new VodVideoFile(`${outputPath}/${vodId}/${vodId}.mp4`,
-            vodId, chunkLength, deleteTempFiles, downloadModelDto.download_url);
-          return from(this.downloadQueue.add('download-vod', vodDownload)) as Observable<Job<VodVideoFile>>;
-        }
-      ));
-  }
-
-  public scheduleClipDownloadJob(clip: ClipDto, authToken: string, outputPath: string,
-                                 chunkLength: number, deleteTempFiles = true,
-                                 intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
-    const clipDownload = new VodVideoFile(`${outputPath}/${clip.id}.mp4`,
-      null, chunkLength, deleteTempFiles, getClipUrl(clip.thumbnail_url));
-    return from(this.downloadQueue.add('download-clip', clipDownload)) as Observable<Job<VodVideoFile>>;
   }
 }

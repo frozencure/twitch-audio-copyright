@@ -22,17 +22,15 @@ export class VodDownloadController {
     return new SuccessDto('DOWNLOAD_STARTED');
   }
 
-  // TODO: put the token decorator
   @Post('/clip')
   @UseGuards(TokenGuard)
   public async downloadClip(@Token() token: string,
                             @Body() clip: ClipDto,
                             @Query('output') outputPath = '/Users/andyradulescu/Desktop/twitchDownlaods',
-                            @Query('split') batchSize = 60,
                             @Query('delete_temp_files') deleteTempFiles = true): Promise<SuccessDto> {
 
     this.vodDownloadService.scheduleClipDownloadJob(clip,
-      token, outputPath, batchSize, deleteTempFiles).subscribe(() => {
+      token, outputPath, deleteTempFiles).subscribe(() => {
       Logger.log('Added new download job.');
     });
     return new SuccessDto('DOWNLOAD_STARTED');
