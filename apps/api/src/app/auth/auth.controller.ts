@@ -5,11 +5,14 @@ import { ConfigService } from '@nestjs/config';
 import { TokenGuard } from './token-guard.service';
 import { AuthService } from './auth.service';
 import { SuccessDto } from '@twitch-audio-copyright/data';
+import { UserAuthDto } from './model/user-auth-dto';
+import { UsersService } from '../database/user/users.service';
 
 @Controller('auth')
 export class AuthController {
 
-  constructor(private config: ConfigService, private authService: AuthService) {
+  constructor(private config: ConfigService, private authService: AuthService,
+              private usersService: UsersService) {
   }
 
   @Get('/twitch')
@@ -21,16 +24,13 @@ export class AuthController {
   @Get('/twitch/redirect')
   @UseGuards(AuthGuard('twitch'))
   async twitchLoginRedirect(@Res() res: Response, @Req() req: Request): Promise<void> {
-    const user = (req as any).user;
-    Logger.log({
-      statusCode: HttpStatus.OK,
-      data: user
-    });
-
-    res.cookie('token', user.accessToken);
+    const userAuthDto = (req as any).user as UserAuthDto;
+    const dbUser = await this.usersService.insertOrUpdate(userAuthDto.user);
+    Logger.debug(`User ${dbUser.displayName} (id: ${dbUser.id}) inserted or updated.`);
+    res.cookie('token', userAuthDto.accessToken);
     res.cookie('user',
-      JSON.stringify({ id: user.id, login: user.login, display_name: user.display_name, profilePic: user.profile_image_url }));
-    res.redirect(`${ this.config.get('frontendUrl') }/dashboard`);
+      JSON.stringify({ id: userAuthDto.user.id, login: userAuthDto.user.login }));
+    res.redirect(`${this.config.get('frontendUrl')}/dashboard`);
   }
 
   @Get('sync')

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import User from '../database/entity/user.entity';
+import User from '../database/user/user.entity';
 import { ConfigService } from '@nestjs/config';
 import Artist from '../database/entity/artist.entity';
 import IdentifiedSong from '../database/entity/identified-song.entity';

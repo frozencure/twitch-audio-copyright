@@ -1,5 +1,5 @@
 import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import User from './user.entity';
+import User from '../user/user.entity';
 import IdentifiedSong from './identified-song.entity';
 
 

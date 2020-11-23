@@ -1,5 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 
 @Catch()
 export class ServeStaticExceptionFilter implements ExceptionFilter {
@@ -13,7 +12,7 @@ export class ServeStaticExceptionFilter implements ExceptionFilter {
       '  <link rel="stylesheet" href="styles/styles.css">\n' +
       '</head>\n' +
       '<body>\n' +
-      '404\n' +
+      `${exception.getStatus()}\n` +
       '</body>\n' +
       '</html>\n');
   }

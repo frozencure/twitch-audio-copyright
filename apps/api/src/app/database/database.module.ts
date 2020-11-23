@@ -1,6 +1,6 @@
 import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import User from './entity/user.entity';
+import User from './user/user.entity';
 import Album from './entity/album.entity';
 import Artist from './entity/artist.entity';
 import IdentifiedSong from './entity/identified-song.entity';
