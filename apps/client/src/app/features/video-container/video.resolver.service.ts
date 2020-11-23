@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { DashboardService } from '../dashboard.service';
-import { VideoResolverModel, VideoType } from '../model/VideoResolverModel';
+import { DashboardService } from '../../core/services/dashboard.service';
+import { VideoResolverModel, VideoType } from '../../shared/model/VideoResolverModel';
 
 @Injectable()
 export class VideoResolver implements Resolve<VideoResolverModel> {

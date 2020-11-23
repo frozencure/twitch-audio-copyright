@@ -1,13 +1,13 @@
-import { TwitchUser } from '../../../../../../libs/data/src/lib/TwitchUser';
+import { TwitchUserDto } from '../../../../../../libs/data/src/lib/twitch-user-dto';
 
 export class UserAuthDto {
 
-  user: TwitchUser;
+  user: TwitchUserDto;
   accessToken: string;
   refreshToken: string;
 
 
-  constructor(user: TwitchUser, accessToken: string, refreshToken: string) {
+  constructor(user: TwitchUserDto, accessToken: string, refreshToken: string) {
     this.user = user;
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;

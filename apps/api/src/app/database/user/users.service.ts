@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import User from './user.entity';
-import { TwitchUser } from '../../../../../../libs/data/src/lib/TwitchUser';
+import { TwitchUserDto } from '../../../../../../libs/data/src/lib/twitch-user-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -11,7 +11,7 @@ export class UsersService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) {
   }
 
-  async insertOrUpdate(twitchUserDto: TwitchUser): Promise<User> {
+  async insertOrUpdate(twitchUserDto: TwitchUserDto): Promise<User> {
     const user = new User();
     user.id = twitchUserDto.id;
     user.userName = twitchUserDto.login;

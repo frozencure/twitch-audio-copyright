@@ -1,8 +1,8 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { DashboardComponent } from './dashboard.component';
-import { VideoContainerComponent } from './video-container/video-container.component';
-import { VideoResolver } from './video-container/video.resolver.service';
+import { VideoContainerComponent } from '../video-container/video-container.component';
+import { VideoResolver } from '../video-container/video.resolver.service';
 
 const routes: Routes = [
   {

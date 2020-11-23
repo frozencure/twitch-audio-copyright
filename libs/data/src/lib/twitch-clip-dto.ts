@@ -1,4 +1,4 @@
-export interface Clip {
+export interface TwitchClipDto {
   'id': string,
   'url': string,
   'embed_url': string,

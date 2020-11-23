@@ -5,8 +5,9 @@ import { ConfigService } from '@nestjs/config';
 import { TokenGuard } from './token-guard.service';
 import { AuthService } from './auth.service';
 import { SuccessDto } from '@twitch-audio-copyright/data';
-import { UserAuthDto } from './model/user-auth-dto';
+import { Token } from '../utils/decorators';
 import { UsersService } from '../database/user/users.service';
+import { UserAuthDto } from './model/user-auth-dto';
 import { UserCookieModel } from './model/user-cookie-model';
 
 @Controller('auth')
@@ -42,9 +43,10 @@ export class AuthController {
 
   @Get('logout')
   @UseGuards(TokenGuard)
-  async logout(@Req() req: Request): Promise<SuccessDto> {
+  async logout(@Token() token: string): Promise<SuccessDto> {
     try {
-      await this.authService.revokeToken((req as any).cookies.token);
+      // TODO maybe redirect to login and delete token and user from cookies?!
+      await this.authService.revokeToken(token);
       return new SuccessDto('LOGOUT');
     } catch (e) {
       Logger.error(e);

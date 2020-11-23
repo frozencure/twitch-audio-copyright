@@ -1,12 +1,13 @@
 import { HttpModule, Module } from '@nestjs/common';
 import { VodDownloadService } from './service/vod-download.service';
-import { VodDownloadController } from './vod-download-controller';
+import { VodDownloadController } from './vod-download.controller';
 import { BullModule } from '@nestjs/bull';
 import { FfmpegProcessor } from '../ffmpeg/ffmpeg-processor';
 import { DownloadProcessor } from '../io/download-processor';
 import { FileSystemProcessor } from '../io/file-system-processor';
 import { VodProcessCoordinator } from './service/vod-process-coordinator';
 import { AuthModule } from '../auth/auth.module';
+import { ClipProcessCoordinator } from './service/clip-process-coordinator';
 import { DatabaseModule } from '../database/database.module';
 import { TwitchService } from '../twitch/twitch.service';
 
@@ -29,7 +30,7 @@ import { TwitchService } from '../twitch/twitch.service';
   ],
   providers: [VodDownloadService, DownloadProcessor, FfmpegProcessor,
     FileSystemProcessor, VodProcessCoordinator,
-    TwitchService]
+    TwitchService, ClipProcessCoordinator]
 })
 export class VodDownloadModule {
 }

@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-twitch-new';
 import * as dotenv from 'dotenv';
 import { UserAuthDto } from './model/user-auth-dto';
-import { TwitchUser } from '../../../../../libs/data/src/lib/TwitchUser';
+import { TwitchUserDto } from '../../../../../libs/data/src/lib/twitch-user-dto';
 
 dotenv.config();
 
@@ -11,7 +11,6 @@ dotenv.config();
 export class TwitchStrategy extends PassportStrategy(Strategy, 'twitch') {
   constructor() {
     // TODO: find a way to make the redirect url dynamic
-    // @ts-ignore
     super({
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
@@ -23,7 +22,7 @@ export class TwitchStrategy extends PassportStrategy(Strategy, 'twitch') {
   async validate(
     accessToken: string,
     refreshToken: string,
-    profile: TwitchUser,
+    profile: TwitchUserDto,
     done: (err: Error, user: UserAuthDto) => void
   ): Promise<void> {
     const userAuth = new UserAuthDto(profile,

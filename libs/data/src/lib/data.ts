@@ -1,4 +1,4 @@
 export class SuccessDto {
-  constructor(public message='success') {
+  constructor(public message = 'success') {
   }
 }
