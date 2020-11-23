@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import Video from './video.entity';
+import Video from '../video/video.entity';
 import Label from './label.entity';
 import Album from './album.entity';
 import Artist from './artist.entity';

@@ -4,7 +4,7 @@ import User from '../database/user/user.entity';
 import { ConfigService } from '@nestjs/config';
 import Artist from '../database/entity/artist.entity';
 import IdentifiedSong from '../database/entity/identified-song.entity';
-import Video from '../database/entity/video.entity';
+import Video from '../database/video/video.entity';
 import Label from '../database/entity/label.entity';
 import Album from '../database/entity/album.entity';
 

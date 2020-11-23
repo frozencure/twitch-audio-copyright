@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import Video from '../entity/video.entity';
+import Video from '../video/video.entity';
 import { HelixBroadcasterType, HelixUserType } from 'twitch';
 
 @Entity('user')
