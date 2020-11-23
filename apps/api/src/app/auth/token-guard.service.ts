@@ -10,7 +10,6 @@ export class TokenGuard implements CanActivate {
   async canActivate(
     context: ExecutionContext
   ): Promise<boolean> {
-
     const request: Request = context.switchToHttp().getRequest();
     if (!request.cookies || !request.cookies.token) {
       throw new HttpException({ status: HttpStatus.UNAUTHORIZED, error: 'User unauthorized' }, HttpStatus.UNAUTHORIZED);
@@ -19,7 +18,7 @@ export class TokenGuard implements CanActivate {
     try {
       valid = await this.authService.validateToken(request.cookies.token);
     } catch (err) {
-      Logger.log(err);
+      Logger.error(err);
       throw new HttpException({ status: HttpStatus.UNAUTHORIZED, error: 'User unauthorized' }, HttpStatus.UNAUTHORIZED);
     }
     if (!valid) {

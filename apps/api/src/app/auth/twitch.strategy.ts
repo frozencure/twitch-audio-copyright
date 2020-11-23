@@ -11,11 +11,12 @@ dotenv.config();
 export class TwitchStrategy extends PassportStrategy(Strategy, 'twitch') {
   constructor() {
     // TODO: find a way to make the redirect url dynamic
+    // @ts-ignore
     super({
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
       callbackURL: `http://localhost:3333/api/auth/twitch/redirect`,
-      scope: 'user_read'
+      scope: 'user:read:email channel_editor'
     });
   }
 

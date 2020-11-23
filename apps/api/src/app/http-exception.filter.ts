@@ -1,10 +1,24 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 
 @Catch()
 export class ServeStaticExceptionFilter implements ExceptionFilter {
 
-  catch(exception: HttpException, host: ArgumentsHost) {
-    host.switchToHttp().getResponse().status(exception.getStatus()).send('<!DOCTYPE html>\n' +
+  catch(exception: unknown, host: ArgumentsHost) {
+    if(exception instanceof HttpException && exception.getStatus() === 404) {
+      host.switchToHttp().getResponse().send('<!DOCTYPE html>\n' +
+        '<html>\n' +
+        '<head>\n' +
+        '  <meta charset="utf-8" />\n' +
+        '  <title>App</title>\n' +
+        '  <link rel="stylesheet" href="styles/styles.css">\n' +
+        '</head>\n' +
+        '<body>\n' +
+        `${exception.getStatus()}\n` +
+        '</body>\n' +
+        '</html>\n');
+    }
+    Logger.error(exception);
+    host.switchToHttp().getResponse().send('<!DOCTYPE html>\n' +
       '<html>\n' +
       '<head>\n' +
       '  <meta charset="utf-8" />\n' +
@@ -12,7 +26,7 @@ export class ServeStaticExceptionFilter implements ExceptionFilter {
       '  <link rel="stylesheet" href="styles/styles.css">\n' +
       '</head>\n' +
       '<body>\n' +
-      `${exception.getStatus()}\n` +
+      '501\n' +
       '</body>\n' +
       '</html>\n');
   }

@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import User from './user.entity';
 import { TwitchUser } from '../../../../../../libs/data/src/lib/TwitchUser';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 
 @Injectable()
 export class UsersService {
+
+  constructor(@InjectRepository(User) private usersRepository: Repository<User>) {
+  }
 
   async insertOrUpdate(twitchUserDto: TwitchUser): Promise<User> {
     const user = new User();
@@ -18,6 +23,10 @@ export class UsersService {
     user.viewCount = twitchUserDto.view_count;
     user.email = twitchUserDto.email;
     return await user.save();
+  }
+
+  async findOne(userId: string): Promise<User> {
+    return await this.usersRepository.findOne(userId);
   }
 
 }

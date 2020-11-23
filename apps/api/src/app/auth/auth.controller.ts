@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { SuccessDto } from '@twitch-audio-copyright/data';
 import { UserAuthDto } from './model/user-auth-dto';
 import { UsersService } from '../database/user/users.service';
+import { UserCookieModel } from './model/user-cookie-model';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +30,7 @@ export class AuthController {
     Logger.debug(`User ${dbUser.displayName} (id: ${dbUser.id}) inserted or updated.`);
     res.cookie('token', userAuthDto.accessToken);
     res.cookie('user',
-      JSON.stringify({ id: userAuthDto.user.id, login: userAuthDto.user.login }));
+      JSON.stringify(new UserCookieModel(userAuthDto.user.id, userAuthDto.user.login)));
     res.redirect(`${this.config.get('frontendUrl')}/dashboard`);
   }
 

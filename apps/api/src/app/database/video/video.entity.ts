@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import User from '../user/user.entity';
 import IdentifiedSong from '../entity/identified-song.entity';
 
@@ -17,16 +17,15 @@ export enum VideoProgress {
 
 
 @Entity('video')
-export default class Video {
+export default class Video extends BaseEntity {
 
-  @Index({ unique: true })
   @PrimaryColumn({ type: 'int', unique: true }) id: number;
   @Column('text') title: string;
   @Column({ type: 'text', nullable: true }) description: string;
   @Column({ type: 'enum', enum: VideoType, default: VideoType.ARCHIVE }) type: VideoType;
   @Column('text') url: string;
   @Column('int') views: number;
-  @Column('text') viewable: string;
+  @Column('boolean') isPublic: boolean;
   @Column('int') durationInSeconds: number;
   @Column('text') language: string;
   @Column('timestamp') createdAt: Date;

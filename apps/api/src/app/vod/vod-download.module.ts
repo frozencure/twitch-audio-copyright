@@ -6,6 +6,9 @@ import { FfmpegProcessor } from '../ffmpeg/ffmpeg-processor';
 import { DownloadProcessor } from '../io/download-processor';
 import { FileSystemProcessor } from '../io/file-system-processor';
 import { VodProcessCoordinator } from './service/vod-process-coordinator';
+import { AuthModule } from '../auth/auth.module';
+import { DatabaseModule } from '../database/database.module';
+import { TwitchService } from '../twitch/twitch.service';
 
 @Module({
   controllers: [VodDownloadController],
@@ -20,9 +23,13 @@ import { VodProcessCoordinator } from './service/vod-process-coordinator';
       name: 'ffmpeg'
     }, {
       name: 'file-system'
-    })
+    }),
+    AuthModule,
+    DatabaseModule
   ],
-  providers: [VodDownloadService, DownloadProcessor, FfmpegProcessor, FileSystemProcessor, VodProcessCoordinator]
+  providers: [VodDownloadService, DownloadProcessor, FfmpegProcessor,
+    FileSystemProcessor, VodProcessCoordinator,
+    TwitchService]
 })
 export class VodDownloadModule {
 }
