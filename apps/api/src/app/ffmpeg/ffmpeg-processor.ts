@@ -4,17 +4,24 @@ import * as FfmpegCommand from 'fluent-ffmpeg';
 import { VodAudioFile, VodVideoFile } from '../vod/model/vod-file';
 import * as path from 'path';
 import { VodSegmentList } from '../vod/model/vod-segment-list';
+import { ClipAudioFile, ClipVideoFile } from '../vod/model/clip-file';
 
 @Processor('ffmpeg')
 export class FfmpegProcessor {
 
   @Process({ name: 'extract-audio', concurrency: 1 })
-  async extractAudioFromVideoFile(job: Job<VodVideoFile>): Promise<VodAudioFile> {
-    return await this.extractAudioFromFile(job);
+  public async extractAudioFromVideoFileProcessor(job: Job<VodVideoFile>): Promise<VodAudioFile> {
+    return await this.extractAudioFromVideoFile(job);
   }
 
+  @Process({ name: 'extract-audio-clip', concurrency: 1 })
+  public async extractAudioFromClipFileProcessor(job: Job<ClipVideoFile>): Promise<ClipVideoFile> {
+    return await this.extractAudioFromClipFile(job);
+  }
+
+
   @Process('split-audio')
-  async splitAudioFile(job: Job<VodAudioFile>): Promise<VodSegmentList> {
+  public async splitAudioFile(job: Job<VodAudioFile>): Promise<VodSegmentList> {
     return await this.splitVodAudioFile(job);
   }
 
@@ -41,7 +48,7 @@ export class FfmpegProcessor {
     });
   }
 
-  private extractAudioFromFile(job: Job<VodVideoFile>): Promise<VodAudioFile> {
+  private extractAudioFromVideoFile(job: Job<VodVideoFile>): Promise<VodAudioFile> {
     return new Promise<VodAudioFile>((resolve, reject) => {
       const outputPath = job.data.filePath.replace('.mp4', '.ogg');
       const mergeCommand = FfmpegCommand(job.data.filePath);
@@ -49,6 +56,25 @@ export class FfmpegProcessor {
         .on('end', () => {
           resolve(new VodAudioFile(outputPath, job.data.vodId,
             job.data.chunkLength, job.data.shouldDeleteFile,
+            job.data.downloadUrl));
+        }).on('progress', progress => {
+        if (progress.percent % 1 == 0) {
+          job.progress(progress.percent);
+        }
+      }).on('error', err => {
+        reject(err);
+      }).run();
+    });
+  }
+
+  private extractAudioFromClipFile(job: Job<ClipVideoFile>): Promise<ClipAudioFile> {
+    return new Promise<ClipAudioFile>((resolve, reject) => {
+      const outputPath = job.data.filePath.replace('.mp4', '.ogg');
+      const mergeCommand = FfmpegCommand(job.data.filePath);
+      mergeCommand.outputOptions('-vn').output(outputPath)
+        .on('end', () => {
+          resolve(new ClipAudioFile(outputPath, job.data.clipId,
+            job.data.shouldDeleteFile,
             job.data.downloadUrl));
         }).on('progress', progress => {
         if (progress.percent % 1 == 0) {

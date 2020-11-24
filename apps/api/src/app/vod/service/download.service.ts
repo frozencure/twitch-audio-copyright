@@ -3,13 +3,14 @@ import { from, interval, Observable } from 'rxjs';
 import { filter, map, mergeMap, takeWhile } from 'rxjs/operators';
 import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
-import { VodClipFile, VodVideoFile } from '../model/vod-file';
+import { VodVideoFile } from '../model/vod-file';
 import { VodDownloadDto } from '../model/vod-download-dto';
 import { ClipDto } from '@twitch-audio-copyright/data';
 import { getClipUrl } from '../../utils/url.manager';
+import { ClipFile } from '../model/clip-file';
 
 @Injectable()
-export class VodDownloadService {
+export class DownloadService {
 
   constructor(private httpService: HttpService,
               @InjectQueue('download') private readonly downloadQueue: Queue) {
@@ -28,10 +29,10 @@ export class VodDownloadService {
   }
 
   public scheduleClipDownloadJob(clip: ClipDto, authToken: string, outputPath: string,
-                                 deleteTempFiles = true): Observable<Job<VodVideoFile>> {
-    const clipDownload = new VodClipFile(`${outputPath}/${clip.id}.mp4`,
+                                 deleteTempFiles = true): Observable<Job<ClipFile>> {
+    const clipDownload = new ClipFile(`${outputPath}/${clip.id}.mp4`,
       clip.id, deleteTempFiles, getClipUrl(clip.thumbnail_url));
-    return from(this.downloadQueue.add('download-clip', clipDownload)) as Observable<Job<VodVideoFile>>;
+    return from(this.downloadQueue.add('download-clip', clipDownload)) as Observable<Job<ClipFile>>;
   }
 
   private createHeaders(authToken: string) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { InjectQueue } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
-import { VodDownloadService } from './vod-download.service';
+import { DownloadService } from './download.service';
 import { VodAudioFile, VodVideoFile } from '../model/vod-file';
 import { VodSegmentList } from '../model/vod-segment-list';
 import { Logger } from '@nestjs/common';
@@ -9,7 +9,7 @@ import { Logger } from '@nestjs/common';
 @Injectable()
 export class VodProcessCoordinator {
 
-  constructor(private readonly vodDownloadService: VodDownloadService,
+  constructor(private readonly vodDownloadService: DownloadService,
               @InjectQueue('download') private readonly downloadQueue: Queue,
               @InjectQueue('ffmpeg') private readonly ffmpegQueue: Queue,
               @InjectQueue('file-system') private readonly  fileSystemQueue) {
@@ -23,7 +23,7 @@ export class VodProcessCoordinator {
 
   private scheduleAudioExtractionJobs(): void {
     this.downloadQueue.on('completed', (job: Job<VodVideoFile>, result: VodVideoFile) => {
-      if (['download-vod'].includes(job.name)) {
+      if ('download-vod' === job.name) {
         this.ffmpegQueue.add('extract-audio', result, {
           removeOnComplete: true
         });

@@ -18,7 +18,7 @@ export default () => ({
   },
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT, 10) || 6379
+    port: parseInt(process.env.REDIS_PORT, 10) || 6380
   },
   acr_cloud: {
     fingerprint_script_path: `${__dirname}/assets/acr_cloud_tool/create_fingerprint.py`,
