@@ -1,5 +1,5 @@
 import { HttpModule, Module } from '@nestjs/common';
-import { VodDownloadService } from './service/vod-download.service';
+import { DownloadService } from './service/download.service';
 import { VodDownloadController } from './vod-download.controller';
 import { BullModule } from '@nestjs/bull';
 import { FfmpegProcessor } from '../ffmpeg/ffmpeg-processor';
@@ -28,7 +28,7 @@ import { TwitchService } from '../twitch/twitch.service';
     AuthModule,
     DatabaseModule
   ],
-  providers: [VodDownloadService, DownloadProcessor, FfmpegProcessor,
+  providers: [DownloadService, DownloadProcessor, FfmpegProcessor,
     FileSystemProcessor, VodProcessCoordinator,
     TwitchService, ClipProcessCoordinator]
 })

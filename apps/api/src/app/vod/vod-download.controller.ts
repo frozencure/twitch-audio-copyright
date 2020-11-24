@@ -1,17 +1,16 @@
 import { Body, Controller, Get, Logger, Param, Post, Query, UseGuards } from '@nestjs/common';
-import { VodDownloadService } from './service/vod-download.service';
 import { VideosService } from '../database/video/VideosService';
 import { TokenGuard } from '../auth/token-guard.service';
 import { UserCookieModel } from '../auth/model/user-cookie-model';
 import { AuthService } from '../auth/auth.service';
 import { TwitchService } from '../twitch/twitch.service';
 import { Token, User } from '../utils/decorators';
-import { SuccessDto } from '@twitch-audio-copyright/data';
-import { TwitchClipDto } from '../../../../../libs/data/src/lib/twitch-clip-dto';
+import { ClipDto, SuccessDto } from '@twitch-audio-copyright/data';
+import { DownloadService } from './service/download.service';
 
 @Controller('/vod')
 export class VodDownloadController {
-  constructor(private readonly vodDownloadService: VodDownloadService,
+  constructor(private readonly vodDownloadService: DownloadService,
               private readonly videosService: VideosService,
               private readonly authService: AuthService,
               private readonly twitchService: TwitchService) {
@@ -33,11 +32,10 @@ export class VodDownloadController {
     return `Download for video ${id} successfully queued.`;
   }
 
-
   @Post('/clip')
   @UseGuards(TokenGuard)
   public async downloadClip(@Token() token: string,
-                            @Body() clip: TwitchClipDto,
+                            @Body() clip: ClipDto,
                             @Query('output') outputPath = '/Users/andyradulescu/Desktop/twitchDownlaods',
                             @Query('delete_temp_files') deleteTempFiles = true): Promise<SuccessDto> {
 
