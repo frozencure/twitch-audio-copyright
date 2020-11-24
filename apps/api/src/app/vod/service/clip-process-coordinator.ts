@@ -12,7 +12,7 @@ export class ClipProcessCoordinator {
               @InjectQueue('file-system') private readonly  fileSystemQueue) {
     this.scheduleAudioExtractionJobs();
     this.scheduleVideoDeletionJobs();
-    this.scheduleAudioDeletionJobs();
+    // this.scheduleAudioDeletionJobs();
   }
 
   private scheduleAudioExtractionJobs(): void {
@@ -27,7 +27,7 @@ export class ClipProcessCoordinator {
 
   private scheduleVideoDeletionJobs(): void {
     this.ffmpegQueue.on('completed', (job: Job<VodVideoFile>) => {
-      if (job.name == 'extract-audio') {
+      if (job.name == 'extract-audio-clip') {
         this.fileSystemQueue.add('delete-file', job.data.filePath, {
           removeOnComplete: true
         });
@@ -37,7 +37,7 @@ export class ClipProcessCoordinator {
 
   private scheduleAudioDeletionJobs(): void {
     this.ffmpegQueue.on('completed', (job: Job<VodAudioFile>) => {
-      if (job.name == 'split-audio') {
+      if (job.name == 'extract-audio-clip') {
         this.fileSystemQueue.add('delete-file', job.data.filePath, {
           removeOnComplete: true
         });

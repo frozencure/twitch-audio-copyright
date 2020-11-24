@@ -23,7 +23,7 @@ export class VodProcessCoordinator {
 
   private scheduleAudioExtractionJobs(): void {
     this.downloadQueue.on('completed', (job: Job<VodVideoFile>, result: VodVideoFile) => {
-      if (['download-vod'].includes(job.name)) {
+      if ('download-vod' === job.name) {
         this.ffmpegQueue.add('extract-audio', result, {
           removeOnComplete: true
         });
