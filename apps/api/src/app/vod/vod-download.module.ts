@@ -1,5 +1,5 @@
 import { HttpModule, Module } from '@nestjs/common';
-import { VodDownloadService } from './service/vod-download.service';
+import { DownloadService } from './service/download.service';
 import { VodDownloadController } from './vod-download.controller';
 import { BullModule } from '@nestjs/bull';
 import { FfmpegProcessor } from '../ffmpeg/ffmpeg-processor';
@@ -25,7 +25,7 @@ import { ClipProcessCoordinator } from './service/clip-process-coordinator';
     }),
     AuthModule
   ],
-  providers: [VodDownloadService, DownloadProcessor, FfmpegProcessor, FileSystemProcessor, VodProcessCoordinator, ClipProcessCoordinator]
+  providers: [DownloadService, DownloadProcessor, FfmpegProcessor, FileSystemProcessor, VodProcessCoordinator, ClipProcessCoordinator]
 })
 export class VodDownloadModule {
 }

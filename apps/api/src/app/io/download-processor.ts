@@ -20,15 +20,15 @@ export class DownloadProcessor {
 
   @Process({ name: 'download-vod', concurrency: 1 })
   async downloadVod(job: Job<VodVideoFile>): Promise<VodVideoFile> {
-    return await this.downloadVodFile(job);
+    return await this.downloadFile(job);
   }
 
   @Process({ name: 'download-clip', concurrency: 1 })
   async downloadClip(job: Job<ClipVideoFile>): Promise<ClipVideoFile> {
-    return await this.downloadVodFile(job);
+    return await this.downloadFile(job);
   }
 
-  private async downloadVodFile<T extends VodVideoFile | ClipVideoFile>(job: Job<T>): Promise<T> {
+  private async downloadFile<T extends VodVideoFile | ClipVideoFile>(job: Job<T>): Promise<T> {
     const response = await this.httpService.request({
       url: job.data.downloadUrl,
       method: 'GET',

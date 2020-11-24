@@ -10,7 +10,7 @@ import { getClipUrl } from '../../utils/url.manager';
 import { ClipFile } from '../model/clip-file';
 
 @Injectable()
-export class VodDownloadService {
+export class DownloadService {
 
   constructor(private httpService: HttpService,
               @InjectQueue('download') private readonly downloadQueue: Queue) {

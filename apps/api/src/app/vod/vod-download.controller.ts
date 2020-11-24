@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Logger, Param, Post, Query, UseGuards } from '@nestjs/common';
-import { VodDownloadService } from './service/vod-download.service';
+import { DownloadService } from './service/download.service';
 import { ClipDto, SuccessDto } from '@twitch-audio-copyright/data';
 import { TokenGuard } from '../auth/token-guard.service';
 import { Token } from '../utils/decorators';
 
 @Controller('/download')
 export class VodDownloadController {
-  constructor(private readonly vodDownloadService: VodDownloadService) {
+  constructor(private readonly vodDownloadService: DownloadService) {
   }
 
   // TODO: put the token decorator
