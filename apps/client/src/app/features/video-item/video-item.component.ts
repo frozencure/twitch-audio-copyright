@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { Video } from '../model/Video';
+import { Video } from '../../shared/model/Video';
 import { duration, timeSince, views, withWidthAndHeight } from '../../utils/video.manager';
 
 @Component({

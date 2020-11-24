@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
 import { Video } from './Video';
-import { Clip } from './Clip';
+import { ClipDto } from '@twitch-audio-copyright/data';
 
 export interface VideoResolverModel {
   type: VideoType;
-  stream: Observable<Video[] | Clip[]>;
+  stream: Observable<Video[] | ClipDto[]>;
 }
 
 export enum VideoType {

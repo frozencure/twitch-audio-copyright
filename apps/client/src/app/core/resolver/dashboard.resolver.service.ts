@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { Emittable, Emitter } from '@ngxs-labs/emitter';
-import { AuthState, AuthStateModel } from '../store/auth.state';
+import { AuthState, AuthStateModel } from '../../store/auth.state';
 
 @Injectable()
 export class DashboardResolver implements Resolve<any> {

@@ -15,5 +15,8 @@ export class VodFile {
   }
 }
 
-export class VodVideoFile extends VodFile {}
-export class VodAudioFile extends VodFile {}
+export class VodVideoFile extends VodFile {
+}
+
+export class VodAudioFile extends VodFile {
+}
