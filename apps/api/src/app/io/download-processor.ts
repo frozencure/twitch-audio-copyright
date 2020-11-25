@@ -14,7 +14,7 @@ export class DownloadProcessor {
 
   private static createDirectoryIfNotExists(filePath: string) {
     if (!fs.existsSync(path.dirname(filePath))) {
-      fs.mkdirSync(path.dirname(filePath));
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
     }
   }
 
