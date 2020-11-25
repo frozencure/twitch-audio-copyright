@@ -1,6 +1,6 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import User from '../user/user.entity';
-import IdentifiedSong from '../entity/identified-song.entity';
+import IdentifiedSong from '../identified-song/identified-song.entity';
 
 
 export enum VideoType {

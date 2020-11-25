@@ -3,7 +3,7 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import User from '../database/user/user.entity';
 import { ConfigService } from '@nestjs/config';
 import Artist from '../database/entity/artist.entity';
-import IdentifiedSong from '../database/entity/identified-song.entity';
+import IdentifiedSong from '../database/identified-song/identified-song.entity';
 import Video from '../database/video/video.entity';
 import Label from '../database/entity/label.entity';
 import Album from '../database/entity/album.entity';

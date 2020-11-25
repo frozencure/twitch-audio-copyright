@@ -1,13 +1,13 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import IdentifiedSong from './identified-song.entity';
+import { Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
+import IdentifiedSong from '../identified-song/identified-song.entity';
 
 @Entity('artist')
 export default class Artist {
-  @PrimaryGeneratedColumn() id: number;
 
-  @Column('text') name: string;
+  @PrimaryColumn('text') name: string;
 
   @ManyToMany('IdentifiedSong', 'artists')
+  @JoinTable()
   identifiedSongs: IdentifiedSong[];
 
 }

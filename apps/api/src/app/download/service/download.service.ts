@@ -16,14 +16,14 @@ export class DownloadService {
               @InjectQueue('download') private readonly downloadQueue: Queue) {
   }
 
-  public scheduleDownloadJob(vodId: number, authToken: string, outputPath: string,
-                             chunkLength: number, deleteTempFiles = true,
-                             intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
+  public scheduleVideoDownloadJob(vodId: number, authToken: string, outputPath: string,
+                                  chunkLength: number, deleteTempFiles = true,
+                                  intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
     return this.getVodDownloadModel(vodId, authToken, intervalPeriod).pipe(
       mergeMap(downloadModelDto => {
           const vodDownload = new VodVideoFile(`${outputPath}/${vodId}/${vodId}.mp4`,
             vodId, chunkLength, deleteTempFiles, downloadModelDto.download_url);
-          return from(this.downloadQueue.add('download-vod', vodDownload)) as Observable<Job<VodVideoFile>>;
+          return from(this.downloadQueue.add('download-video', vodDownload)) as Observable<Job<VodVideoFile>>;
         }
       ));
   }

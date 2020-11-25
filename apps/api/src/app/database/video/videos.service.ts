@@ -18,7 +18,6 @@ export class VideosService {
     if (user) {
       try {
         const video = new Video();
-        console.log(video);
         video.id = Number.parseInt(twitchVideo.id);
         video.title = twitchVideo.title;
         video.description = twitchVideo.description;
@@ -32,10 +31,9 @@ export class VideosService {
         video.publishedAt = twitchVideo.publishDate;
         video.user = user;
         video.progress = VideoProgress.QUEUED;
-        console.log(video);
+        Logger.debug(`Saving/Updating video with ID ${video.id} to database.`);
         return await video.save();
       } catch (e) {
-        Logger.error(e);
         return Promise.reject(e);
       }
     } else {
@@ -49,6 +47,7 @@ export class VideosService {
     if (video) {
       try {
         video.progress = progress;
+        Logger.debug(`Updating progress for video ${videoId} to ${progress}`);
         return await video.save();
       } catch (e) {
         return Promise.reject(e);
@@ -56,5 +55,9 @@ export class VideosService {
     } else {
       return Promise.reject(`Video with ID ${videoId} does not exist.`);
     }
+  }
+
+  async findOne(videoId: number): Promise<Video> {
+    return await this.videosRepository.findOne(videoId);
   }
 }

@@ -5,6 +5,7 @@ import time
 
 def create_fingerprint(inputFile):
     # acrcloud_extr_tool.set_debug()
+    min_duration = 5
     audio_fingerprint_opt = {
         'filter_energy_min': 100,
         'silence_energy_threshold': 1200,
@@ -12,7 +13,10 @@ def create_fingerprint(inputFile):
     }
     durationInMs = get_duration_ms_by_file(inputFile)
     duration = floor(durationInMs/1000)
-    result = create_fingerprint_by_file(inputFile, 0, duration, False, audio_fingerprint_opt)
-    [print(b) for b in result]
+    print(duration)
+    if duration >= min_duration:
+      result = create_fingerprint_by_file(inputFile, 0, duration, False, audio_fingerprint_opt)
+      if result is not None:
+        [print(b) for b in result]
 
 create_fingerprint(sys.argv[1])

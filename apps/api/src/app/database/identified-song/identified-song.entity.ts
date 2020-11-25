@@ -1,11 +1,11 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import Video from '../video/video.entity';
-import Label from './label.entity';
-import Album from './album.entity';
-import Artist from './artist.entity';
+import Label from '../entity/label.entity';
+import Album from '../entity/album.entity';
+import Artist from '../entity/artist.entity';
 
 @Entity('identified_song')
-export default class IdentifiedSong {
+export default class IdentifiedSong extends BaseEntity {
 
   @PrimaryGeneratedColumn() id: number;
   @Column('text') acrId: string;
@@ -20,13 +20,20 @@ export default class IdentifiedSong {
   @ManyToOne('Video', 'identifiedSongs')
   video: Video;
 
-  @ManyToOne('Label', 'identifiedSongs')
+  @ManyToOne('Label', 'identifiedSongs', {
+    cascade: true
+  })
   label: Label;
 
-  @ManyToOne('Album', 'identifiedSongs')
+  @ManyToOne('Album', 'identifiedSongs', {
+    cascade: true
+  })
   album: Album;
 
-  @ManyToMany('Artist', 'identifiedSongs')
+  @ManyToMany('Artist', 'identifiedSongs', {
+    cascade: true
+  })
+  @JoinTable()
   artists: Artist[];
 
 }

@@ -1,12 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import IdentifiedSong from './identified-song.entity';
+import { Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import IdentifiedSong from '../identified-song/identified-song.entity';
 
 
 @Entity('album')
 export default class Album {
-  @PrimaryGeneratedColumn() id: number;
 
-  @Column('text') name: string;
+  @PrimaryColumn('text') name: string;
 
   @OneToMany('IdentifiedSong', 'album')
   identifiedSongs: IdentifiedSong[];
