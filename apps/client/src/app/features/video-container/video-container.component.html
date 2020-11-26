@@ -1,50 +1,54 @@
 <!--<div class="frow start my-25">-->
 <!--  <div class="col-sm-1-2 col-md-1-3 col-lg-1-4 col-xlg-1-5" *ngFor="let video of videos$ | async">-->
 <!--    <app-video-item *ngIf="type==='videos'" [video]="video"></app-video-item>-->
-<!--    <app-clip-item *ngIf="type==='clips'" [clip]="video.view_count"></app-clip-item>-->
+<!--    <app-clip-item *ngIf="type==='clips'" [clip]="video."></app-clip-item>-->
 <!--  </div>-->
 <!--</div>-->
+<section class="px-20 mt-20">
+  <div class="example-container mat-elevation-z8">
+    <div class="example-loading-shade"
+         *ngIf="isLoadingResults">
+      <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
 
-<div class="example-container mat-elevation-z8">
-  <div class="example-loading-shade"
-       *ngIf="isLoadingResults">
-    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    <div class="example-table-container">
+      <table mat-table [dataSource]="videos" class="example-table"
+             matSort matSortActive="views" matSortDisableClear matSortDirection="desc">
+        <ng-container matColumnDef="info">
+          <th mat-header-cell *matHeaderCellDef>Info</th>
+          <td mat-cell *matCellDef="let video">
+            <div class="frow row-start">
+              <span class="mr-5">{{video.title}}</span>
+              <img [src]="getThumbnailUrl(video.thumbnail_url,'32')" alt="image alt">
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let video">{{video.title}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="created_at">
+          <th mat-header-cell *matHeaderCellDef>Created at</th>
+          <td mat-cell *matCellDef="let video">{{video.published_at | date}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="views">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Views</th>
+          <td mat-cell *matCellDef="let video">
+          <span>
+            <mat-icon aria-hidden="true" inline>visibility</mat-icon>
+            {{video.view_count}}
+          </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <mat-paginator [length]="resultsLength" [pageSize]="30"></mat-paginator>
   </div>
-
-  <div class="example-table-container">
-    <table mat-table [dataSource]="videos$ | async" class="example-table"
-           matSort matSortActive="created" matSortDisableClear matSortDirection="desc">
-      <!-- Number Column -->
-      <ng-container matColumnDef="number">
-        <th mat-header-cell *matHeaderCellDef>#</th>
-        <td mat-cell *matCellDef="let video">{{video.title}}
-          <img [src]="video.thumbnail_url" alt="image alt"></td>
-      </ng-container>
-
-      <!-- Title Column -->
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let video">{{video.thumbnail_url}}</td>
-      </ng-container>
-
-      <!-- State Column -->
-      <ng-container matColumnDef="state">
-        <th mat-header-cell *matHeaderCellDef>Created</th>
-        <td mat-cell *matCellDef="let video">{{video.published_at | date}}</td>
-      </ng-container>
-
-      <!-- Created Column -->
-      <ng-container matColumnDef="created">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
-          Created
-        </th>
-        <td mat-cell *matCellDef="let video">{{video.view_count | date}}</td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </div>
-
-  <!--  <mat-paginator [length]="resultsLength" [pageSize]="30"></mat-paginator>-->
-</div>
+</section>

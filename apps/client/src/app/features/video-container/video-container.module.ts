@@ -7,6 +7,8 @@ import { ClipItemModule } from '../clip-item/clip-item.module';
 import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [ VideoContainerComponent ],
@@ -16,7 +18,9 @@ import { MatTableModule } from '@angular/material/table';
     ClipItemModule,
     MatSortModule,
     MatProgressSpinnerModule,
-    MatTableModule
+    MatTableModule,
+    MatIconModule,
+    MatPaginatorModule
   ],
   exports: [ VideoContainerComponent ],
   providers: [ VideoResolver ]
