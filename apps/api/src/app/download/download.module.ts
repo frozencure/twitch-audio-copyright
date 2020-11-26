@@ -1,6 +1,6 @@
 import { HttpModule, Module } from '@nestjs/common';
 import { DownloadService } from './service/download.service';
-import { VodDownloadController } from './vod-download.controller';
+import { DownloadController } from './download.controller';
 import { BullModule } from '@nestjs/bull';
 import { FfmpegProcessor } from '../ffmpeg/ffmpeg-processor';
 import { DownloadProcessor } from '../io/download-processor';
@@ -8,9 +8,13 @@ import { FileSystemProcessor } from '../io/file-system-processor';
 import { VodProcessCoordinator } from './service/vod-process-coordinator';
 import { AuthModule } from '../auth/auth.module';
 import { ClipProcessCoordinator } from './service/clip-process-coordinator';
+import { DatabaseModule } from '../database/database.module';
+import { ProcessingService } from './service/processing.service';
+import { AcrCloudProcessingModule } from '../acr_cloud/acr-cloud-processing.module';
+import { TwitchModule } from '../twitch/twitch.module';
 
 @Module({
-  controllers: [VodDownloadController],
+  controllers: [DownloadController],
   imports: [
     HttpModule.register({
       timeout: 50000,
@@ -23,9 +27,14 @@ import { ClipProcessCoordinator } from './service/clip-process-coordinator';
     }, {
       name: 'file-system'
     }),
-    AuthModule
+    AuthModule,
+    DatabaseModule,
+    AcrCloudProcessingModule,
+    TwitchModule
   ],
-  providers: [DownloadService, DownloadProcessor, FfmpegProcessor, FileSystemProcessor, VodProcessCoordinator, ClipProcessCoordinator]
+  providers: [DownloadService, DownloadProcessor, FfmpegProcessor,
+    FileSystemProcessor, VodProcessCoordinator,
+    ClipProcessCoordinator, ProcessingService]
 })
-export class VodDownloadModule {
+export class DownloadModule {
 }

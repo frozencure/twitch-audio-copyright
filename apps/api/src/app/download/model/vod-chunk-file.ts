@@ -1,6 +1,9 @@
 export class AudioChunkFile {
 
   filePath: string;
+  /**
+   * The number of the chunk. Starts from 0.
+   */
   chunkNumber: number;
   vodId: number;
   totalNumberOfChunks: number;

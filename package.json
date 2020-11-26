@@ -73,6 +73,8 @@
     "python-shell": "^2.0.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.3",
+    "twitch": "^4.3.0",
+    "twitch-auth": "^4.3.0",
     "typeorm": "^0.2.29",
     "zone.js": "^0.10.2"
   },
@@ -100,7 +102,7 @@
     "@types/fluent-ffmpeg": "^2.1.16",
     "@types/form-data": "^2.5.0",
     "@types/jest": "26.0.8",
-    "@types/node": "~8.9.4",
+    "@types/node": "^14.14.10",
     "@types/python-shell": "^0.4.2",
     "@typescript-eslint/eslint-plugin": "4.3.0",
     "@typescript-eslint/parser": "4.3.0",

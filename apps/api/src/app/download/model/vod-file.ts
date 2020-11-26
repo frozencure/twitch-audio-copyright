@@ -1,15 +1,14 @@
 export class VodFile {
   filePath: string;
   vodId: number;
-  chunkLength: number;
+  chunkLengthInSeconds: number;
   shouldDeleteFile: boolean;
   downloadUrl: string;
-
 
   constructor(filePath: string, vodId: number, chunkLength: number, shouldDeleteFile: boolean, downloadUrl: string) {
     this.filePath = filePath;
     this.vodId = vodId;
-    this.chunkLength = chunkLength;
+    this.chunkLengthInSeconds = chunkLength;
     this.shouldDeleteFile = shouldDeleteFile;
     this.downloadUrl = downloadUrl;
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { DownloadService } from './download.service';
 import { InjectQueue } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
@@ -19,7 +19,7 @@ export class ClipProcessCoordinator {
       if (['download-clip'].includes(job.name)) {
         this.ffmpegQueue.add('extract-audio', result, {
           removeOnComplete: true
-        });
+        }).catch(e => Logger.error(e));
       }
     });
   }
@@ -29,7 +29,7 @@ export class ClipProcessCoordinator {
       if (job.name == 'extract-audio-clip') {
         this.fileSystemQueue.add('delete-file', job.data.filePath, {
           removeOnComplete: true
-        });
+        }).catch(e => Logger.error(e));
       }
     });
   }

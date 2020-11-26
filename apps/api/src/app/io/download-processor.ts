@@ -2,9 +2,9 @@ import { Process, Processor } from '@nestjs/bull';
 import { HttpService } from '@nestjs/common';
 import { Job } from 'bull';
 import * as fs from 'fs';
-import { VodVideoFile } from '../vod/model/vod-file';
+import { VodVideoFile } from '../download/model/vod-file';
 import * as path from 'path';
-import { ClipVideoFile } from '../vod/model/clip-file';
+import { ClipVideoFile } from '../download/model/clip-file';
 
 @Processor('download')
 export class DownloadProcessor {
@@ -14,11 +14,11 @@ export class DownloadProcessor {
 
   private static createDirectoryIfNotExists(filePath: string) {
     if (!fs.existsSync(path.dirname(filePath))) {
-      fs.mkdirSync(path.dirname(filePath));
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
     }
   }
 
-  @Process({ name: 'download-vod', concurrency: 1 })
+  @Process({ name: 'download-video', concurrency: 1 })
   async downloadVod(job: Job<VodVideoFile>): Promise<VodVideoFile> {
     return await this.downloadFile(job);
   }

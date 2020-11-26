@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-twitch-new';
 import * as dotenv from 'dotenv';
+import { UserAuthDto } from './model/user-auth-dto';
+import { TwitchUserDto } from '@twitch-audio-copyright/data';
 
 dotenv.config();
 
@@ -13,27 +15,18 @@ export class TwitchStrategy extends PassportStrategy(Strategy, 'twitch') {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
       callbackURL: `http://localhost:3333/api/auth/twitch/redirect`,
-      scope: 'user_read'
+      scope: 'user:read:email channel_editor'
     });
   }
 
   async validate(
     accessToken: string,
     refreshToken: string,
-    profile: any,
-    done: (err: any, user: any, info?: any) => void
-  ): Promise<any> {
-    const { id, login, display_name, profile_image_url } = profile;
-    console.log(profile);
-    const user = {
-      accessToken,
-      refreshToken,
-      id,
-      login,
-      display_name,
-      profile_image_url
-    };
-
-    done(null, user);
+    profile: TwitchUserDto,
+    done: (err: Error, user: UserAuthDto) => void
+  ): Promise<void> {
+    const userAuth = new UserAuthDto(profile,
+      accessToken, refreshToken);
+    done(null, userAuth);
   }
 }

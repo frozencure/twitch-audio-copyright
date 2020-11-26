@@ -4,7 +4,9 @@ import { PythonShell } from 'python-shell';
 import * as crypto from 'crypto';
 import * as FormData from 'form-data';
 import fetch from 'node-fetch';
-import { AcrCloudDto } from './model/acr-cloud-dto';
+import { AcrCloudDto, AcrResult } from './model/acr-cloud-dto';
+import { AcrEmptyResponseError, FingerprintCreationError } from './model/errors';
+import { FingerprintData } from './model/fingerprint-data';
 
 @Injectable()
 export class AcrCloudService {
@@ -36,7 +38,7 @@ export class AcrCloudService {
     return form;
   }
 
-  public async identify(audioFilePath: string): Promise<AcrCloudDto> {
+  public async identify(audioFilePath: string): Promise<AcrResult> {
     const timestamp = new Date().getTime() / 1000;
     const options = {
       host: this.configService.get<string>('acr_cloud.host'),
@@ -56,25 +58,39 @@ export class AcrCloudService {
 
     const signature = AcrCloudService.sign(stringToSign, options.accessSecret);
     const fingerprint = await this.createFingerprint(audioFilePath);
-    const form = AcrCloudService.createFormData(fingerprint, options.accessKey, options.dataType,
+    const form = AcrCloudService.createFormData(fingerprint.data, options.accessKey, options.dataType,
       options.signatureVersion, signature, timestamp);
 
-    const resp = await fetch(`http://${options.host}${options.endpoint}`,
-      { method: 'POST', body: form });
-    return resp.json() as Promise<AcrCloudDto>;
+    try {
+      const response = await fetch(`http://${options.host}${options.endpoint}`,
+        { method: 'POST', body: form });
+      const responseData = await response.json();
+      return new AcrResult(responseData as AcrCloudDto, fingerprint.fileDuration);
+    } catch (e) {
+      return Promise.reject(new AcrEmptyResponseError(`ACR service retrieval failed. Reason: ${e}`));
+    }
   }
 
-  public createFingerprint(audioInputPath: string): Promise<Array<string>> {
+  private createFingerprint(audioInputPath: string): Promise<FingerprintData> {
     const scriptPath = this.configService.get<string>('acr_cloud.fingerprint_script_path');
-    return new Promise<Array<string>>((resolve, reject) => {
+    return new Promise<FingerprintData>((resolve, reject) => {
       PythonShell.run(scriptPath, {
         args: [audioInputPath]
       }, (err, output) => {
         if (err) {
-          reject(err);
+          reject(new FingerprintCreationError(`Fingerprint could not be created ` +
+            `for file ${audioInputPath} with ${err}`));
         }
-        console.log(output);
-        resolve(output);
+        if (!output) {
+          reject(new FingerprintCreationError(`Fingerprint could not be created for file ${audioInputPath}`));
+        }
+        if (output.length <= 1) {
+          reject(new FingerprintCreationError(`Fingerprint could not be created` +
+            `because audio file was only ${output[0]} seconds long.`));
+        }
+        const duration = Number.parseInt(output[0]);
+        const data = output.filter((_, index) => index !== 0);
+        resolve(new FingerprintData(duration, data));
       });
     });
   }
