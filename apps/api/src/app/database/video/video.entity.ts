@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import User from '../user/user.entity';
 import IdentifiedSong from '../identified-song/identified-song.entity';
+import Clip from '../clip/clip.entity';
 
 
 export enum VideoType {
@@ -37,5 +38,8 @@ export default class Video extends BaseEntity {
 
   @OneToMany('IdentifiedSong', 'video')
   identifiedSongs: IdentifiedSong[];
+
+  @OneToMany('Clip', 'video')
+  clips: Clip[];
 
 }

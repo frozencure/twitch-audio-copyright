@@ -31,7 +31,7 @@ export class ProcessingService {
     try {
       const acrResult = await this.acrService.identify(audioChunk.filePath);
       if (!acrResult.hasEmptyResult()) {
-        await this.identifiedSongsService.insertIdentifiedSong(vodAudioFile.vodId,
+        await this.identifiedSongsService.insertIdentifiedSongForVideo(vodAudioFile.vodId,
           ProcessingService.getIdentificationStart(audioChunk, vodAudioFile),
           ProcessingService.getIdentificationEnd(audioChunk, vodAudioFile,
             acrResult.chunkDurationInSeconds),

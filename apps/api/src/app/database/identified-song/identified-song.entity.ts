@@ -3,6 +3,7 @@ import Video from '../video/video.entity';
 import Label from '../entity/label.entity';
 import Album from '../entity/album.entity';
 import Artist from '../entity/artist.entity';
+import Clip from '../clip/clip.entity';
 
 @Entity('identified_song')
 export default class IdentifiedSong extends BaseEntity {
@@ -19,6 +20,9 @@ export default class IdentifiedSong extends BaseEntity {
 
   @ManyToOne('Video', 'identifiedSongs')
   video: Video;
+
+  @ManyToOne('Clip', 'identifiedSongs')
+  clip: Clip;
 
   @ManyToOne('Label', 'identifiedSongs', {
     cascade: true
