@@ -6,6 +6,7 @@ import { UsersService } from '../user/users.service';
 import { UserNotFoundError, VideoNotFoundError } from '../errors';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Logger } from '@nestjs/common';
 
 
 @Injectable()
@@ -27,17 +28,8 @@ export class ClipsService {
       return Promise.reject(new UserNotFoundError(`Clip insertion failed. User with ID ${twitchClipDto.broadcaster_id}` +
         `does not exist in the database.`));
     }
-    const clip = new Clip();
-    clip.id = twitchClipDto.id;
-    clip.title = twitchClipDto.title;
-    clip.embedUrl = twitchClipDto.embed_url;
-    clip.creatorName = twitchClipDto.creator_name;
-    clip.gameId = twitchClipDto.game_id;
-    clip.viewCount = twitchClipDto.view_count;
-    clip.createdAt = twitchClipDto.created_at;
-    clip.thumbnailUrl = twitchClipDto.thumbnail_url;
-    clip.user = user;
-    clip.video = video;
+    const clip = Clip.FromTwitchClip(twitchClipDto, video, user);
+    Logger.debug(`Clip with ID '${clip.id}' was inserted.`);
     return clip.save();
   }
 

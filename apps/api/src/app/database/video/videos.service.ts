@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import Video, { VideoProgress } from './video.entity';
+import Video, { ProcessingProgress } from './video.entity';
 import { HelixVideo } from 'twitch';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,7 +28,7 @@ export class VideosService {
     }
   }
 
-  async updateVideoProgress(videoId: number, progress: VideoProgress): Promise<Video> {
+  async updateVideoProgress(videoId: number, progress: ProcessingProgress): Promise<Video> {
     const video = await this.videosRepository.findOne(videoId);
     if (video) {
       try {

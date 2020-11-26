@@ -6,8 +6,8 @@ import { VodAudioFile, VodVideoFile } from '../model/vod-file';
 import { VodSegmentList } from '../model/vod-segment-list';
 import { Logger } from '@nestjs/common';
 import { VideosService } from '../../database/video/videos.service';
-import { VideoProgress } from '../../database/video/video.entity';
 import { ProcessingService } from './processing.service';
+import { ProcessingProgress } from '../../database/processing-progress';
 
 @Injectable()
 export class VodProcessCoordinator {
@@ -29,7 +29,7 @@ export class VodProcessCoordinator {
   private updateVideoProgress(): void {
     this.downloadQueue.on('active', (job: Job<VodVideoFile>) => {
       if ('download-video' === job.name) {
-        this.videosService.updateVideoProgress(job.data.vodId, VideoProgress.IN_PROGRESS)
+        this.videosService.updateVideoProgress(job.data.vodId, ProcessingProgress.IN_PROGRESS)
           .catch(err => Logger.error(err));
       }
     });
@@ -82,7 +82,7 @@ export class VodProcessCoordinator {
         this.processingService.processAudioChunksForVideo(job.data, result)
           .then(() => {
             Logger.debug(`VOD with ID ${result.vodId} successfully processed.`);
-            this.videosService.updateVideoProgress(result.vodId, VideoProgress.COMPLETED)
+            this.videosService.updateVideoProgress(result.vodId, ProcessingProgress.COMPLETED)
               .then().catch(e => Logger.error(e));
             if (result.shouldDeleteFile) {
               this.deleteAudioChunkFiles(result).then().catch(e => Logger.error(e));
