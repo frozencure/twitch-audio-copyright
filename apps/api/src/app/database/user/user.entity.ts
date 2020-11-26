@@ -21,16 +21,4 @@ export default class User extends BaseEntity {
 
   @OneToMany('Video', 'user')
   videos: Video[];
-
-  // constructor(twitchUserDto: TwitchUser) {
-  //   this.id = twitchUserDto.id;
-  //   this.userName = twitchUserDto.login;
-  //   this.displayName = twitchUserDto.display_name;
-  //   this.type = twitchUserDto.type;
-  //   this.description = twitchUserDto.description;
-  //   this.profileImageUrl = twitchUserDto.profile_image_url;
-  //   this.offlineImageUrl = twitchUserDto.offline_image_url;
-  //   this.viewCount = twitchUserDto.view_count;
-  //   this.email = twitchUserDto.email;
-  // }
 }

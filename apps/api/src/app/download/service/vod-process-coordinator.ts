@@ -22,7 +22,6 @@ export class VodProcessCoordinator {
     this.scheduleVideoDeletionJobs();
     this.scheduleSplitAudioJobs();
     this.scheduleAudioDeletionJobs();
-
     this.updateVideoProgress();
     this.processAudioChunks();
   }
@@ -78,13 +77,15 @@ export class VodProcessCoordinator {
     });
   }
 
-  private processAudioChunks() {
+  private processAudioChunks(): void {
     this.ffmpegQueue.on('completed', (job: Job<VodAudioFile>, result: VodSegmentList) => {
       if (job.name == 'split-audio') {
         this.processingService.processAudioChunksForVideo(job.data, result)
           .then(() => {
             Logger.debug(`VOD with ID ${result.vodId} successfully processed.`);
-            if(result.shouldDeleteFile) {
+            this.videosService.updateVideoProgress(result.vodId, VideoProgress.COMPLETED)
+              .then().catch(e => Logger.error(e));
+            if (result.shouldDeleteFile) {
               this.deleteAudioChunkFiles(result).then().catch(e => Logger.error(e));
               this.deleteVodSegmentList(result).then().catch(e => Logger.error(e));
             }
