@@ -15,6 +15,4 @@ export class TwitchService {
     const client = TwitchService.initializeClient(accessToken);
     return await client.helix.videos.getVideoById(videoId.toString());
   }
-
-
 }

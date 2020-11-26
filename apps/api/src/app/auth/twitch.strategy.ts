@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-twitch-new';
 import * as dotenv from 'dotenv';
 import { UserAuthDto } from './model/user-auth-dto';
-import { TwitchUserDto } from '../../../../../libs/data/src/lib/twitch-user-dto';
+import { TwitchUserDto } from '@twitch-audio-copyright/data';
 
 dotenv.config();
 

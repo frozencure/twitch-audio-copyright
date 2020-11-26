@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import User from '../user/user.entity';
 import IdentifiedSong from '../identified-song/identified-song.entity';
-
+import { HelixVideo } from 'twitch';
 
 export enum VideoType {
   UPLOAD = 'upload',
@@ -14,7 +14,6 @@ export enum VideoProgress {
   IN_PROGRESS = 'in-progress',
   COMPLETED = 'completed'
 }
-
 
 @Entity('video')
 export default class Video extends BaseEntity {
@@ -38,4 +37,21 @@ export default class Video extends BaseEntity {
   @OneToMany('IdentifiedSong', 'video')
   identifiedSongs: IdentifiedSong[];
 
+  static FromTwitchVideo(videoDto: HelixVideo, user: User, progress = VideoProgress.QUEUED): Video {
+    const video = new Video();
+    video.id = Number.parseInt(videoDto.id);
+    video.title = videoDto.title;
+    video.description = videoDto.description;
+    video.type = VideoType[videoDto.type.toString()];
+    video.url = videoDto.url;
+    video.views = videoDto.views;
+    video.isPublic = videoDto.isPublic;
+    video.durationInSeconds = videoDto.durationInSeconds;
+    video.language = videoDto.language;
+    video.createdAt = videoDto.creationDate;
+    video.publishedAt = videoDto.publishDate;
+    video.user = user;
+    video.progress = progress;
+    return video;
+  }
 }

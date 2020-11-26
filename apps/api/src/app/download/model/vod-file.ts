@@ -5,7 +5,6 @@ export class VodFile {
   shouldDeleteFile: boolean;
   downloadUrl: string;
 
-
   constructor(filePath: string, vodId: number, chunkLength: number, shouldDeleteFile: boolean, downloadUrl: string) {
     this.filePath = filePath;
     this.vodId = vodId;

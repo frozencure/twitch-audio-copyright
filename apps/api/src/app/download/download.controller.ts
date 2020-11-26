@@ -38,7 +38,6 @@ export class DownloadController {
                            @Query('split') batchSize = 60,
                            @Query('delete_temp_files') deleteTempFiles = true) {
     try {
-      console.log(DownloadController.tempPath);
       const twitchVideo = await this.twitchService.getVideo(authToken, id);
       await this.videosService.insertOrUpdate(user.id, twitchVideo);
       await this.vodDownloadService.scheduleVideoDownloadJob(id, authToken,
