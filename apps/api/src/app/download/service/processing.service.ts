@@ -31,7 +31,6 @@ export class ProcessingService {
     }
   }
 
-
   public async processAudioChunksForVideo(vodAudioFile: VodAudioFile, vodList: VodSegmentList): Promise<void[]> {
     try {
       const audioFiles = await vodList.getAudioChunks();
@@ -41,7 +40,6 @@ export class ProcessingService {
       Logger.error(`Could not process audio files for VOD ${vodAudioFile.vodId}. Reason: ${e}`);
     }
   }
-
 
   private async processAudioChunk(audioChunk: AudioChunkFile, vodAudioFile: VodAudioFile): Promise<void> {
     try {
@@ -68,5 +66,4 @@ export class ProcessingService {
   private static getIdentificationEnd(audioChunk: AudioChunkFile, vodAudioFile: VodAudioFile, chunkDuration: number): number {
     return audioChunk.chunkNumber * vodAudioFile.chunkLengthInSeconds + chunkDuration;
   }
-
 }

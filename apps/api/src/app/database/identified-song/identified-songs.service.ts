@@ -6,14 +6,12 @@ import { ClipNotFoundError, VideoNotFoundError } from '../errors';
 import { AcrEmptyResponseError } from '../../acr_cloud/model/errors';
 import { ClipsService } from '../clip/clips.service';
 
-
 @Injectable()
 export class IdentifiedSongsService {
 
   constructor(private readonly videosService: VideosService,
               private readonly clipsService: ClipsService) {
   }
-
 
   async insertIdentifiedSongForClip(acrDto: AcrCloudDto, clipId: string,
                                     identificationStart: number, identificationEnd: number): Promise<IdentifiedSong> {
@@ -36,7 +34,6 @@ export class IdentifiedSongsService {
       return Promise.reject(e);
     }
   }
-
 
   async insertIdentifiedSongForVideo(videoId: number, identificationStart: number, identificationEnd: number,
                                      acrDto: AcrCloudDto): Promise<IdentifiedSong> {

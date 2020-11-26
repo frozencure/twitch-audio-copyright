@@ -16,10 +16,8 @@ export class FfmpegProcessor {
 
   @Process({ name: 'extract-audio-clip', concurrency: 1 })
   public async extractAudioFromClipFileProcessor(job: Job<ClipVideoFile>): Promise<ClipAudioFile> {
-    console.log('clip extracted');
     return await this.extractAudioFromClipFile(job);
   }
-
 
   @Process('split-audio')
   public async splitAudioFile(job: Job<VodAudioFile>): Promise<VodSegmentList> {

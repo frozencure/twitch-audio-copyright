@@ -10,7 +10,6 @@ import { Logger } from '@nestjs/common';
 import Video from '../video/video.entity';
 import { ProcessingProgress } from '../processing-progress';
 
-
 @Injectable()
 export class ClipsService {
 

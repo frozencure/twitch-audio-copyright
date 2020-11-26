@@ -18,7 +18,6 @@ export default class Clip extends BaseEntity {
   @Column('text') thumbnailUrl: string;
   @Column({ type: 'enum', enum: ProcessingProgress, default: ProcessingProgress.QUEUED }) progress: ProcessingProgress;
 
-
   @ManyToOne(() => User, user => user.videos)
   user: User;
 
