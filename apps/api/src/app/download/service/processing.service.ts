@@ -12,13 +12,11 @@ export class ProcessingService {
               private readonly identifiedSongsService: IdentifiedSongsService) {
   }
 
-
-  public async processAudioChunksForVideo(vodAudioFile: VodAudioFile, vodList: VodSegmentList): Promise<void> {
+  public async processAudioChunksForVideo(vodAudioFile: VodAudioFile, vodList: VodSegmentList): Promise<void[]> {
     try {
       const audioFiles = await vodList.getAudioChunks();
-      for (let i = 0; i < audioFiles.length; i++) {
-        await this.processAudioChunk(audioFiles[i], vodAudioFile);
-      }
+      const identificationResults = audioFiles.map(file => this.processAudioChunk(file, vodAudioFile));
+      return Promise.all(identificationResults);
     } catch (e) {
       Logger.error(`Could not process audio files for VOD ${vodAudioFile.vodId}. Reason: ${e}`);
     }
