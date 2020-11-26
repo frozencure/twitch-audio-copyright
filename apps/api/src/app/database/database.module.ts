@@ -16,7 +16,7 @@ import Clip from './clip/clip.entity';
   imports: [TypeOrmModule.forFeature([Album, Artist,
     IdentifiedSong, Label, Video, User, Clip]), HttpModule],
   providers: [UsersService, VideosService, IdentifiedSongsService, ClipsService],
-  exports: [UsersService, VideosService, IdentifiedSongsService]
+  exports: [UsersService, VideosService, IdentifiedSongsService, ClipsService]
 })
 export class DatabaseModule {
 }

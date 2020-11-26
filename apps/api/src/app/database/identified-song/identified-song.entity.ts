@@ -14,7 +14,7 @@ export default class IdentifiedSong extends BaseEntity {
 
   @Column('text') title: string;
   @Column('int') playOffsetInSeconds: number;
-  @Column('int') durationInSeconds: number;
+  @Column('int') totalSongDurationInSeconds: number;
   @Column('int') identificationScore: number;
   @Column('int') identificationStart: number;
   @Column('int') identificationEnd: number;
@@ -42,16 +42,17 @@ export default class IdentifiedSong extends BaseEntity {
   artists: Artist[];
 
   static FromAcrResponse(identifiedAudioRecording: IdentifiedAudioRecording, identificationStart: number,
-              identificationEnd: number, video: Video): IdentifiedSong {
+              identificationEnd: number, video?: Video, clip?: Clip): IdentifiedSong {
     const identifiedSong = new IdentifiedSong();
     identifiedSong.video = video;
     identifiedSong.acrId = identifiedAudioRecording.acrid;
     identifiedSong.title = identifiedAudioRecording.title;
     identifiedSong.playOffsetInSeconds = Math.round(identifiedAudioRecording.play_offset_ms / 1000);
-    identifiedSong.durationInSeconds = Math.round(identifiedAudioRecording.duration_ms / 1000);
+    identifiedSong.totalSongDurationInSeconds = Math.round(identifiedAudioRecording.duration_ms / 1000);
     identifiedSong.identificationScore = Math.round(identifiedAudioRecording.score);
     identifiedSong.identificationStart = identificationStart;
     identifiedSong.identificationEnd = identificationEnd;
+    identifiedSong.clip = clip;
 
     identifiedSong.setLabel(identifiedAudioRecording);
     identifiedSong.setAlbum(identifiedAudioRecording);

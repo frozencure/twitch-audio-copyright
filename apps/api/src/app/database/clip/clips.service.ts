@@ -7,6 +7,8 @@ import { UserNotFoundError, VideoNotFoundError } from '../errors';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
+import Video from '../video/video.entity';
+import { ProcessingProgress } from '../processing-progress';
 
 
 @Injectable()
@@ -17,8 +19,7 @@ export class ClipsService {
               @InjectRepository(Clip) private clipsRepository: Repository<Clip>) {
   }
 
-  async insertOrUpdate(twitchClipDto: ClipDto): Promise<Clip> {
-    const video = await this.videosService.findOne(twitchClipDto.video_id);
+  async insertOrUpdate(twitchClipDto: ClipDto, video: Video): Promise<Clip> {
     const user = await this.usersService.findOne(twitchClipDto.broadcaster_id);
     if (!video) {
       return Promise.reject(new VideoNotFoundError(`Clip insertion faile. Video with ID ${twitchClipDto.video_id}` +
@@ -35,6 +36,21 @@ export class ClipsService {
 
   async findOne(clipId: string): Promise<Clip> {
     return await this.clipsRepository.findOne(clipId);
+  }
+
+  async updateProgress(clipId: string, progress: ProcessingProgress): Promise<Clip> {
+    const clip = await this.clipsRepository.findOne(clipId);
+    if (clip) {
+      try {
+        clip.progress = progress;
+        Logger.debug(`Updating progress for clip ${clipId} to ${progress}`);
+        return await clip.save();
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    } else {
+      return Promise.reject(`Could not update progress. Clip with ID ${clip} does not exist.`);
+    }
   }
 
 

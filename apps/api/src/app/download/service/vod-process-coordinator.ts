@@ -38,7 +38,7 @@ export class VodProcessCoordinator {
   private scheduleAudioExtractionJobs(): void {
     this.downloadQueue.on('completed', (job: Job<VodVideoFile>, result: VodVideoFile) => {
       if ('download-video' === job.name) {
-        this.ffmpegQueue.add('extract-audio', result, {
+        this.ffmpegQueue.add('extract-audio-vod', result, {
           removeOnComplete: true
         }).catch(err => Logger.error(err));
       }
@@ -47,7 +47,7 @@ export class VodProcessCoordinator {
 
   private scheduleSplitAudioJobs(): void {
     this.ffmpegQueue.on('completed', (job: Job<VodVideoFile>, result: VodAudioFile) => {
-      if (job.name == 'extract-audio') {
+      if (job.name == 'extract-audio-vod') {
         this.ffmpegQueue.add('split-audio', result, {
           removeOnComplete: true
         }).catch(err => Logger.error(err));
@@ -57,7 +57,7 @@ export class VodProcessCoordinator {
 
   private scheduleVideoDeletionJobs(): void {
     this.ffmpegQueue.on('completed', (job: Job<VodVideoFile>) => {
-      if (job.name == 'extract-audio') {
+      if (job.name == 'extract-audio-vod') {
         this.fileSystemQueue.add('delete-file', job.data.filePath, {
           removeOnComplete: true
         }).catch(err => Logger.error(err));
