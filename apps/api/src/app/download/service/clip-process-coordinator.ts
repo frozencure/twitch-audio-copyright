@@ -16,8 +16,8 @@ export class ClipProcessCoordinator {
 
   private scheduleAudioExtractionJobs(): void {
     this.downloadQueue.on('completed', (job: Job<ClipVideoFile>, result: ClipVideoFile) => {
-      if (['download-clip'].includes(job.name)) {
-        this.ffmpegQueue.add('extract-audio', result, {
+      if (job.name === 'download-clip') {
+        this.ffmpegQueue.add('extract-audio-clip', result, {
           removeOnComplete: true
         }).catch(e => Logger.error(e));
       }
