@@ -8,11 +8,9 @@ export interface AcrCloudDto {
   result_type: number;
 }
 
-
 export class AcrResult {
   acrCloudDto: AcrCloudDto;
   chunkDurationInSeconds: number;
-
 
   constructor(acrCloudDto: AcrCloudDto, chunkDurationInSeconds: number) {
     this.acrCloudDto = acrCloudDto;

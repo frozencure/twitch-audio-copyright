@@ -5,7 +5,7 @@ import * as crypto from 'crypto';
 import * as FormData from 'form-data';
 import fetch from 'node-fetch';
 import { AcrCloudDto, AcrResult } from './model/acr-cloud-dto';
-import { FingerprintCreationError } from './model/errors';
+import { AcrEmptyResponseError, FingerprintCreationError } from './model/errors';
 import { FingerprintData } from './model/fingerprint-data';
 
 @Injectable()
@@ -61,10 +61,14 @@ export class AcrCloudService {
     const form = AcrCloudService.createFormData(fingerprint.data, options.accessKey, options.dataType,
       options.signatureVersion, signature, timestamp);
 
-    const response = await fetch(`http://${options.host}${options.endpoint}`,
-      { method: 'POST', body: form });
-    const responseData = await response.json();
-    return new AcrResult(responseData as AcrCloudDto, fingerprint.fileDuration);
+    try {
+      const response = await fetch(`http://${options.host}${options.endpoint}`,
+        { method: 'POST', body: form });
+      const responseData = await response.json();
+      return new AcrResult(responseData as AcrCloudDto, fingerprint.fileDuration);
+    } catch (e) {
+      return Promise.reject(new AcrEmptyResponseError(`ACR service retrieval failed. Reason: ${e}`));
+    }
   }
 
   private createFingerprint(audioInputPath: string): Promise<FingerprintData> {
@@ -77,18 +81,16 @@ export class AcrCloudService {
           reject(new FingerprintCreationError(`Fingerprint could not be created ` +
             `for file ${audioInputPath} with ${err}`));
         }
-        if (output) {
-          if (output.length > 1) {
-            const duration = Number.parseInt(output[0]);
-            const data = output.filter((_, index) => index !== 0);
-            resolve(new FingerprintData(duration, data));
-          } else {
-            reject(new FingerprintCreationError(`Fingerprint could not be created` +
-            `because audio file was only ${output[0]} seconds long.`));
-          }
-        } else {
+        if (!output) {
           reject(new FingerprintCreationError(`Fingerprint could not be created for file ${audioInputPath}`));
         }
+        if (output.length <= 1) {
+          reject(new FingerprintCreationError(`Fingerprint could not be created` +
+            `because audio file was only ${output[0]} seconds long.`));
+        }
+        const duration = Number.parseInt(output[0]);
+        const data = output.filter((_, index) => index !== 0);
+        resolve(new FingerprintData(duration, data));
       });
     });
   }

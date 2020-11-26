@@ -35,7 +35,6 @@ export class VodProcessCoordinator {
     });
   }
 
-
   private scheduleAudioExtractionJobs(): void {
     this.downloadQueue.on('completed', (job: Job<VodVideoFile>, result: VodVideoFile) => {
       if ('download-video' === job.name) {
@@ -111,5 +110,4 @@ export class VodProcessCoordinator {
       removeOnComplete: true
     }).catch(err => Logger.error(err));
   }
-
 }

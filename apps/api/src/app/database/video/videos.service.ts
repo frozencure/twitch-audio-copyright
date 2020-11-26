@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import Video, { VideoProgress, VideoType } from './video.entity';
+import Video, { VideoProgress } from './video.entity';
 import { HelixVideo } from 'twitch';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,20 +17,7 @@ export class VideosService {
     const user = await this.usersService.findOne(userId);
     if (user) {
       try {
-        const video = new Video();
-        video.id = Number.parseInt(twitchVideo.id);
-        video.title = twitchVideo.title;
-        video.description = twitchVideo.description;
-        video.type = VideoType[twitchVideo.type.toString()];
-        video.url = twitchVideo.url;
-        video.views = twitchVideo.views;
-        video.isPublic = twitchVideo.isPublic;
-        video.durationInSeconds = twitchVideo.durationInSeconds;
-        video.language = twitchVideo.language;
-        video.createdAt = twitchVideo.creationDate;
-        video.publishedAt = twitchVideo.publishDate;
-        video.user = user;
-        video.progress = VideoProgress.QUEUED;
+        const video = Video.FromTwitchVideo(twitchVideo, user);
         Logger.debug(`Saving/Updating video with ID ${video.id} to database.`);
         return await video.save();
       } catch (e) {
@@ -40,7 +27,6 @@ export class VideosService {
       return Promise.reject('User does not exist.');
     }
   }
-
 
   async updateVideoProgress(videoId: number, progress: VideoProgress): Promise<Video> {
     const video = await this.videosRepository.findOne(videoId);
