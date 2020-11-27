@@ -10,6 +10,8 @@ import { DownloadModule } from './download/download.module';
 import { BullModule } from '@nestjs/bull';
 import { AcrCloudProcessingModule } from './acr_cloud/acr-cloud-processing.module';
 import { TwitchModule } from './twitch/twitch.module';
+import { LoggingModule } from './logging/logging.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -33,7 +35,9 @@ import { TwitchModule } from './twitch/twitch.module';
     AuthModule,
     DownloadModule,
     AcrCloudProcessingModule,
-    TwitchModule
+    TwitchModule,
+    LoggingModule,
+    QueueModule
   ],
   controllers: [AppController],
   providers: [AppService]
