@@ -9,7 +9,7 @@ import { ClipAudioFile, ClipVideoFile } from '../download/model/clip-file';
 @Processor('ffmpeg')
 export class FfmpegProcessor {
 
-  @Process({ name: 'extract-audio', concurrency: 1 })
+  @Process({ name: 'extract-audio-vod', concurrency: 1 })
   public async extractAudioFromVideoFileProcessor(job: Job<VodVideoFile>): Promise<VodAudioFile> {
     return await this.extractAudioFromVideoFile(job);
   }

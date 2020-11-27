@@ -12,6 +12,7 @@ import { DatabaseModule } from '../database/database.module';
 import { ProcessingService } from './service/processing.service';
 import { AcrCloudProcessingModule } from '../acr_cloud/acr-cloud-processing.module';
 import { TwitchModule } from '../twitch/twitch.module';
+import { QueueModule } from '../queue/queue.module';
 
 @Module({
   controllers: [DownloadController],
@@ -20,14 +21,8 @@ import { TwitchModule } from '../twitch/twitch.module';
       timeout: 50000,
       maxRedirects: 5
     }),
-    BullModule.registerQueue({
-      name: 'download'
-    }, {
-      name: 'ffmpeg'
-    }, {
-      name: 'file-system'
-    }),
     AuthModule,
+    QueueModule,
     DatabaseModule,
     AcrCloudProcessingModule,
     TwitchModule
