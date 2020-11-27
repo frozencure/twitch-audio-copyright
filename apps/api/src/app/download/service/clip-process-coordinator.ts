@@ -17,7 +17,7 @@ export class ClipProcessCoordinator {
               private readonly clipsService: ClipsService) {
     this.updateClipProgress();
     this.scheduleAudioExtractionJobs();
-    this.scheduleVideoDeletionJobs();
+    this.processClipAudio();
   }
 
   private updateClipProgress(): void {
@@ -39,7 +39,7 @@ export class ClipProcessCoordinator {
     });
   }
 
-  private scheduleVideoDeletionJobs(): void {
+  private processClipAudio(): void {
     this.ffmpegQueue.on('completed', (job: Job<ClipVideoFile>, result: ClipAudioFile) => {
       if (job.name == 'extract-audio-clip') {
         if (job.data.shouldDeleteFile) {

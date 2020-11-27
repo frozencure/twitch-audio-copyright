@@ -18,6 +18,7 @@ export default class IdentifiedSong extends BaseEntity {
   @Column('int') identificationScore: number;
   @Column('int') identificationStart: number;
   @Column('int') identificationEnd: number;
+  @Column({type: 'text', nullable: true}) isrcId: string;
 
   @ManyToOne('Video', 'identifiedSongs')
   video: Video;
@@ -53,6 +54,7 @@ export default class IdentifiedSong extends BaseEntity {
     identifiedSong.identificationStart = identificationStart;
     identifiedSong.identificationEnd = identificationEnd;
     identifiedSong.clip = clip;
+    identifiedSong.isrcId = identifiedAudioRecording.external_ids.isrc;
 
     identifiedSong.setLabel(identifiedAudioRecording);
     identifiedSong.setAlbum(identifiedAudioRecording);
