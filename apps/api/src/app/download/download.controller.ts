@@ -17,11 +17,13 @@ import { TwitchService } from '../twitch/twitch.service';
 import { Token, User } from '../utils/decorators';
 import { ClipDto, SuccessDto } from '@twitch-audio-copyright/data';
 import { DownloadService } from './service/download.service';
+import { ClipsService } from '../database/clip/clips.service';
 
 @Controller('/download')
 export class DownloadController {
   constructor(private readonly vodDownloadService: DownloadService,
               private readonly videosService: VideosService,
+              private readonly clipsService: ClipsService,
               private readonly authService: AuthService,
               private readonly twitchService: TwitchService) {
   }
@@ -42,7 +44,8 @@ export class DownloadController {
       await this.videosService.insertOrUpdate(user.id, twitchVideo);
       await this.vodDownloadService.scheduleVideoDownloadJob(id, authToken,
         outputPath, batchSize, deleteTempFiles).toPromise();
-      return new SuccessDto(`Download for video ${id} successfully queued.`);
+      Logger.debug(`Download for video ${id} successfully queued.`);
+      return new SuccessDto('DOWNLOAD_STARTED');
     } catch (e) {
       throw new InternalServerErrorException(e);
     }
@@ -51,14 +54,20 @@ export class DownloadController {
   @Post('/clip')
   @UseGuards(TokenGuard)
   public async downloadClip(@Token() token: string,
-                            @Body() clip: ClipDto,
+                            @Body() clipDto: ClipDto,
                             @Query('output') outputPath = DownloadController.tempPath,
-                            @Query('delete_temp_files') deleteTempFiles = true): Promise<SuccessDto> {
-
-    this.vodDownloadService.scheduleClipDownloadJob(clip,
-      token, outputPath, deleteTempFiles).subscribe(() => {
-      Logger.log('Added new download job.');
-    });
-    return new SuccessDto('DOWNLOAD_STARTED');
+                            @Query('delete_temp_files') deleteTempFiles = false): Promise<SuccessDto> {
+    try {
+      const twitchVideo = await this.twitchService.getVideo(token, clipDto.video_id);
+      const video = await this.videosService.insertIfNotFound(clipDto.broadcaster_id, twitchVideo);
+      const clip = await this.clipsService.insertOrUpdate(clipDto, video);
+      this.vodDownloadService.scheduleClipDownloadJob(clip,
+        token, outputPath, deleteTempFiles).subscribe(() => {
+        Logger.debug(`Download for clip ${clipDto.id} successfully queued.`);
+      });
+      return new SuccessDto('DOWNLOAD_STARTED');
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 }

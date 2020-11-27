@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import Video, { VideoProgress } from './video.entity';
 import { HelixVideo } from 'twitch';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from '@nestjs/common';
 import { UsersService } from '../user/users.service';
+import Video from './video.entity';
+import { ProcessingProgress } from '../processing-progress';
 
 @Injectable()
 export class VideosService {
@@ -28,7 +29,15 @@ export class VideosService {
     }
   }
 
-  async updateVideoProgress(videoId: number, progress: VideoProgress): Promise<Video> {
+  async insertIfNotFound(userId: string, twitchVideo: HelixVideo): Promise<Video> {
+    const video = await this.findOne(Number.parseInt(twitchVideo.id));
+    if (!video) {
+      return await this.insertOrUpdate(userId, twitchVideo);
+    }
+    return video;
+  }
+
+  async updateVideoProgress(videoId: number, progress: ProcessingProgress): Promise<Video> {
     const video = await this.videosRepository.findOne(videoId);
     if (video) {
       try {

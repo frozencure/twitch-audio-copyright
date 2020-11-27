@@ -9,12 +9,14 @@ import Video from './video/video.entity';
 import { UsersService } from './user/users.service';
 import { VideosService } from './video/videos.service';
 import { IdentifiedSongsService } from './identified-song/identified-songs.service';
+import { ClipsService } from './clip/clips.service';
+import Clip from './clip/clip.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Album, Artist,
-    IdentifiedSong, Label, Video, User]), HttpModule],
-  providers: [UsersService, VideosService, IdentifiedSongsService],
-  exports: [UsersService, VideosService, IdentifiedSongsService]
+    IdentifiedSong, Label, Video, User, Clip]), HttpModule],
+  providers: [UsersService, VideosService, IdentifiedSongsService, ClipsService],
+  exports: [UsersService, VideosService, IdentifiedSongsService, ClipsService]
 })
 export class DatabaseModule {
 }
