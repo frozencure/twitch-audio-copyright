@@ -6,6 +6,7 @@ import { thumbnailUrl, videoCompareCresc, videoCompareDesc } from '../../utils/v
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { catchError, map, mergeMap, startWith, switchMap } from 'rxjs/operators';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-video-container',
@@ -19,9 +20,11 @@ export class VideoContainerComponent implements AfterViewInit {
   public videos: Video[];
   public type: string;
   public isLoadingResults: boolean;
-  public displayedColumns: string[] = ['info', 'title', 'created_at', 'views'];
+  public displayedColumns: string[] = ['select', 'info', 'title', 'created_at', 'views'];
   public resultsLength = 0;
   public getThumbnailUrl = thumbnailUrl;
+  selection = new SelectionModel<Video>(true, []);
+
   private videoSoretedCresc = false;
 
   constructor(private actRoute: ActivatedRoute) {
@@ -42,7 +45,6 @@ export class VideoContainerComponent implements AfterViewInit {
           return data.routeResolver.stream;
         }),
         map((streams: any[]) => {
-          console.log(streams);
           this.isLoadingResults = false;
           if (this.videoSoretedCresc) {
             this.videoSoretedCresc = false;
@@ -55,7 +57,31 @@ export class VideoContainerComponent implements AfterViewInit {
         catchError(() => {
           this.isLoadingResults = false;
           return of([]);
-        })).subscribe(_loading => this.isLoadingResults = false);
+        })).subscribe(_loading => {
+      this.isLoadingResults = false;
+    });
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.videos?.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.videos.forEach(row => this.selection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: Video): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
 }
