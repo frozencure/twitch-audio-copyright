@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Video } from '../../shared/model/Video';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-video-container',
@@ -12,7 +13,10 @@ export class VideoContainerComponent implements OnInit {
   public videos$: Observable<Video[]>;
   public type: string;
 
-  constructor(private actRoute: ActivatedRoute) {
+  public firstFormGroup: FormGroup;
+  public secondFormGroup: FormGroup;
+
+  constructor(private actRoute: ActivatedRoute, private _formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
@@ -20,5 +24,12 @@ export class VideoContainerComponent implements OnInit {
       this.type = data.routeResolver.type;
       this.videos$ = data.routeResolver.stream;
     }, err => console.log(err));
+
+    this.firstFormGroup = this._formBuilder.group({
+      firstCtrl: ['', Validators.required]
+    });
+    this.secondFormGroup = this._formBuilder.group({
+      secondCtrl: ['', Validators.required]
+    });
   }
 }

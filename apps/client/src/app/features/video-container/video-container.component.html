@@ -1,3 +1,21 @@
 <section class="px-20 mt-20">
-  <app-video-table [videos$]="videos$"></app-video-table>
+  <mat-horizontal-stepper [linear]="false" #stepper>
+    <mat-step [stepControl]="firstFormGroup" label="Choose the videos">
+      <form [formGroup]="firstFormGroup">
+        <app-video-table [videos$]="videos$"></app-video-table>
+        <div class="frow justify-end mt-10">
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup" label="Confirm your selection">
+      <form [formGroup]="secondFormGroup">
+        <app-confirm-videos></app-confirm-videos>
+        <div class="frow justify-between mt-10">
+          <button mat-raised-button (click)="stepper.reset()">Reset</button>
+          <button mat-raised-button color="primary">Done</button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
 </section>

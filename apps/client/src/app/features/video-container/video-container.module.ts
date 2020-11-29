@@ -4,13 +4,21 @@ import { VideoResolver } from './video.resolver.service';
 import { CommonModule } from '@angular/common';
 import { ClipItemModule } from '../clip-item/clip-item.module';
 import { VideoTableModule } from '../video-table/video-table.module';
+import { ConfirmVideosModule } from '../confirm-videos/confirm-videos.module';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [VideoContainerComponent],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     VideoTableModule,
-    ClipItemModule
+    ConfirmVideosModule,
+    ClipItemModule,
+    MatStepperModule,
+    MatButtonModule
   ],
   exports: [VideoContainerComponent],
   providers: [VideoResolver]
