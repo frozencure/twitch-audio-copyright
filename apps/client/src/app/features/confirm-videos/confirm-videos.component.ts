@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Video } from '../../shared/model/Video';
 
 @Component({
   selector: 'app-confirm-videos',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./confirm-videos.component.scss']
 })
 export class ConfirmVideosComponent implements OnInit {
+
+  @Input() selectedVideos: Video[];
 
   constructor() {
   }

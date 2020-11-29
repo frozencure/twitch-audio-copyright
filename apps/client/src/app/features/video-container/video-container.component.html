@@ -2,7 +2,7 @@
   <mat-horizontal-stepper [linear]="false" #stepper class="mat-elevation-z8 border-radius-4">
     <mat-step [stepControl]="firstFormGroup" label="Choose the videos">
       <form [formGroup]="firstFormGroup">
-        <app-video-table [videos$]="videos$"></app-video-table>
+        <app-video-table [videos$]="videos$" (selectedVideos)="selectVideos($event)"></app-video-table>
         <div class="frow justify-end mt-10">
           <button mat-raised-button color="primary" matStepperNext>Next</button>
         </div>
@@ -10,7 +10,7 @@
     </mat-step>
     <mat-step [stepControl]="secondFormGroup" label="Confirm your selection">
       <form [formGroup]="secondFormGroup">
-        <app-confirm-videos></app-confirm-videos>
+        <app-confirm-videos [selectedVideos]="selectedVideos"></app-confirm-videos>
         <div class="frow justify-between mt-10">
           <button mat-raised-button (click)="stepper.reset()">Reset</button>
           <button mat-raised-button color="primary">Done</button>

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Video } from '../../shared/model/Video';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -12,8 +12,9 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
   templateUrl: './video-table.component.html',
   styleUrls: ['./video-table.component.scss']
 })
-export class VideoTableComponent implements AfterViewInit {
+export class VideoTableComponent implements OnInit, AfterViewInit {
   @Input() videos$: Observable<Video[]>;
+  @Output() selectedVideos: EventEmitter<Video[]> = new EventEmitter();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -23,12 +24,15 @@ export class VideoTableComponent implements AfterViewInit {
   public displayedColumns: string[] = ['select', 'info', 'title', 'created_at', 'views'];
   public getThumbnailUrl = thumbnailUrl;
   public videos: Video[] = [];
-  selection = new SelectionModel<Video>(true, []);
-
+  public selection = new SelectionModel<Video>(true, []);
   private videoSortedCresc = false;
 
   constructor() {
     this.isLoadingResults = true;
+  }
+
+  ngOnInit(): void {
+    this.selection.changed.asObservable().subscribe(data => this.selectedVideos.emit(data.source.selected));
   }
 
   ngAfterViewInit(): void {
@@ -67,7 +71,7 @@ export class VideoTableComponent implements AfterViewInit {
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.videos.forEach(row => this.selection.select(row));
+      this.selection.select(...this.videos);
   }
 
   /** The label for the checkbox on the passed row */

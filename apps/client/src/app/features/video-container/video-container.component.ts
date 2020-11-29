@@ -15,6 +15,7 @@ export class VideoContainerComponent implements OnInit {
 
   public firstFormGroup: FormGroup;
   public secondFormGroup: FormGroup;
+  public selectedVideos: Video[] = [];
 
   constructor(private actRoute: ActivatedRoute, private _formBuilder: FormBuilder) {
   }
@@ -31,5 +32,9 @@ export class VideoContainerComponent implements OnInit {
     this.secondFormGroup = this._formBuilder.group({
       secondCtrl: ['', Validators.required]
     });
+  }
+
+  public selectVideos(event) {
+    this.selectedVideos = event;
   }
 }
