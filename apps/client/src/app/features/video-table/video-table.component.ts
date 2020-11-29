@@ -21,9 +21,8 @@ export class VideoTableComponent implements AfterViewInit {
   public type: string;
   public isLoadingResults: boolean;
   public displayedColumns: string[] = ['select', 'info', 'title', 'created_at', 'views'];
-  public resultsLength = 0;
   public getThumbnailUrl = thumbnailUrl;
-  public videos: Video[];
+  public videos: Video[] = [];
   selection = new SelectionModel<Video>(true, []);
 
   private videoSortedCresc = false;

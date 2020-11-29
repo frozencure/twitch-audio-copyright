@@ -1,5 +1,5 @@
-<section class="px-20 mt-20">
-  <mat-horizontal-stepper [linear]="false" #stepper>
+<section class="px-20 mt-20 frow-container">
+  <mat-horizontal-stepper [linear]="false" #stepper class="mat-elevation-z8 border-radius-4">
     <mat-step [stepControl]="firstFormGroup" label="Choose the videos">
       <form [formGroup]="firstFormGroup">
         <app-video-table [videos$]="videos$"></app-video-table>

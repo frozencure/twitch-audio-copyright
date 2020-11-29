@@ -1,4 +1,4 @@
-<div class="example-container mat-elevation-z8">
+<div class="example-container">
   <div class="example-loading-shade"
        *ngIf="isLoadingResults">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
@@ -61,5 +61,6 @@
     </table>
   </div>
 
-  <mat-paginator [length]="resultsLength" [pageSize]="30"></mat-paginator>
+  <mat-paginator [length]="this.videos.length" pageSize="5" [pageSizeOptions]="[5, 10, 25, 100]"
+                 color="primary"></mat-paginator>
 </div>
