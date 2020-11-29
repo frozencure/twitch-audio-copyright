@@ -4,7 +4,8 @@
       <form [formGroup]="firstFormGroup">
         <app-video-table [videos$]="videos$" (selectedVideos)="selectVideos($event)"></app-video-table>
         <div class="frow justify-end mt-10">
-          <button mat-raised-button color="primary" matStepperNext>Next</button>
+          <button mat-raised-button color="primary" [disabled]="selectedVideos.length<1"
+                  matStepperNext>{{ 'Select ' + selectedVideos.length + ' items'}}</button>
         </div>
       </form>
     </mat-step>
