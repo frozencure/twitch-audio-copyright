@@ -21,7 +21,7 @@ export class VideoTableComponent implements OnInit, AfterViewInit {
 
   public type: string;
   public isLoadingResults: boolean;
-  public displayedColumns: string[] = ['select', 'info', 'title', 'created_at', 'views'];
+  public displayedColumns = ['select', 'info', 'title', 'created_at', 'views'];
   public getThumbnailUrl = thumbnailUrl;
   public videos: Video[] = [];
   public selection = new SelectionModel<Video>(true, []);

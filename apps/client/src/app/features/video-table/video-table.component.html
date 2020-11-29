@@ -1,11 +1,11 @@
-<div class="example-container">
-  <div class="example-loading-shade"
+<div class="table-container">
+  <div class="loading-shade"
        *ngIf="isLoadingResults">
     <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
   </div>
 
-  <div class="example-table-container">
-    <table mat-table [dataSource]="videos" class="example-table"
+  <div class="table-inner-table-container">
+    <table mat-table [dataSource]="videos" class="table-item"
            matSort matSortActive="views" matSortDisableClear matSortDirection="desc">
 
       <!-- Checkbox Column -->

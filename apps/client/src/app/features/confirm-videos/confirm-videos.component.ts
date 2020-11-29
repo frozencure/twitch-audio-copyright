@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Video } from '../../shared/model/Video';
+import { thumbnailUrl } from '../../utils/video.manager';
 
 @Component({
   selector: 'app-confirm-videos',
@@ -9,6 +10,8 @@ import { Video } from '../../shared/model/Video';
 export class ConfirmVideosComponent implements OnInit {
 
   @Input() selectedVideos: Video[];
+  displayedColumns = ['info', 'title', 'created_at', 'views'];
+  public getThumbnailUrl = thumbnailUrl;
 
   constructor() {
   }
