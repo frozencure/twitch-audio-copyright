@@ -1,9 +1,11 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { UserCookieModel } from '../auth/model/user-cookie-model';
 
 export const User = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return request.cookies.token;
+    const userString = request.cookies.user;
+    return JSON.parse(userString) as UserCookieModel;
   }
 );
 
