@@ -12,6 +12,7 @@ import { AcrCloudProcessingModule } from './acr_cloud/acr-cloud-processing.modul
 import { TwitchModule } from './twitch/twitch.module';
 import { LoggingModule } from './logging/logging.module';
 import { QueueModule } from './queue/queue.module';
+import { VideoModule } from './video/video.module';
 
 @Module({
   imports: [
@@ -37,7 +38,8 @@ import { QueueModule } from './queue/queue.module';
     AcrCloudProcessingModule,
     TwitchModule,
     LoggingModule,
-    QueueModule
+    QueueModule,
+    VideoModule
   ],
   controllers: [AppController],
   providers: [AppService]

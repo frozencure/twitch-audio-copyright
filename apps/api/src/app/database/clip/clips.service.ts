@@ -3,12 +3,13 @@ import { ClipDto } from '@twitch-audio-copyright/data';
 import Clip from './clip.entity';
 import { VideosService } from '../video/videos.service';
 import { UsersService } from '../user/users.service';
-import { UserNotFoundError, VideoNotFoundError } from '../errors';
+import { ClipNotFoundError, UserNotFoundError, VideoNotFoundError } from '../errors';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import Video from '../video/video.entity';
-import { ProcessingProgress } from '../processing-progress';
+import { ProcessingProgress } from '@twitch-audio-copyright/data';
+import { UserActionType } from '@twitch-audio-copyright/data';
 
 @Injectable()
 export class ClipsService {
@@ -37,22 +38,34 @@ export class ClipsService {
     return await this.clipsRepository.findOne(clipId);
   }
 
-  async updateProgress(clipId: string, progress: ProcessingProgress): Promise<Clip> {
+  async updateClip(clipId: string, progress?: ProcessingProgress,
+                   userActionType?: UserActionType): Promise<Clip> {
     const clip = await this.clipsRepository.findOne(clipId);
-    if (clip) {
-      try {
-        clip.progress = progress;
-        Logger.debug(`Updating progress for clip ${clipId} to ${progress}`);
-        return await clip.save();
-      } catch (e) {
-        return Promise.reject(e);
-      }
-    } else {
-      return Promise.reject(`Could not update progress. Clip with ID ${clip} does not exist.`);
+    if (!clip) {
+      throw new ClipNotFoundError(`Clip ${clipId} does not exist in the database.`);
     }
+    let debugMessage = `Updating clip ${clipId}`;
+    if (progress) {
+      debugMessage += ` From ${clip.progress} to ${progress},`
+      clip.progress = progress;
+    }
+    if (userActionType) {
+      debugMessage += ` From ${clip.userAction} to ${userActionType}.`
+      clip.userAction = userActionType;
+    }
+    Logger.debug(debugMessage);
+    return await clip.save();
   }
 
-
+  async hasIdentifiedSongs(clipId: string): Promise<boolean> {
+    const clip = await this.clipsRepository.findOne(clipId, {
+      relations: ['identifiedSongs']
+    });
+    if (!clip) {
+      throw new ClipNotFoundError(`Clip ${clipId} does not exist in the database.`);
+    }
+    return !!(clip.identifiedSongs && clip.identifiedSongs.length);
+  }
 }
 
 

@@ -5,7 +5,7 @@ import { Job, Queue } from 'bull';
 import { ClipAudioFile, ClipVideoFile } from '../model/clip-file';
 import { ProcessingService } from './processing.service';
 import { ClipsService } from '../../database/clip/clips.service';
-import { ProcessingProgress } from '../../database/processing-progress';
+import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
 
 @Injectable()
 export class ClipProcessCoordinator {
@@ -23,7 +23,7 @@ export class ClipProcessCoordinator {
   private updateClipProgress(): void {
     this.downloadQueue.on('active', (job: Job<ClipVideoFile>) => {
       if ('download-clip' === job.name) {
-        this.clipsService.updateProgress(job.data.clipId, ProcessingProgress.IN_PROGRESS)
+        this.clipsService.updateClip(job.data.clipId, ProcessingProgress.IN_PROGRESS)
           .then().catch(err => Logger.error(err));
       }
     });
@@ -49,11 +49,21 @@ export class ClipProcessCoordinator {
           if (result.shouldDeleteFile) {
             this.deleteAudioFile(result);
           }
-          this.clipsService.updateProgress(result.clipId, ProcessingProgress.COMPLETED)
+          this.updateClip(result.clipId)
             .then().catch(e => Logger.error(e));
         }).catch(e => Logger.error(e));
       }
     });
+  }
+
+  private async updateClip(clipId: string): Promise<void> {
+    const hasIdentifiedSongs = await this.clipsService.hasIdentifiedSongs(clipId);
+    if (hasIdentifiedSongs) {
+      await this.clipsService.updateClip(clipId, ProcessingProgress.COMPLETED,
+        UserActionType.NEEDS_ACTION);
+    } else {
+      await this.clipsService.updateClip(clipId, ProcessingProgress.COMPLETED);
+    }
   }
 
   private deleteVideoFile(videoFile: ClipVideoFile): void {

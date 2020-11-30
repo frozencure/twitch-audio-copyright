@@ -4,7 +4,7 @@ import IdentifiedSong from '../identified-song/identified-song.entity';
 import Clip from '../clip/clip.entity';
 
 import { HelixVideo } from 'twitch';
-import { ProcessingProgress } from '../processing-progress';
+import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
 
 export enum VideoType {
   UPLOAD = 'upload',
@@ -27,6 +27,7 @@ export default class Video extends BaseEntity {
   @Column('timestamp') createdAt: Date;
   @Column('timestamp') publishedAt: Date;
   @Column({ type: 'enum', enum: ProcessingProgress, default: ProcessingProgress.QUEUED }) progress: ProcessingProgress;
+  @Column({ type: 'enum', enum: UserActionType, default: UserActionType.NO_ACTION_NEEDED }) userAction: UserActionType;
 
   @ManyToOne(() => User, user => user.videos)
   user: User;
@@ -37,7 +38,8 @@ export default class Video extends BaseEntity {
   @OneToMany('Clip', 'video')
   clips: Clip[];
 
-  static FromTwitchVideo(videoDto: HelixVideo, user: User, progress = ProcessingProgress.QUEUED): Video {
+  static FromTwitchVideo(videoDto: HelixVideo, user: User, progress = ProcessingProgress.QUEUED,
+                         userActionType = UserActionType.NO_ACTION_NEEDED): Video {
     const video = new Video();
     video.id = Number.parseInt(videoDto.id);
     video.title = videoDto.title;
@@ -52,6 +54,7 @@ export default class Video extends BaseEntity {
     video.publishedAt = videoDto.publishDate;
     video.user = user;
     video.progress = progress;
+    video.userAction = userActionType;
     return video;
   }
 }
