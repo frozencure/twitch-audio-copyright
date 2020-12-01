@@ -44,7 +44,7 @@ export class AuthService {
       method: 'GET',
       headers: {
         Accept: '*/*',
-        'Authorization': `OAuth ${ authToken }`
+        'Authorization': `OAuth ${authToken}`
       }
     } as RequestInit;
 

@@ -6,11 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './config/typeorm-config.service';
 import config from './config/config';
 import { AuthModule } from './auth/auth.module';
-import { VodDownloadModule } from './vod/vod-download.module';
+import { DownloadModule } from './download/download.module';
 import { BullModule } from '@nestjs/bull';
-import { AudioProcessingModule } from './acr_cloud/audio-processing.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { AcrCloudProcessingModule } from './acr_cloud/acr-cloud-processing.module';
+import { TwitchModule } from './twitch/twitch.module';
+import { LoggingModule } from './logging/logging.module';
+import { QueueModule } from './queue/queue.module';
+import { VideoModule } from './video/video.module';
+import { ClipModule } from './clips/clip.module';
 
 @Module({
   imports: [
@@ -32,8 +35,13 @@ import { join } from 'path';
       inject: [ConfigService]
     }),
     AuthModule,
-    VodDownloadModule,
-    AudioProcessingModule
+    DownloadModule,
+    AcrCloudProcessingModule,
+    TwitchModule,
+    LoggingModule,
+    QueueModule,
+    VideoModule,
+    ClipModule
   ],
   controllers: [AppController],
   providers: [AppService]

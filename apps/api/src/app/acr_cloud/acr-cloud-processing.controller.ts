@@ -1,12 +1,11 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { AcrCloudService } from './acr-cloud.service';
-import { IdentifiedAudioRecording } from './model/identified-audio-recording';
 
 
 @Controller('/acr_cloud')
-export class AudioProcessingController {
+export class AcrCloudProcessingController {
 
-  static readonly testPath = '/home/iancu/Downloads/m3u8/794175057/794175057_0.ogg';
+  static readonly testPath = '/home/iancu/Downloads/m3u8/794175057/7941750573_0.ogg';
 
   constructor(private readonly audioProcessingService: AcrCloudService) {
   }
@@ -14,9 +13,8 @@ export class AudioProcessingController {
 
   @Get('fingerprint')
   public async fingerprint(@Param('input') inputFile =
-                             AudioProcessingController.testPath):
-    Promise<IdentifiedAudioRecording> {
+                             AcrCloudProcessingController.testPath) {
     const res = await this.audioProcessingService.identify(inputFile);
-    return res.metadata.music[0];
+    return res.acrCloudDto.metadata.music[0];
   }
 }

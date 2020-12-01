@@ -1,24 +1,23 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import * as FfmpegCommand from 'fluent-ffmpeg';
-import { VodAudioFile, VodVideoFile } from '../vod/model/vod-file';
+import { VodAudioFile, VodVideoFile } from '../download/model/vod-file';
 import * as path from 'path';
-import { VodSegmentList } from '../vod/model/vod-segment-list';
-import { ClipAudioFile, ClipVideoFile } from '../vod/model/clip-file';
+import { VodSegmentList } from '../download/model/vod-segment-list';
+import { ClipAudioFile, ClipVideoFile } from '../download/model/clip-file';
 
 @Processor('ffmpeg')
 export class FfmpegProcessor {
 
-  @Process({ name: 'extract-audio', concurrency: 1 })
+  @Process({ name: 'extract-audio-vod', concurrency: 1 })
   public async extractAudioFromVideoFileProcessor(job: Job<VodVideoFile>): Promise<VodAudioFile> {
     return await this.extractAudioFromVideoFile(job);
   }
 
   @Process({ name: 'extract-audio-clip', concurrency: 1 })
-  public async extractAudioFromClipFileProcessor(job: Job<ClipVideoFile>): Promise<ClipVideoFile> {
+  public async extractAudioFromClipFileProcessor(job: Job<ClipVideoFile>): Promise<ClipAudioFile> {
     return await this.extractAudioFromClipFile(job);
   }
-
 
   @Process('split-audio')
   public async splitAudioFile(job: Job<VodAudioFile>): Promise<VodSegmentList> {
@@ -30,7 +29,7 @@ export class FfmpegProcessor {
       const mergeCommand = FfmpegCommand();
       const listFilePath = `${path.dirname(vodAudioFileJob.data.filePath)}/${vodAudioFileJob.data.vodId}.txt`;
       mergeCommand.input(vodAudioFileJob.data.filePath)
-        .addOutputOption(['-f segment', `-segment_time ${vodAudioFileJob.data.chunkLength}`])
+        .addOutputOption(['-f segment', `-segment_time ${vodAudioFileJob.data.chunkLengthInSeconds}`])
         .addOutputOption([`-segment_list ${listFilePath}`])
         .addOutputOption(['-c copy'])
         .output(`${path.dirname(vodAudioFileJob.data.filePath)}/${vodAudioFileJob.data.vodId}_%01d.ogg`)
@@ -55,7 +54,7 @@ export class FfmpegProcessor {
       mergeCommand.outputOptions('-vn').output(outputPath)
         .on('end', () => {
           resolve(new VodAudioFile(outputPath, job.data.vodId,
-            job.data.chunkLength, job.data.shouldDeleteFile,
+            job.data.chunkLengthInSeconds, job.data.shouldDeleteFile,
             job.data.downloadUrl));
         }).on('progress', progress => {
         if (progress.percent % 1 == 0) {

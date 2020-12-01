@@ -25,7 +25,10 @@ export class VodSegmentList {
         if (err) {
           reject(err);
         }
-        const fileNames = data.split('\n').filter(filename => filename != '');
+        const fileNames = data.split('\n').filter(filename => filename !== '');
+        if(fileNames.length === 0) {
+          reject(`No audio chunks could be retrieved for the given segment list: ${this.filePath}`)
+        }
         resolve(fileNames.map((fileName, _, filenames) => new AudioChunkFile(
           `${dir}/${fileName}`,
           Number.parseInt(fileName.match(/\d+/g)[1]),

@@ -5,9 +5,9 @@ import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { VodVideoFile } from '../model/vod-file';
 import { VodDownloadDto } from '../model/vod-download-dto';
-import { ClipDto } from '@twitch-audio-copyright/data';
 import { getClipUrl } from '../../utils/url.manager';
 import { ClipFile } from '../model/clip-file';
+import Clip from '../../database/clip/clip.entity';
 
 @Injectable()
 export class DownloadService {
@@ -16,22 +16,22 @@ export class DownloadService {
               @InjectQueue('download') private readonly downloadQueue: Queue) {
   }
 
-  public scheduleDownloadJob(vodId: number, authToken: string, outputPath: string,
-                             chunkLength: number, deleteTempFiles = true,
-                             intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
+  public scheduleVideoDownloadJob(vodId: number, authToken: string, outputPath: string,
+                                  chunkLength: number, deleteTempFiles = true,
+                                  intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
     return this.getVodDownloadModel(vodId, authToken, intervalPeriod).pipe(
       mergeMap(downloadModelDto => {
           const vodDownload = new VodVideoFile(`${outputPath}/${vodId}/${vodId}.mp4`,
             vodId, chunkLength, deleteTempFiles, downloadModelDto.download_url);
-          return from(this.downloadQueue.add('download-vod', vodDownload)) as Observable<Job<VodVideoFile>>;
+          return from(this.downloadQueue.add('download-video', vodDownload)) as Observable<Job<VodVideoFile>>;
         }
       ));
   }
 
-  public scheduleClipDownloadJob(clip: ClipDto, authToken: string, outputPath: string,
+  public scheduleClipDownloadJob(clip: Clip, authToken: string, outputPath: string,
                                  deleteTempFiles = true): Observable<Job<ClipFile>> {
     const clipDownload = new ClipFile(`${outputPath}/${clip.id}.mp4`,
-      clip.id, deleteTempFiles, getClipUrl(clip.thumbnail_url));
+      clip.id, deleteTempFiles, getClipUrl(clip.thumbnailUrl));
     return from(this.downloadQueue.add('download-clip', clipDownload)) as Observable<Job<ClipFile>>;
   }
 

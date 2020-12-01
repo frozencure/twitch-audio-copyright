@@ -1,9 +1,4 @@
-export class SuccessDto {
-  constructor(public message = 'success') {
-  }
-}
-
-export interface ClipDto {
+export interface TwitchClipDto {
   'id': string,
   'url': string,
   'embed_url': string,
@@ -11,11 +6,11 @@ export interface ClipDto {
   'broadcaster_name': string,
   'creator_id': string,
   'creator_name': string,
-  'video_id': string,
+  'video_id': number,
   'game_id': string,
   'language': string,
   'title': string,
   'view_count': number,
-  'created_at': string,
+  'created_at': Date,
   'thumbnail_url': string
 }
