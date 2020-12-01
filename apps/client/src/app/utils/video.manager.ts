@@ -22,6 +22,40 @@ export const duration = (duration: string) => {
   return duration.replace('h', ':').replace('m', ':').replace('s', '');
 };
 
+export const getMillisFromString = (duration: string) => {
+  const hours = duration.slice(0, duration.indexOf('h'));
+  const minutes = duration.slice(duration.indexOf('h') + 1, duration.indexOf('m'));
+  const seconds = duration.slice(duration.indexOf('m') + 1, duration.indexOf('s'));
+  return parseInt(hours, 10) * 1000 * 60 * 60 + parseInt(minutes) * 1000 * 60 + parseInt(seconds) * 1000;
+};
+
+export const getStringFromMilliseconds = (milliseconds: number) => {
+  let minutes, seconds, result = '';
+  const totalSeconds = milliseconds / 1000;
+  const totalMinutes = totalSeconds / 60;
+  const totalHours = totalMinutes / 60;
+
+  seconds = Math.floor(totalSeconds) % 60;
+  minutes = Math.floor(totalMinutes) % 60;
+  const hours = Math.floor(totalHours) % 60;
+
+  if (hours !== 0) {
+    result += hours + ':';
+
+    if (minutes.toString().length == 1) {
+      minutes = '0' + minutes;
+    }
+  }
+  result += minutes + ':';
+
+  if (seconds.toString().length == 1) {
+    seconds = '0' + seconds;
+  }
+
+  result += seconds;
+  return result;
+};
+
 export const timeSince = (createdAt) => {
   const date = new Date();
   const videoDate = new Date(createdAt);

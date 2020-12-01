@@ -1,22 +1,17 @@
-<section class="px-20 mt-20 frow-container">
+<section class="mt-20 frow-container">
   <mat-horizontal-stepper [linear]="false" #stepper class="mat-elevation-z8 border-radius-4">
-    <mat-step [stepControl]="firstFormGroup" label="Choose the videos">
-      <form [formGroup]="firstFormGroup">
-        <app-video-table [videos$]="videos$" (selectedVideos)="selectVideos($event)"></app-video-table>
-        <div class="frow justify-end mt-10">
-          <button mat-raised-button color="primary" [disabled]="selectedVideos.length<1"
-                  matStepperNext>{{ 'Select ' + selectedVideos.length + ' items'}}</button>
-        </div>
-      </form>
+    <mat-step label="Choose the videos">
+      <app-video-table [videos$]="videos$" (selectedVideos)="selectVideos($event)"></app-video-table>
+      <div class="frow justify-end mt-10">
+        <button mat-raised-button color="primary" [disabled]="selectedVideos.length<1"
+                matStepperNext>{{ 'Select ' + selectedVideos.length + ' items'}}</button>
+      </div>
     </mat-step>
-    <mat-step [stepControl]="secondFormGroup" label="Confirm your selection">
-      <form [formGroup]="secondFormGroup">
-        <app-confirm-videos [selectedVideos]="selectedVideos"></app-confirm-videos>
-        <div class="frow justify-between mt-10">
-          <button mat-raised-button (click)="stepper.reset()">Reset</button>
-          <button mat-raised-button color="primary">Done</button>
-        </div>
-      </form>
+    <mat-step label="Confirm your selection">
+      <app-confirm-videos [selectedVideos]="selectedVideos"></app-confirm-videos>
+      <div class="frow justify-between mt-10">
+        <button mat-raised-button (click)="stepper.reset()">Reset</button>
+      </div>
     </mat-step>
   </mat-horizontal-stepper>
 </section>
