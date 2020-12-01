@@ -2,15 +2,8 @@ import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 
 import User from '../user/user.entity';
 import IdentifiedSong from '../identified-song/identified-song.entity';
 import Clip from '../clip/clip.entity';
-
 import { HelixVideo } from 'twitch';
-import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
-
-export enum VideoType {
-  UPLOAD = 'upload',
-  ARCHIVE = 'archive',
-  HIGHLIGHT = 'highlight'
-}
+import { ProcessingProgress, UserActionType, VideoType } from '@twitch-audio-copyright/data';
 
 @Entity('video')
 export default class Video extends BaseEntity {

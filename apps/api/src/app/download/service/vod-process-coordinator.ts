@@ -29,8 +29,10 @@ export class VodProcessCoordinator {
   private updateVideoProgress(): void {
     this.downloadQueue.on('active', (job: Job<VodVideoFile>) => {
       if ('download-video' === job.name) {
-        this.videosService.updateVideo(job.data.vodId, ProcessingProgress.IN_PROGRESS)
-          .catch(err => Logger.error(err));
+        this.videosService.updateVideo({
+          id: job.data.vodId,
+          progress: ProcessingProgress.IN_PROGRESS
+        }).catch(err => Logger.error(err));
       }
     });
   }
@@ -95,12 +97,16 @@ export class VodProcessCoordinator {
   private async updateVideo(vodId: number): Promise<void> {
     const hasIdentifiedSongs = await this.videosService.hasIdentifiedSongs(vodId);
     if (hasIdentifiedSongs) {
-      await this.videosService.updateVideo(vodId,
-        ProcessingProgress.COMPLETED,
-        UserActionType.NEEDS_ACTION);
+      await this.videosService.updateVideo({
+        id: vodId,
+        progress: ProcessingProgress.COMPLETED,
+        userAction: UserActionType.NEEDS_ACTION
+      });
     } else {
-      await this.videosService.updateVideo(vodId,
-        ProcessingProgress.COMPLETED);
+      await this.videosService.updateVideo({
+        id: vodId,
+        progress: ProcessingProgress.COMPLETED
+      });
     }
   }
 

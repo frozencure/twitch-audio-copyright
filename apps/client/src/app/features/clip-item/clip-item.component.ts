@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { timeSince, views, withWidthAndHeight } from '../../utils/video.manager';
-import { ClipDto } from '@twitch-audio-copyright/data';
+import { TwitchClipDto } from '@twitch-audio-copyright/data';
 import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { DashboardService } from '../../core/services/dashboard.service';
   styleUrls: ['./clip-item.component.scss']
 })
 export class ClipItemComponent implements OnInit {
-  @Input() clip: ClipDto;
+  @Input() clip: TwitchClipDto;
   public backgroundUrl: string;
   public duration;
   public views;

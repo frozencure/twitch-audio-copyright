@@ -23,8 +23,10 @@ export class ClipProcessCoordinator {
   private updateClipProgress(): void {
     this.downloadQueue.on('active', (job: Job<ClipVideoFile>) => {
       if ('download-clip' === job.name) {
-        this.clipsService.updateClip(job.data.clipId, ProcessingProgress.IN_PROGRESS)
-          .then().catch(err => Logger.error(err));
+        this.clipsService.updateClip({
+          id: job.data.clipId,
+          progress: ProcessingProgress.IN_PROGRESS
+        }).then().catch(err => Logger.error(err));
       }
     });
   }
@@ -59,10 +61,16 @@ export class ClipProcessCoordinator {
   private async updateClip(clipId: string): Promise<void> {
     const hasIdentifiedSongs = await this.clipsService.hasIdentifiedSongs(clipId);
     if (hasIdentifiedSongs) {
-      await this.clipsService.updateClip(clipId, ProcessingProgress.COMPLETED,
-        UserActionType.NEEDS_ACTION);
+      await this.clipsService.updateClip({
+        id: clipId,
+        progress: ProcessingProgress.COMPLETED,
+        userAction: UserActionType.NEEDS_ACTION
+      });
     } else {
-      await this.clipsService.updateClip(clipId, ProcessingProgress.COMPLETED);
+      await this.clipsService.updateClip({
+        id: clipId,
+        progress: ProcessingProgress.COMPLETED
+      });
     }
   }
 
