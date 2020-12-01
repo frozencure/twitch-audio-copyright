@@ -7,7 +7,7 @@ import { first, map } from 'rxjs/operators';
 import { Store } from '@ngxs/store';
 import { UserModel } from '../../store/auth.state';
 import { environment } from '../../../environments/environment';
-import { ClipDto, SuccessDto } from '@twitch-audio-copyright/data';
+import { TwitchClipDto, SuccessDto } from '@twitch-audio-copyright/data';
 
 @Injectable()
 export class DashboardService {
@@ -27,9 +27,9 @@ export class DashboardService {
       .pipe(first(), map(w => w.data));
   }
 
-  public getClips(firstString = '100'): Observable<Array<ClipDto>> {
+  public getClips(firstString = '100'): Observable<Array<TwitchClipDto>> {
     const credentials = this.getTokenAndUser();
-    return this.http.get<HelixWrapper<ClipDto>>
+    return this.http.get<HelixWrapper<TwitchClipDto>>
     (`https://api.twitch.tv/helix/clips?broadcaster_id=${credentials.user.id}&first=${firstString} `, {
       headers: {
         'Authorization': `Bearer ${credentials.token}`,
@@ -39,7 +39,7 @@ export class DashboardService {
       .pipe(first(), map(w => w.data));
   }
 
-  public processClip(clip: ClipDto): Observable<SuccessDto> {
+  public processClip(clip: TwitchClipDto): Observable<SuccessDto> {
     return this.http.post<SuccessDto>('api/download/clip', clip).pipe(first());
   }
 

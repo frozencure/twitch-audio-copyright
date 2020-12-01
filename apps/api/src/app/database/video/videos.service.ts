@@ -5,9 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from '@nestjs/common';
 import { UsersService } from '../user/users.service';
 import Video from './video.entity';
-import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
-import { ClipNotFoundError, VideoNotFoundError } from '../errors';
-import Clip from '../clip/clip.entity';
+import { ProcessingProgress, UserActionType, PartialVideoDto } from '@twitch-audio-copyright/data';
+import { VideoNotFoundError } from '../errors';
 
 @Injectable()
 export class VideosService {
@@ -39,31 +38,23 @@ export class VideosService {
     return video;
   }
 
-  async updateVideo(videoId: number, progress?: ProcessingProgress,
-                   userActionType?: UserActionType): Promise<Video> {
-    const video = await this.videosRepository.findOne(videoId);
+  async updateVideo(videoDto: PartialVideoDto): Promise<Video> {
+    let video = await this.videosRepository.findOne(videoDto.id);
     if (!video) {
-      throw new VideoNotFoundError(`Video ${videoId} does not exist in the database.`);
+      throw new VideoNotFoundError(`Video ${videoDto.id} does not exist in the database.`);
     }
-    let debugMessage = `Updating video ${videoId}`;
-    if (progress) {
-      debugMessage += ` From ${video.progress} to ${progress},`
-      video.progress = progress;
-    }
-    if (userActionType) {
-      debugMessage += ` From ${video.userAction} to ${userActionType}.`
-      video.userAction = userActionType;
-    }
-    Logger.debug(debugMessage);
+    video = Object.assign(video, videoDto);
+    Logger.debug(`Updating video ${video.id} to ${videoDto}`);
     return await video.save();
   }
 
-  async findOne(videoId: number): Promise<Video> {
-    return await this.videosRepository.findOne(videoId);
+  async findOne(videoId: number, relations?: string[]): Promise<Video> {
+    return await this.videosRepository.findOne(videoId,
+      { relations: relations });
   }
 
-  async getVideos(userId: string, progress?: ProcessingProgress,
-                  actionType?: UserActionType): Promise<Video[]> {
+  async findAll(userId: string, progress?: ProcessingProgress,
+                actionType?: UserActionType): Promise<Video[]> {
     let query = this.videosRepository.createQueryBuilder('video')
       .leftJoin('video.user', 'user')
       .where('user.id = :id', { id: userId });
@@ -80,7 +71,7 @@ export class VideosService {
 
   async hasIdentifiedSongs(videoId: number): Promise<boolean> {
     const video = await this.videosRepository.findOne(videoId,
-      {relations: ['identifiedSongs']});
+      { relations: ['identifiedSongs'] });
     if (!video) {
       throw new VideoNotFoundError(`Video ${videoId} does not exist in the database.`);
     }

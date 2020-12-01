@@ -15,7 +15,7 @@ import { UserCookieModel } from '../auth/model/user-cookie-model';
 import { AuthService } from '../auth/auth.service';
 import { TwitchService } from '../twitch/twitch.service';
 import { Token, User } from '../utils/decorators';
-import { ClipDto, SuccessDto } from '@twitch-audio-copyright/data';
+import { TwitchClipDto, SuccessDto } from '@twitch-audio-copyright/data';
 import { DownloadService } from './service/download.service';
 import { ClipsService } from '../database/clip/clips.service';
 
@@ -54,7 +54,7 @@ export class DownloadController {
   @Post('/clip')
   @UseGuards(TokenGuard)
   public async downloadClip(@Token() token: string,
-                            @Body() clipDto: ClipDto,
+                            @Body() clipDto: TwitchClipDto,
                             @Query('output') outputPath = DownloadController.tempPath,
                             @Query('delete_temp_files') deleteTempFiles = false): Promise<SuccessDto> {
     try {

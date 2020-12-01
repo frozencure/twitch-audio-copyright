@@ -13,6 +13,7 @@ import { TwitchModule } from './twitch/twitch.module';
 import { LoggingModule } from './logging/logging.module';
 import { QueueModule } from './queue/queue.module';
 import { VideoModule } from './video/video.module';
+import { ClipModule } from './clips/clip.module';
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { VideoModule } from './video/video.module';
     TwitchModule,
     LoggingModule,
     QueueModule,
-    VideoModule
+    VideoModule,
+    ClipModule
   ],
   controllers: [AppController],
   providers: [AppService]

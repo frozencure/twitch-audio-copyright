@@ -1,16 +1,28 @@
+import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
+
+
 export interface ClipDto {
-  'id': string,
-  'url': string,
-  'embed_url': string,
-  'broadcaster_id': string,
-  'broadcaster_name': string,
-  'creator_id': string,
-  'creator_name': string,
-  'video_id': number,
-  'game_id': string,
-  'language': string,
-  'title': string,
-  'view_count': number,
-  'created_at': Date,
-  'thumbnail_url': string
+  id: string;
+  title: string;
+  embedUrl: string;
+  creatorName: string;
+  gameId: string;
+  viewCount: number;
+  createdAt: Date;
+  thumbnailUrl: string;
+  progress: ProcessingProgress;
+  userAction: UserActionType;
+}
+
+export interface PartialClipDto {
+  id?: string;
+  title?: string;
+  embedUrl?: string;
+  creatorName?: string;
+  gameId?: string;
+  viewCount?: number;
+  createdAt?: Date;
+  thumbnailUrl?: string;
+  progress?: ProcessingProgress;
+  userAction?: UserActionType;
 }

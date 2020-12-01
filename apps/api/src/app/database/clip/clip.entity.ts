@@ -1,7 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import User from '../user/user.entity';
 import IdentifiedSong from '../identified-song/identified-song.entity';
-import { ClipDto } from '@twitch-audio-copyright/data';
+import { TwitchClipDto } from '@twitch-audio-copyright/data';
 import { ProcessingProgress } from '@twitch-audio-copyright/data';
 import Video from '../video/video.entity';
 import { UserActionType } from '@twitch-audio-copyright/data';
@@ -29,7 +29,7 @@ export default class Clip extends BaseEntity {
   @ManyToOne('Video', 'clips')
   video: Video;
 
-  static FromTwitchClip(twitchClipDto: ClipDto,
+  static FromTwitchClip(twitchClipDto: TwitchClipDto,
                         video: Video, user: User, progress = ProcessingProgress.QUEUED,
                         userActionType = UserActionType.NO_ACTION_NEEDED): Clip {
     const clip = new Clip();

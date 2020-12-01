@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ClipDto } from '@twitch-audio-copyright/data';
+import { PartialClipDto, ProcessingProgress, TwitchClipDto, UserActionType } from '@twitch-audio-copyright/data';
 import Clip from './clip.entity';
 import { VideosService } from '../video/videos.service';
 import { UsersService } from '../user/users.service';
@@ -8,8 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import Video from '../video/video.entity';
-import { ProcessingProgress } from '@twitch-audio-copyright/data';
-import { UserActionType } from '@twitch-audio-copyright/data';
 
 @Injectable()
 export class ClipsService {
@@ -19,7 +17,7 @@ export class ClipsService {
               @InjectRepository(Clip) private clipsRepository: Repository<Clip>) {
   }
 
-  async insertOrUpdate(twitchClipDto: ClipDto, video: Video): Promise<Clip> {
+  async insertOrUpdate(twitchClipDto: TwitchClipDto, video: Video): Promise<Clip> {
     const user = await this.usersService.findOne(twitchClipDto.broadcaster_id);
     if (!video) {
       return Promise.reject(new VideoNotFoundError(`Clip insertion faile. Video with ID ${twitchClipDto.video_id}` +
@@ -34,26 +32,35 @@ export class ClipsService {
     return clip.save();
   }
 
-  async findOne(clipId: string): Promise<Clip> {
-    return await this.clipsRepository.findOne(clipId);
+  async findOne(clipId: string, relations?: string[]): Promise<Clip> {
+    return await this.clipsRepository.findOne(clipId, {
+      relations: relations
+    });
   }
 
-  async updateClip(clipId: string, progress?: ProcessingProgress,
-                   userActionType?: UserActionType): Promise<Clip> {
-    const clip = await this.clipsRepository.findOne(clipId);
-    if (!clip) {
-      throw new ClipNotFoundError(`Clip ${clipId} does not exist in the database.`);
-    }
-    let debugMessage = `Updating clip ${clipId}`;
+  async findAll(userId: string, progress?: ProcessingProgress,
+                actionType?: UserActionType): Promise<Clip[]> {
+    let query = this.clipsRepository.createQueryBuilder('clip')
+      .leftJoin('clip.user', 'user')
+      .where('user.id = :id', { id: userId });
     if (progress) {
-      debugMessage += ` From ${clip.progress} to ${progress},`
-      clip.progress = progress;
+      query = query.andWhere('clip.progress = :progress',
+        { progress: progress });
     }
-    if (userActionType) {
-      debugMessage += ` From ${clip.userAction} to ${userActionType}.`
-      clip.userAction = userActionType;
+    if (actionType) {
+      query = query.andWhere('clip.userAction = :userAction',
+        { userAction: actionType });
     }
-    Logger.debug(debugMessage);
+    return await query.execute() as Promise<Clip[]>;
+  }
+
+  async updateClip(partialClipDto: PartialClipDto): Promise<Clip> {
+    let clip = await this.clipsRepository.findOne(partialClipDto.id);
+    clip = Object.assign(clip, partialClipDto);
+    if (!clip) {
+      throw new ClipNotFoundError(`Clip ${partialClipDto.id} does not exist in the database.`);
+    }
+    Logger.debug(`Clip ${clip.id} updated to ${partialClipDto}.`);
     return await clip.save();
   }
 
