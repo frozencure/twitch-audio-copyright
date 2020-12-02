@@ -1,5 +1,5 @@
 import { Video } from '../shared/model/Video';
-import { ClipDto } from '@twitch-audio-copyright/data';
+import { TwitchClipDto } from '@twitch-audio-copyright/data';
 
 export const withWidthAndHeight = (imageUrl: string, width: number, height: number) => {
   return imageUrl.replace('%{height}', height.toString())
@@ -84,7 +84,7 @@ export const thumbnailUrl = (thumbnailUrl: string, pixels: string) => {
   return thumbnailUrl.replace(/%{[a-zA-Z]*}/g, pixels);
 };
 
-export const videoCompareCresc = (a: Video | ClipDto, b: Video | ClipDto) => {
+export const videoCompareCresc = (a: Video | TwitchClipDto, b: Video | TwitchClipDto) => {
   if (a.view_count < b.view_count) {
     return -1;
   }
@@ -94,7 +94,7 @@ export const videoCompareCresc = (a: Video | ClipDto, b: Video | ClipDto) => {
   return 0;
 };
 
-export const videoCompareDesc = (a: Video | ClipDto, b: Video | ClipDto) => {
+export const videoCompareDesc = (a: Video | TwitchClipDto, b: Video | TwitchClipDto) => {
   if (a.view_count > b.view_count) {
     return -1;
   }
