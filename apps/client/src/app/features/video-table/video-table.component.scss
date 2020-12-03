@@ -25,19 +25,3 @@ table {
   align-items: center;
   justify-content: center;
 }
-
-.example-rate-limit-reached {
-  color: #980000;
-  max-width: 360px;
-  text-align: center;
-}
-
-/* Column Widths */
-.mat-column-number,
-.mat-column-state {
-  max-width: 64px;
-}
-
-.mat-column-created {
-  max-width: 124px;
-}
