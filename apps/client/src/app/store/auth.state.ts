@@ -1,5 +1,6 @@
 import { Selector, State, StateContext } from '@ngxs/store';
 import { EmitterAction, Receiver } from '@ngxs-labs/emitter';
+import { Injectable } from '@angular/core';
 
 export interface UserModel {
   id: string;
@@ -23,6 +24,7 @@ export interface AuthStateModel {
     user: undefined
   }
 })
+@Injectable()
 export class AuthState {
   /** sets the authenticated state - usually after a successful login */
   @Receiver()

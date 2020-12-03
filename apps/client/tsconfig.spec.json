@@ -5,6 +5,9 @@
     "module": "commonjs",
     "types": ["jest", "node"]
   },
-  "files": ["src/test-setup.ts"],
+  "files": [
+    "src/test-setup.ts",
+    "../../node_modules/cypress/types/cypress-eventemitter.d.ts"
+  ],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

@@ -1,0 +1,14 @@
+.table-container {
+  position: relative;
+  min-height: 200px;
+}
+
+.table-inner-table-container {
+  position: relative;
+  max-height: 400px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}

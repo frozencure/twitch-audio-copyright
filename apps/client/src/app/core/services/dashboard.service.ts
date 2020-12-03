@@ -15,6 +15,7 @@ export class DashboardService {
   constructor(private http: HttpClient, private store: Store) {
   }
 
+  // TODO: replace this with package twitch
   public getVideos(type = 'all', sort = 'time'): Observable<Array<Video>> {
     const credentials = this.getTokenAndUser();
     return this.http.get<HelixWrapper<Video>>

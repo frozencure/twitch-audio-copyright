@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VideoItemComponent } from './video-item.component';
+import { ConfirmVideosComponent } from './confirm-videos.component';
 
-describe('VideoItemComponent', () => {
-  let component: VideoItemComponent;
-  let fixture: ComponentFixture<VideoItemComponent>;
+describe('ConfirmVideosComponent', () => {
+  let component: ConfirmVideosComponent;
+  let fixture: ComponentFixture<ConfirmVideosComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VideoItemComponent ]
+      declarations: [ ConfirmVideosComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VideoItemComponent);
+    fixture = TestBed.createComponent(ConfirmVideosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

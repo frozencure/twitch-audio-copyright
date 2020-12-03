@@ -1,16 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Video } from '../../shared/model/Video';
 import { ActivatedRoute } from '@angular/router';
+import { Video } from '../../shared/model/Video';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-video-container',
   templateUrl: './video-container.component.html',
-  styleUrls: [ './video-container.component.scss' ]
+  styleUrls: ['./video-container.component.scss']
 })
 export class VideoContainerComponent implements OnInit {
   public videos$: Observable<Video[]>;
   public type: string;
+
+  public secondFormGroup: FormGroup;
+  public selectedVideos: Video[] = [];
 
   constructor(private actRoute: ActivatedRoute) {
   }
@@ -22,4 +26,7 @@ export class VideoContainerComponent implements OnInit {
     }, err => console.log(err));
   }
 
+  public selectVideos(event) {
+    this.selectedVideos = event;
+  }
 }

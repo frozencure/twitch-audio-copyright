@@ -66,6 +66,7 @@
     "frow": "^3.3.2",
     "gulp": "^4.0.2",
     "material-design-icons": "^3.0.1",
+    "material-icons": "^0.3.1",
     "ngx-cookie-service": "^10.1.1",
     "passport": "^0.4.1",
     "passport-twitch-new": "0.0.2",
