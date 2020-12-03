@@ -18,7 +18,7 @@ export class VideoTableComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
+ // TODO: make the sort possible on video-table.
   public type: string;
   public isLoadingResults: boolean;
   public displayedColumns = ['select', 'info', 'title', 'created_at', 'views'];

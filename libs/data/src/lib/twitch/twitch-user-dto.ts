@@ -1,4 +1,4 @@
-import { HelixBroadcasterType, HelixUserType } from 'twitch/lib/API/Helix/User/HelixUser';
+import { HelixBroadcasterType, HelixUserType } from 'twitch';
 
 export interface TwitchUserDto {
   id: string;
