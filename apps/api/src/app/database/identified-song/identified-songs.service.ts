@@ -5,12 +5,15 @@ import { VideosService } from '../video/videos.service';
 import { ClipNotFoundError, VideoNotFoundError } from '../errors';
 import { AcrEmptyResponseError } from '../../acr_cloud/model/errors';
 import { ClipsService } from '../clip/clips.service';
+import { MusicbrainzService } from '../../musicbrainz/musicbrainz.service';
+import LabelMetadata from '../entity/label-metadata.entity';
 
 @Injectable()
 export class IdentifiedSongsService {
 
   constructor(private readonly videosService: VideosService,
-              private readonly clipsService: ClipsService) {
+              private readonly clipsService: ClipsService,
+              private readonly musicBrainzService: MusicbrainzService) {
   }
 
   async insertIdentifiedSongForClip(acrDto: AcrCloudDto, clipId: string,
@@ -28,6 +31,8 @@ export class IdentifiedSongsService {
     }
     const identifiedSong = IdentifiedSong.FromAcrResponse(identifiedSongMetadata,
       identificationStart, identificationEnd, null, clip);
+    await this.setLabelMetadata(identifiedSong).catch(e =>
+      Logger.warn(`Label-metadata could not be retrieved for ISRC ${identifiedSong.isrcId}. Error: ${e}`));
     Logger.debug(`Identified song '${identifiedSong.title}' was inserted for clip ${clipId}.`);
     return await identifiedSong.save();
   }
@@ -47,7 +52,16 @@ export class IdentifiedSongsService {
     }
     const identifiedSong = IdentifiedSong.FromAcrResponse(identifiedSongMetadata,
       identificationStart, identificationEnd, video);
+    await this.setLabelMetadata(identifiedSong).catch(e =>
+      Logger.warn(`Label-metadata could not be retrieved for ISRC ${identifiedSong.isrcId}. Error: ${e}`));
     Logger.debug(`Identified song '${identifiedSong.title}' was inserted for video ${videoId}.`);
     return await identifiedSong.save();
+  }
+
+  private async setLabelMetadata(identifiedSong: IdentifiedSong): Promise<void> {
+    const labelMetadata = await this.musicBrainzService.getLabelMetadata(identifiedSong.label.name);
+    if (labelMetadata) {
+      identifiedSong.label.metadata = LabelMetadata.FromLabelMetadataModel(labelMetadata);
+    }
   }
 }

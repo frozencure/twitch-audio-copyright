@@ -11,10 +11,12 @@ import { VideosService } from './video/videos.service';
 import { IdentifiedSongsService } from './identified-song/identified-songs.service';
 import { ClipsService } from './clip/clips.service';
 import Clip from './clip/clip.entity';
+import { MusicbrainzModule } from '../musicbrainz/musicbrainz.module';
+import LabelMetadata from './entity/label-metadata.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Album, Artist,
-    IdentifiedSong, Label, Video, User, Clip]), HttpModule],
+    IdentifiedSong, Label, Video, User, Clip, LabelMetadata]), HttpModule, MusicbrainzModule],
   providers: [UsersService, VideosService, IdentifiedSongsService, ClipsService],
   exports: [UsersService, VideosService, IdentifiedSongsService, ClipsService]
 })

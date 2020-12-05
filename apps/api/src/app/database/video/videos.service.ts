@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HelixVideo } from 'twitch';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from '@nestjs/common';
 import { UsersService } from '../user/users.service';
@@ -38,14 +38,9 @@ export class VideosService {
     return video;
   }
 
-  async updateVideo(videoDto: PartialVideoDto): Promise<Video> {
-    let video = await this.videosRepository.findOne(videoDto.id);
-    if (!video) {
-      throw new VideoNotFoundError(`Video ${videoDto.id} does not exist in the database.`);
-    }
-    video = Object.assign(video, videoDto);
-    Logger.debug(`Updating video ${video.id} to ${videoDto}`);
-    return await video.save();
+  async updateVideo(videoDto: PartialVideoDto): Promise<UpdateResult> {
+    Logger.debug(`Updating video ${videoDto.id} to ${videoDto}`);
+    return await this.videosRepository.update(videoDto.id, videoDto);
   }
 
   async findOne(videoId: number, relations?: string[]): Promise<Video> {
