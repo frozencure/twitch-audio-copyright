@@ -1,4 +1,3 @@
-
 export interface WikiDataDto {
   sitelinks: WikiLinksWrapper;
   title: string;

@@ -1,6 +1,5 @@
 import { LabelDto } from './label-dto';
 
-
 export interface LabelSearchWrapper {
   created: Date;
   count: number;

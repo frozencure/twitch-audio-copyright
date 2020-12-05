@@ -2,7 +2,6 @@ import { Controller, Get, InternalServerErrorException, Query } from '@nestjs/co
 import { MusicbrainzService } from './musicbrainz.service';
 import { LabelMetadataModel } from './model/label-metadata-model';
 
-
 @Controller('/metadata')
 export class MusicbrainzController {
 
@@ -17,5 +16,4 @@ export class MusicbrainzController {
       return new InternalServerErrorException(e);
     }
   }
-
 }
