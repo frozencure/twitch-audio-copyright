@@ -74,6 +74,7 @@
     "python-shell": "^2.0.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.3",
+    "subsink": "^1.0.2",
     "twitch": "^4.3.0",
     "twitch-auth": "^4.3.0",
     "typeorm": "^0.2.29",
