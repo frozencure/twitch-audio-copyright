@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Video } from '../../shared/model/Video';
-import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-video-container',
@@ -10,10 +8,8 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./video-container.component.scss']
 })
 export class VideoContainerComponent implements OnInit {
-  public videos$: Observable<Video[]>;
-  public type: string;
+  public videos: Video[];
 
-  public secondFormGroup: FormGroup;
   public selectedVideos: Video[] = [];
 
   constructor(private actRoute: ActivatedRoute) {
@@ -21,8 +17,7 @@ export class VideoContainerComponent implements OnInit {
 
   ngOnInit(): void {
     this.actRoute.data.subscribe(data => {
-      this.type = data.routeResolver.type;
-      this.videos$ = data.routeResolver.stream;
+      this.videos = data.routeResolver;
     }, err => console.log(err));
   }
 

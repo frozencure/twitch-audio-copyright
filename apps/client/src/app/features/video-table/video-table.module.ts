@@ -11,13 +11,13 @@ import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [VideoTableComponent],
   imports: [
+    CommonModule,
     MatProgressSpinnerModule,
     MatSortModule,
     MatCheckboxModule,
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
-    CommonModule
   ],
   exports: [VideoTableComponent]
 })
