@@ -4,17 +4,17 @@
   <mat-drawer-container class="drawer-container">
     <mat-drawer #drawer mode="side" opened="true">
       <mat-selection-list [multiple]="false">
-        <mat-list-option class="px-40 hover" routerLink="container/videos">
+        <mat-list-option class="px-40 hover" routerLink="videos" routerLinkActive="mat-list-single-selected-option">
           <mat-icon mat-list-icon>videocam</mat-icon>
           Videos
         </mat-list-option>
         <mat-divider></mat-divider>
-        <mat-list-option class="px-40" routerLink="container/clips">
+        <mat-list-option class="px-40" routerLink="clips" routerLinkActive="mat-list-single-selected-option">
           <mat-icon mat-list-icon>camera</mat-icon>
           Clips
         </mat-list-option>
         <mat-divider></mat-divider>
-        <mat-list-option class="px-40" routerLink="videos">
+        <mat-list-option class="px-40">
           <mat-icon mat-list-icon>done</mat-icon>
           Analyzed
         </mat-list-option>

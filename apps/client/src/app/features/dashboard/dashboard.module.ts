@@ -9,9 +9,10 @@ import { VideoContainerModule } from '../video-container/video-container.module'
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { CookieService } from 'ngx-cookie-service';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { ClipContainerModule } from '../clip-container/clip-container.module';
 
 @NgModule({
-  declarations: [ DashboardComponent ],
+  declarations: [DashboardComponent],
   imports: [
     MatButtonModule,
     MatSidenavModule,
@@ -19,10 +20,11 @@ import { DashboardService } from '../../core/services/dashboard.service';
     MatIconModule,
     DashboardRoutingModule,
     NavbarModule,
-    VideoContainerModule
+    VideoContainerModule,
+    ClipContainerModule
   ],
-  providers: [ CookieService, DashboardService ],
-  exports: [ DashboardComponent ]
+  providers: [CookieService, DashboardService],
+  exports: [DashboardComponent]
 })
 export class DashboardModule {
 }
