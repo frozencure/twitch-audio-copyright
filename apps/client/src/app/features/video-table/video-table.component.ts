@@ -60,7 +60,6 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
               this.videoSortedCresc = true;
               this.videosModel = new MatTableDataSource(videoStream.sort(videoCompareCresc));
             }
-            console.log(this.videosModel);
           }),
           catchError(() => {
             this.isLoadingResults = false;
