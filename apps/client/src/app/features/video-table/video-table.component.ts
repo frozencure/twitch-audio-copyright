@@ -1,31 +1,33 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Video } from '../../shared/model/Video';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { thumbnailUrl, videoCompareCresc, videoCompareDesc } from '../../utils/video.manager';
 import { SelectionModel } from '@angular/cdk/collections';
-import { merge, Observable, of } from 'rxjs';
+import { merge, of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { SubSink } from 'subsink';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-video-table',
   templateUrl: './video-table.component.html',
   styleUrls: ['./video-table.component.scss']
 })
-export class VideoTableComponent implements OnInit, AfterViewInit {
-  @Input() videos$: Observable<Video[]>;
+export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
+  @Input() videos: Video[];
   @Output() selectedVideos: EventEmitter<Video[]> = new EventEmitter();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
- // TODO: make the sort possible on video-table.
-  public type: string;
+
   public isLoadingResults: boolean;
+  public videosModel: MatTableDataSource<Video>;
   public displayedColumns = ['select', 'info', 'title', 'created_at', 'views'];
   public getThumbnailUrl = thumbnailUrl;
-  public videos: Video[] = [];
   public selection = new SelectionModel<Video>(true, []);
-  private videoSortedCresc = false;
+  private videoSortedCresc = true;
+  private subscriptions = new SubSink();
 
   constructor() {
     this.isLoadingResults = true;
@@ -35,29 +37,35 @@ export class VideoTableComponent implements OnInit, AfterViewInit {
     this.selection.changed.asObservable().subscribe(data => this.selectedVideos.emit(data.source.selected));
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
   ngAfterViewInit(): void {
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-    merge(this.sort.sortChange, this.paginator.page)
-      .pipe(
-        startWith({}),
-        switchMap(_ => {
-          this.isLoadingResults = true;
-          return this.videos$;
-        }),
-        map((videoStream: Video[]) => {
-          this.isLoadingResults = false;
-          if (this.videoSortedCresc) {
-            this.videoSortedCresc = false;
-            this.videos = videoStream.sort(videoCompareDesc);
-          } else {
-            this.videoSortedCresc = true;
-            this.videos = videoStream.sort(videoCompareCresc);
-          }
-        }),
-        catchError(() => {
-          this.isLoadingResults = false;
-          return of([]);
-        })).subscribe(_ => this.isLoadingResults = false);
+    setTimeout(() => {
+      this.subscriptions.sink = this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+      this.subscriptions.sink = merge(this.sort.sortChange, this.paginator.page)
+        .pipe(
+          startWith({}),
+          switchMap(_ => {
+            this.isLoadingResults = true;
+            return of(this.videos);
+          }),
+          map((videoStream) => {
+            this.isLoadingResults = false;
+            if (this.videoSortedCresc) {
+              this.videoSortedCresc = false;
+              this.videosModel = new MatTableDataSource(videoStream.sort(videoCompareDesc));
+            } else {
+              this.videoSortedCresc = true;
+              this.videosModel = new MatTableDataSource(videoStream.sort(videoCompareCresc));
+            }
+          }),
+          catchError(() => {
+            this.isLoadingResults = false;
+            return of([]);
+          })).subscribe(_ => this.isLoadingResults = false);
+    }, 0);
   }
 
   /** Whether the number of selected elements matches the total number of rows. */

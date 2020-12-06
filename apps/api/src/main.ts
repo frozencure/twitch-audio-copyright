@@ -29,7 +29,6 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   app.useStaticAssets(path.join(process.cwd(), 'apps/api/src/assets/public'));
-  app.useGlobalFilters(new ServeStaticExceptionFilter());
 
   await app.listen(port, () => {
     Logger.log('Listening at http://localhost:' + port + '/' + globalPrefix);

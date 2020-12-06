@@ -1,22 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { VideoResolverModel, VideoType } from '../../shared/model/VideoResolverModel';
+import { Observable } from 'rxjs';
+import { Video } from '../../shared/model/Video';
 
 @Injectable()
-export class VideoResolver implements Resolve<VideoResolverModel> {
+export class VideoResolver implements Resolve<Video[]> {
 
   constructor(private videos: DashboardService) {
   }
 
-  resolve(route: ActivatedRouteSnapshot): VideoResolverModel {
-    const type = route.paramMap.get('type');
-    switch (type) {
-      case VideoType.VIDEOS:
-        return { type, stream: this.videos.getVideos() };
-      case VideoType.CLIPS:
-        return { type, stream: this.videos.getClips() };
-    }
+  resolve(route: ActivatedRouteSnapshot): Observable<Video[]> {
+    return this.videos.getVideos();
   }
 }
 
