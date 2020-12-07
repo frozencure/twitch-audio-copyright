@@ -5,8 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from '@nestjs/common';
 import { UsersService } from '../user/users.service';
 import Video from './video.entity';
-import { ProcessingProgress, UserActionType, PartialVideoDto } from '@twitch-audio-copyright/data';
-import { VideoNotFoundError } from '../errors';
+import { PartialVideoDto, ProcessingProgress, UserActionType, VideoDto } from '@twitch-audio-copyright/data';
+import { UserNotFoundError, VideoNotFoundError } from '../errors';
 
 @Injectable()
 export class VideosService {
@@ -55,18 +55,16 @@ export class VideosService {
 
   async findAll(userId: string, progress?: ProcessingProgress,
                 actionType?: UserActionType): Promise<Video[]> {
-    let query = this.videosRepository.createQueryBuilder('video')
-      .leftJoin('video.user', 'user')
-      .where('user.id = :id', { id: userId });
+    const user = await this.usersService.findOne(userId, ['videos']);
+    if (!user) throw new UserNotFoundError(`User ${userId} does not exist in the database.`);
+    let videos = user.videos;
     if (progress) {
-      query = query.andWhere('video.progress = :progress',
-        { progress: progress });
+      videos = videos.filter(video => video.progress === progress);
     }
     if (actionType) {
-      query = query.andWhere('video.userAction = :userAction',
-        { userAction: actionType });
+      videos = videos.filter(video => video.userAction === actionType);
     }
-    return await query.execute() as Promise<Video[]>;
+    return videos;
   }
 
   async hasIdentifiedSongs(videoId: number): Promise<boolean> {

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Video } from '../../shared/model/Video';
+import { TwitchVideoDto } from '../../shared/model/TwitchVideoDto';
 import { getMillisFromString, getStringFromMilliseconds, thumbnailUrl } from '../../utils/video.manager';
 
 @Component({
@@ -9,7 +9,7 @@ import { getMillisFromString, getStringFromMilliseconds, thumbnailUrl } from '..
 })
 export class ConfirmVideosComponent {
 
-  @Input() selectedVideos: Video[];
+  @Input() selectedVideos: TwitchVideoDto[];
   displayedColumns = ['info', 'title', 'created_at', 'views'];
   public getThumbnailUrl = thumbnailUrl;
 

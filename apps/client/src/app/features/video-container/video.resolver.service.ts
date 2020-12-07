@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { Observable } from 'rxjs';
-import { Video } from '../../shared/model/Video';
+import { TwitchVideoDto } from '../../shared/model/TwitchVideoDto';
 
 @Injectable()
-export class VideoResolver implements Resolve<Video[]> {
+export class VideoResolver implements Resolve<TwitchVideoDto[]> {
 
   constructor(private videos: DashboardService) {
   }
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Video[]> {
-    return this.videos.getVideos();
+  resolve(route: ActivatedRouteSnapshot): Observable<TwitchVideoDto[]> {
+    return this.videos.getTwitchVideos();
   }
 }
 

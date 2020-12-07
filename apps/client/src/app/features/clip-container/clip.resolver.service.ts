@@ -11,7 +11,7 @@ export class ClipResolver implements Resolve<TwitchClipDto[]> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<TwitchClipDto[]> {
-    return this.dashboardService.getClips();
+    return this.dashboardService.getTwitchClips();
   }
 }
 

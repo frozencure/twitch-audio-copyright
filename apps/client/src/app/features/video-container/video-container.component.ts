@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Video } from '../../shared/model/Video';
+import { TwitchVideoDto } from '../../shared/model/TwitchVideoDto';
 
 @Component({
   selector: 'app-video-container',
@@ -8,9 +8,9 @@ import { Video } from '../../shared/model/Video';
   styleUrls: ['./video-container.component.scss']
 })
 export class VideoContainerComponent implements OnInit {
-  public videos: Video[];
+  public videos: TwitchVideoDto[];
 
-  public selectedVideos: Video[] = [];
+  public selectedVideos: TwitchVideoDto[] = [];
 
   constructor(private actRoute: ActivatedRoute) {
   }
