@@ -3,7 +3,7 @@ import User from '../user/user.entity';
 import IdentifiedSong from '../identified-song/identified-song.entity';
 import Clip from '../clip/clip.entity';
 import { HelixVideo } from 'twitch';
-import { ProcessingProgress, UserActionType, VideoType } from '@twitch-audio-copyright/data';
+import { ProcessingProgress, UserActionType, VideoDto, VideoType } from '@twitch-audio-copyright/data';
 
 @Entity('video')
 export default class Video extends BaseEntity {

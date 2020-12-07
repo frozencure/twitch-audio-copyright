@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import Video from '../video/video.entity';
 import { HelixBroadcasterType, HelixUserType } from 'twitch';
 import { TwitchUserDto } from '@twitch-audio-copyright/data';
+import Clip from '../clip/clip.entity';
 
 @Entity('user')
 export default class User extends BaseEntity {
@@ -22,6 +23,9 @@ export default class User extends BaseEntity {
 
   @OneToMany('Video', 'user')
   videos: Video[];
+
+  @OneToMany('Clip', 'user')
+  clips: Clip[];
 
   static FromTwitchUser(userDto: TwitchUserDto): User {
     const user = new User();

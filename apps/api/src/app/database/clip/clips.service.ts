@@ -40,18 +40,16 @@ export class ClipsService {
 
   async findAll(userId: string, progress?: ProcessingProgress,
                 actionType?: UserActionType): Promise<Clip[]> {
-    let query = this.clipsRepository.createQueryBuilder('clip')
-      .leftJoin('clip.user', 'user')
-      .where('user.id = :id', { id: userId });
+    const user = await this.usersService.findOne(userId, ['clips']);
+    if (!user) throw new UserNotFoundError(`User ${userId} does not exist in the database.`);
+    let clips = user.clips;
     if (progress) {
-      query = query.andWhere('clip.progress = :progress',
-        { progress: progress });
+      clips = clips.filter(video => video.progress === progress);
     }
     if (actionType) {
-      query = query.andWhere('clip.userAction = :userAction',
-        { userAction: actionType });
+      clips = clips.filter(video => video.userAction === actionType);
     }
-    return await query.execute() as Promise<Clip[]>;
+    return clips;
   }
 
   async updateClip(partialClipDto: PartialClipDto): Promise<Clip> {

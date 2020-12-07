@@ -1,1 +1,9 @@
-<p>home-container works!</p>
+<div class="frow-container">
+  <div class="frow">
+    <app-home-summary-card [items$]="videos$" [type]="videoType"
+                           (refreshEventEmitter)="onCardRefresh($event)"></app-home-summary-card>
+    <app-home-summary-card [items$]="clips$" [type]="clipType"
+                           (refreshEventEmitter)="onCardRefresh($event)"></app-home-summary-card>
+  </div>
+</div>
+

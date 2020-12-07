@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { Video } from '../../shared/model/Video';
+import { TwitchVideoDto } from '../../shared/model/TwitchVideoDto';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { thumbnailUrl, videoCompareCresc, videoCompareDesc } from '../../utils/video.manager';
@@ -15,17 +15,17 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./video-table.component.scss']
 })
 export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() videos: Video[];
-  @Output() selectedVideos: EventEmitter<Video[]> = new EventEmitter();
+  @Input() videos: TwitchVideoDto[];
+  @Output() selectedVideos: EventEmitter<TwitchVideoDto[]> = new EventEmitter();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   public isLoadingResults: boolean;
-  public videosModel: MatTableDataSource<Video>;
+  public videosModel: MatTableDataSource<TwitchVideoDto>;
   public displayedColumns = ['select', 'info', 'title', 'created_at', 'views'];
   public getThumbnailUrl = thumbnailUrl;
-  public selection = new SelectionModel<Video>(true, []);
+  public selection = new SelectionModel<TwitchVideoDto>(true, []);
   private videoSortedCresc = true;
   private subscriptions = new SubSink();
 
@@ -83,7 +83,7 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: Video): string {
+  checkboxLabel(row?: TwitchVideoDto): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
