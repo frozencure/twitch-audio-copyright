@@ -5,7 +5,7 @@ import { VideosService } from '../video/videos.service';
 import { UsersService } from '../user/users.service';
 import { ClipNotFoundError, UserNotFoundError, VideoNotFoundError } from '../errors';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import Video from '../video/video.entity';
 
@@ -52,14 +52,9 @@ export class ClipsService {
     return clips;
   }
 
-  async updateClip(partialClipDto: PartialClipDto): Promise<Clip> {
-    let clip = await this.clipsRepository.findOne(partialClipDto.id);
-    clip = Object.assign(clip, partialClipDto);
-    if (!clip) {
-      throw new ClipNotFoundError(`Clip ${partialClipDto.id} does not exist in the database.`);
-    }
-    Logger.debug(`Clip ${clip.id} updated to ${partialClipDto}.`);
-    return await clip.save();
+  async updateClip(partialClipDto: PartialClipDto): Promise<UpdateResult> {
+    Logger.debug(`Clip ${partialClipDto.id} updated to ${partialClipDto}.`);
+    return await this.clipsRepository.update(partialClipDto.id, partialClipDto);
   }
 
   async hasIdentifiedSongs(clipId: string): Promise<boolean> {
