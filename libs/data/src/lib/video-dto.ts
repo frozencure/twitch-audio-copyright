@@ -1,4 +1,6 @@
-import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
+import { ProcessingProgress } from './processing-progress';
+import { UserActionType } from './user-action-type';
+
 
 export enum VideoType {
   UPLOAD = 'upload',

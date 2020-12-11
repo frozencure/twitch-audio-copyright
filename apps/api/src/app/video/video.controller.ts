@@ -5,6 +5,7 @@ import { UserCookieModel } from '../auth/model/user-cookie-model';
 import { VideosService } from '../database/video/videos.service';
 import { PartialVideoDto, ProcessingProgress, UserActionType, VideoDto } from '@twitch-audio-copyright/data';
 import IdentifiedSong from '../database/identified-song/identified-song.entity';
+import { UpdateResult } from 'typeorm';
 
 @Controller('videos/')
 export class VideoController {
@@ -23,7 +24,7 @@ export class VideoController {
   @Patch(':id')
   @UseGuards(TokenGuard)
   public async update(@Body() updateModel: PartialVideoDto,
-                      @Param('id') videoId: number): Promise<VideoDto> {
+                      @Param('id') videoId: number): Promise<UpdateResult> {
     updateModel.id = videoId;
     return await this.videosService.updateVideo(updateModel);
   }

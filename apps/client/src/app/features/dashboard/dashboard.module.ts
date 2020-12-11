@@ -9,6 +9,7 @@ import { VideoContainerModule } from '../video-container/video-container.module'
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { CookieService } from 'ngx-cookie-service';
 import { DashboardService } from '../../core/services/dashboard.service';
+import { HomeContainerModule } from '../home-container/home-container.module';
 import { ClipContainerModule } from '../clip-container/clip-container.module';
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ClipContainerModule } from '../clip-container/clip-container.module';
     DashboardRoutingModule,
     NavbarModule,
     VideoContainerModule,
-    ClipContainerModule
+    ClipContainerModule,
+    HomeContainerModule
   ],
   providers: [CookieService, DashboardService],
   exports: [DashboardComponent]

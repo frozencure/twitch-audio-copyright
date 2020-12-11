@@ -1,0 +1,23 @@
+<mat-card class="summary-card">
+  <div class="frow row-between mb-30">
+    <h3 class="card-heading">{{typeAsString() | titlecase}}</h3>
+    <button mat-mini-fab (click)="onRefresh()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+  <div class="frow row-between">
+    <div class="mr-20">
+      <h1 class="bold-64">{{analyzedItems.length}}</h1>
+      <h3>{{typeAsString() | titlecase}} analyzed</h3>
+    </div>
+    <div class="mr-20">
+      <h1 class="bold-64">{{needActionsItems.length}}</h1>
+      <h3>{{typeAsString() | titlecase}} need actions</h3>
+    </div>
+    <div class="mr-20">
+      <h1 class="bold-64">{{itemsInQueue.length}}</h1>
+      <h3>{{typeAsString() | titlecase}} in queue</h3>
+    </div>
+    <button mat-flat-button (click)="onAnalyzeMore()" color="primary">Analyze more {{typeAsString()}}</button>
+  </div>
+</mat-card>

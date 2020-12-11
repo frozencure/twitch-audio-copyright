@@ -5,7 +5,7 @@ import { VideosService } from '../video/videos.service';
 import { UsersService } from '../user/users.service';
 import { ClipNotFoundError, UserNotFoundError, VideoNotFoundError } from '../errors';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Logger } from '@nestjs/common';
 import Video from '../video/video.entity';
 
@@ -40,28 +40,21 @@ export class ClipsService {
 
   async findAll(userId: string, progress?: ProcessingProgress,
                 actionType?: UserActionType): Promise<Clip[]> {
-    let query = this.clipsRepository.createQueryBuilder('clip')
-      .leftJoin('clip.user', 'user')
-      .where('user.id = :id', { id: userId });
+    const user = await this.usersService.findOne(userId, ['clips']);
+    if (!user) throw new UserNotFoundError(`User ${userId} does not exist in the database.`);
+    let clips = user.clips;
     if (progress) {
-      query = query.andWhere('clip.progress = :progress',
-        { progress: progress });
+      clips = clips.filter(video => video.progress === progress);
     }
     if (actionType) {
-      query = query.andWhere('clip.userAction = :userAction',
-        { userAction: actionType });
+      clips = clips.filter(video => video.userAction === actionType);
     }
-    return await query.execute() as Promise<Clip[]>;
+    return clips;
   }
 
-  async updateClip(partialClipDto: PartialClipDto): Promise<Clip> {
-    let clip = await this.clipsRepository.findOne(partialClipDto.id);
-    clip = Object.assign(clip, partialClipDto);
-    if (!clip) {
-      throw new ClipNotFoundError(`Clip ${partialClipDto.id} does not exist in the database.`);
-    }
-    Logger.debug(`Clip ${clip.id} updated to ${partialClipDto}.`);
-    return await clip.save();
+  async updateClip(partialClipDto: PartialClipDto): Promise<UpdateResult> {
+    Logger.debug(`Clip ${partialClipDto.id} updated to ${partialClipDto}.`);
+    return await this.clipsRepository.update(partialClipDto.id, partialClipDto);
   }
 
   async hasIdentifiedSongs(clipId: string): Promise<boolean> {

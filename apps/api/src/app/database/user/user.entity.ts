@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, OneToMany, OneToOne, PrimaryColumn } from '
 import Video from '../video/video.entity';
 import { HelixBroadcasterType, HelixUserType } from 'twitch';
 import { TwitchUserDto } from '@twitch-audio-copyright/data';
+import Clip from '../clip/clip.entity';
 import { StreamMonitor } from '../stream-monitor/stream-monitor-entity';
 
 @Entity('user')
@@ -25,6 +26,9 @@ export default class User extends BaseEntity {
   videos: Video[];
   @OneToOne(() => StreamMonitor, streamMonitor => streamMonitor.user)
   streamMonitor: StreamMonitor;
+
+  @OneToMany('Clip', 'user')
+  clips: Clip[];
 
   static FromTwitchUser(userDto: TwitchUserDto): User {
     const user = new User();

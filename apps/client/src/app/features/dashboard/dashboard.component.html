@@ -4,19 +4,41 @@
   <mat-drawer-container class="drawer-container">
     <mat-drawer #drawer mode="side" opened="true">
       <mat-selection-list [multiple]="false">
-        <mat-list-option class="px-40 hover" routerLink="videos" routerLinkActive="mat-list-single-selected-option">
+        <mat-list-option routerLink="home" routerLinkActive="mat-list-single-selected-option">
+          <mat-icon mat-list-icon>dashboard</mat-icon>
+          Home
+        </mat-list-option>
+        <h3 mat-subheader>Videos</h3>
+        <mat-list-option routerLink="videos" routerLinkActive="mat-list-single-selected-option">
           <mat-icon mat-list-icon>videocam</mat-icon>
-          Videos
+          Analyze videos
         </mat-list-option>
-        <mat-divider></mat-divider>
-        <mat-list-option class="px-40" routerLink="clips" routerLinkActive="mat-list-single-selected-option">
-          <mat-icon mat-list-icon>camera</mat-icon>
-          Clips
+        <mat-list-option routerLink="videos/results" routerLinkActive="mat-list-single-selected-option">
+          <mat-icon mat-list-icon>library_add_check</mat-icon>
+          Results
         </mat-list-option>
-        <mat-divider></mat-divider>
-        <mat-list-option class="px-40">
-          <mat-icon mat-list-icon>done</mat-icon>
-          Analyzed
+        <h3 mat-subheader>Clips</h3>
+        <mat-list-option routerLink="clips" routerLinkActive="mat-list-single-selected-option">
+          <mat-icon mat-list-icon>video_library</mat-icon>
+          Analyze clips
+        </mat-list-option>
+        <mat-list-option routerLink="clips/results" routerLinkActive="mat-list-single-selected-option">
+          <mat-icon mat-list-icon>library_add_check</mat-icon>
+          Results
+        </mat-list-option>
+        <h3 mat-subheader>Real-time</h3>
+        <mat-list-option routerLink="live" routerLinkActive="mat-list-single-selected-option">
+          <mat-icon mat-list-icon>live_tv</mat-icon>
+          Live analysis
+        </mat-list-option>
+        <h3 mat-subheader>Other</h3>
+        <mat-list-option routerLink="settings" routerLinkActive="mat-list-single-selected-option">
+          <mat-icon mat-list-icon>settings</mat-icon>
+          Settings
+        </mat-list-option>
+        <mat-list-option routerLink="billing" routerLinkActive="mat-list-single-selected-option">
+          <mat-icon mat-list-icon>payment</mat-icon>
+          Billing
         </mat-list-option>
       </mat-selection-list>
     </mat-drawer>

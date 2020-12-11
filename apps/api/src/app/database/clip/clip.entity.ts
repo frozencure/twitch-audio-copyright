@@ -20,7 +20,7 @@ export default class Clip extends BaseEntity {
   @Column({ type: 'enum', enum: ProcessingProgress, default: ProcessingProgress.QUEUED }) progress: ProcessingProgress;
   @Column({ type: 'enum', enum: UserActionType, default: UserActionType.NO_ACTION_NEEDED }) userAction: UserActionType;
 
-  @ManyToOne(() => User, user => user.videos)
+  @ManyToOne(() => User, user => user.clips)
   user: User;
 
   @OneToMany('IdentifiedSong', 'clip')

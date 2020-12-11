@@ -5,6 +5,7 @@ import { UserCookieModel } from '../auth/model/user-cookie-model';
 import { ClipDto, PartialClipDto, ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
 import IdentifiedSong from '../database/identified-song/identified-song.entity';
 import { ClipsService } from '../database/clip/clips.service';
+import { UpdateResult } from 'typeorm';
 
 @Controller('/clips')
 export class ClipController {
@@ -23,7 +24,7 @@ export class ClipController {
   @Patch(':id')
   @UseGuards(TokenGuard)
   public async update(@Body() updateModel: PartialClipDto,
-                      @Param('id') clipId: string): Promise<ClipDto> {
+                      @Param('id') clipId: string): Promise<UpdateResult> {
     updateModel.id = clipId;
     return await this.clipsService.updateClip(updateModel);
   }

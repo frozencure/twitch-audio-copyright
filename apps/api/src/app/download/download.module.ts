@@ -1,7 +1,6 @@
 import { HttpModule, Module } from '@nestjs/common';
 import { DownloadService } from './service/download.service';
 import { DownloadController } from './download.controller';
-import { BullModule } from '@nestjs/bull';
 import { FfmpegProcessor } from '../ffmpeg/ffmpeg-processor';
 import { DownloadProcessor } from '../io/download-processor';
 import { FileSystemProcessor } from '../io/file-system-processor';
@@ -17,10 +16,7 @@ import { QueueModule } from '../queue/queue.module';
 @Module({
   controllers: [DownloadController],
   imports: [
-    HttpModule.register({
-      timeout: 50000,
-      maxRedirects: 5
-    }),
+    HttpModule,
     AuthModule,
     QueueModule,
     DatabaseModule,
