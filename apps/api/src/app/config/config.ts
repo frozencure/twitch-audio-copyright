@@ -27,6 +27,10 @@ export default () => ({
     secret_key: process.env.ACR_SECRET_KEY,
     endpoint: '/v1/identify',
     signature_version: '1',
-    data_type: 'fingerprint'
+    data_type: 'fingerprint',
+    monitor_project_name: 'soundtrace',
+    monitor_region: 'eu-west-1',
+    monitor_access_key: process.env.ACR_MONITOR_ACCESS_KEY,
+    monitor_secret: process.env.ACR_MONITOR_SECRET
   }
 });
