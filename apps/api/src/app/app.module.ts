@@ -15,6 +15,7 @@ import { QueueModule } from './queue/queue.module';
 import { VideoModule } from './video/video.module';
 import { ClipModule } from './clips/clip.module';
 import { MusicbrainzModule } from './musicbrainz/musicbrainz.module';
+import { LiveModule } from './live/live.module';
 
 @Module({
   imports: [
@@ -43,7 +44,8 @@ import { MusicbrainzModule } from './musicbrainz/musicbrainz.module';
     QueueModule,
     VideoModule,
     ClipModule,
-    MusicbrainzModule
+    MusicbrainzModule,
+    LiveModule
   ],
   controllers: [AppController],
   providers: [AppService]

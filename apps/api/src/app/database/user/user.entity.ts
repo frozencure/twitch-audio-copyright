@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import Video from '../video/video.entity';
 import { HelixBroadcasterType, HelixUserType } from 'twitch';
 import { TwitchUserDto } from '@twitch-audio-copyright/data';
@@ -24,8 +24,9 @@ export default class User extends BaseEntity {
 
   @OneToMany('Video', 'user')
   videos: Video[];
-  @OneToOne(() => StreamMonitor, streamMonitor => streamMonitor.user)
-  streamMonitor: StreamMonitor;
+
+  @OneToMany(() => StreamMonitor, streamMonitor => streamMonitor.user)
+  streamMonitors: StreamMonitor[];
 
   @OneToMany('Clip', 'user')
   clips: Clip[];

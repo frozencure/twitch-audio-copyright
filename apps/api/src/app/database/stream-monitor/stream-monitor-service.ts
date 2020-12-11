@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { StreamMonitorDto } from '../../acr_cloud/model/stream-monitor-dto';
 import { UsersService } from '../user/users.service';
 import { UserNotFoundError } from '../errors';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class StreamMonitorService {
@@ -22,6 +23,13 @@ export class StreamMonitorService {
     } else {
       throw new UserNotFoundError(`User ${userId} does not exist in the database.`);
     }
+  }
+
+  async deactivate(stream: StreamMonitor): Promise<StreamMonitor> {
+    if (!stream.deactivatedAt) {
+      stream.deactivatedAt = new Date();
+    }
+    return stream.save();
   }
 
   async findOne(streamId: string): Promise<StreamMonitor> {
