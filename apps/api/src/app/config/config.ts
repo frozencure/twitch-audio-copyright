@@ -31,6 +31,7 @@ export default () => ({
     monitor_project_name: 'soundtrace',
     monitor_region: 'eu-west-1',
     monitor_access_key: process.env.ACR_MONITOR_ACCESS_KEY,
-    monitor_secret: process.env.ACR_MONITOR_SECRET
+    monitor_secret: process.env.ACR_MONITOR_SECRET,
+    monitor_results_access_key: process.env.ACR_MONITOR_RESULTS_ACCESS_KEY
   }
 });

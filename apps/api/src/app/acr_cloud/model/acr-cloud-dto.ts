@@ -1,9 +1,9 @@
 import { Status } from './status';
-import { Metadata } from './metadata';
+import { FileMetadata } from './files/file-metadata';
 
 export interface AcrCloudDto {
   status: Status;
-  metadata: Metadata;
+  metadata: FileMetadata;
   cost_time: number;
   result_type: number;
 }

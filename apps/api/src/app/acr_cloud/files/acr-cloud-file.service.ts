@@ -6,7 +6,7 @@ import * as FormData from 'form-data';
 import fetch from 'node-fetch';
 import { AcrCloudDto, AcrResult } from '../model/acr-cloud-dto';
 import { AcrEmptyResponseError, FingerprintCreationError } from '../model/errors';
-import { FingerprintData } from '../model/fingerprint-data';
+import { FingerprintData } from '../model/files/fingerprint-data';
 
 @Injectable()
 export class AcrCloudFileService {

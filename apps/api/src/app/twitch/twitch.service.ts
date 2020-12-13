@@ -15,4 +15,12 @@ export class TwitchService {
     const client = TwitchService.initializeClient(accessToken);
     return await client.helix.videos.getVideoById(videoId.toString());
   }
+
+  public async getAllVideos(accessToken: string, userId: string): Promise<HelixVideo[]> {
+    const client = TwitchService.initializeClient(accessToken);
+    const paginatedVideos = await client.helix.videos.getVideosByUser(userId, {
+      orderBy: 'time'
+    });
+    return paginatedVideos.data;
+  }
 }

@@ -5,6 +5,7 @@ import { AcrCloudFileService } from '../files/acr-cloud-file.service';
 import fetch from 'node-fetch';
 import { StreamMonitorDto } from '../model/stream-monitor-dto';
 import { AcrStatusResponseError } from '../model/errors';
+import { AcrCloudLiveResultDto } from '../model/monitor/acr-cloud-live-result-dto';
 
 @Injectable()
 export class AcrCloudMonitorService {
@@ -17,7 +18,7 @@ export class AcrCloudMonitorService {
   }
 
   private buildStringToSign(httpMethod: string, timestamp: string, streamId?: string): string {
-    const url = streamId ? `/v1/monitor-streams/${streamId}` : `/v1/monitor-streams`
+    const url = streamId ? `/v1/monitor-streams/${streamId}` : `/v1/monitor-streams`;
     return [httpMethod, url,
       this.configService.get<string>('acr_cloud.monitor_access_key'),
       this.configService.get<string>('acr_cloud.signature_version'),
@@ -53,8 +54,8 @@ export class AcrCloudMonitorService {
         headers: this.headers('POST')
       });
     const responseData = await response.json();
-    if(response.status !== 201) {
-      throw new AcrStatusResponseError(`Could not add ACR stream. Reason: ${responseData}`)
+    if (response.status !== 201) {
+      throw new AcrStatusResponseError(`Could not add ACR stream. Reason: ${responseData}`);
     }
     return responseData;
   }
@@ -67,8 +68,8 @@ export class AcrCloudMonitorService {
         headers: headers
       });
     const responseData = await response.json();
-    if(response.status !== 200) {
-      throw new AcrStatusResponseError(`Could not retrieve ACR data. Reason: ${responseData}`)
+    if (response.status !== 200) {
+      throw new AcrStatusResponseError(`Could not retrieve ACR data. Reason: ${responseData}`);
     }
     return responseData;
   }
@@ -79,10 +80,36 @@ export class AcrCloudMonitorService {
         method: 'DELETE',
         headers: this.headers('DELETE', streamId)
       });
-    if(response.status !== 204) {
+    if (response.status !== 204) {
       const responseData = await response.json();
-      throw new AcrStatusResponseError(`Could not delete ACR stream. Reason: ${responseData}`)
+      throw new AcrStatusResponseError(`Could not delete ACR stream. Reason: ${responseData}`);
     }
     return true;
+  }
+
+  async getResultsByDate(date: Date, streamId: string): Promise<AcrCloudLiveResultDto[]> {
+    const accessKey = this.configService.get<string>('acr_cloud.monitor_results_access_key');
+    const response = await fetch(`${AcrCloudMonitorService.BaseUrl}/${streamId}` +
+      `/results?access_key=${accessKey}&date=${AcrCloudMonitorService.formatDate(date)}`, {
+      method: 'GET'
+    });
+    const responseData = await response.json();
+    if (response.status !== 200) {
+      throw new AcrStatusResponseError(`Could not retrieve ACR results. Reason: ${responseData}`);
+    }
+    return responseData.map(r => {
+      const song = Object.assign(new AcrCloudLiveResultDto(), r);
+      song.metadata.timestamp_utc = new Date(r.metadata.timestamp_utc);
+      return song;
+    });
+  }
+
+  private static formatDate(date: Date): string {
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth() + 1;
+    const monthString = month < 10 ? '0' + month.toString() : month.toString();
+    const day = date.getUTCDate();
+    const dayString = day < 10 ? '0' + day.toString() : day.toString();
+    return `${year}${monthString}${dayString}`;
   }
 }
