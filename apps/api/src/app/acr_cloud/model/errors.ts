@@ -11,3 +11,10 @@ export class AcrEmptyResponseError extends Error {
     this.name = 'AcrEmptyResponseError';
   }
 }
+
+export class AcrStatusResponseError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'AcrEmptyResponseError';
+  }
+}

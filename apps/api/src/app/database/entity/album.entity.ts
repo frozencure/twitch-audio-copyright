@@ -1,11 +1,11 @@
 import { Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import IdentifiedSong from '../identified-song/identified-song.entity';
+import IdentifiedSongEntity from '../identified-song/identified-song.entity';
 
 @Entity('album')
-export default class Album {
+export default class AlbumEntity {
 
   @PrimaryColumn('text') name: string;
 
-  @OneToMany('IdentifiedSong', 'album')
-  identifiedSongs: IdentifiedSong[];
+  @OneToMany(() => IdentifiedSongEntity, song => song.album)
+  identifiedSongs: IdentifiedSongEntity[];
 }

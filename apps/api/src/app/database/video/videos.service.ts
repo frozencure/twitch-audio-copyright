@@ -4,22 +4,22 @@ import { Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from '@nestjs/common';
 import { UsersService } from '../user/users.service';
-import Video from './video.entity';
-import { PartialVideoDto, ProcessingProgress, UserActionType, VideoDto } from '@twitch-audio-copyright/data';
+import VideoEntity from './video.entity';
+import { PartialVideoDto, ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
 import { UserNotFoundError, VideoNotFoundError } from '../errors';
 
 @Injectable()
 export class VideosService {
 
   constructor(private readonly usersService: UsersService,
-              @InjectRepository(Video) private readonly videosRepository: Repository<Video>) {
+              @InjectRepository(VideoEntity) private readonly videosRepository: Repository<VideoEntity>) {
   }
 
-  async insertOrUpdate(userId: string, twitchVideo: HelixVideo): Promise<Video> {
+  async insertOrUpdate(userId: string, twitchVideo: HelixVideo): Promise<VideoEntity> {
     const user = await this.usersService.findOne(userId);
     if (user) {
       try {
-        const video = Video.FromTwitchVideo(twitchVideo, user);
+        const video = VideoEntity.FromTwitchVideo(twitchVideo, user);
         Logger.debug(`Saving/Updating video with ID ${video.id} to database.`);
         return await video.save();
       } catch (e) {
@@ -30,7 +30,7 @@ export class VideosService {
     }
   }
 
-  async insertIfNotFound(userId: string, twitchVideo: HelixVideo): Promise<Video> {
+  async insertIfNotFound(userId: string, twitchVideo: HelixVideo): Promise<VideoEntity> {
     const video = await this.findOne(Number.parseInt(twitchVideo.id));
     if (!video) {
       return await this.insertOrUpdate(userId, twitchVideo);
@@ -43,13 +43,13 @@ export class VideosService {
     return await this.videosRepository.update(videoDto.id, videoDto);
   }
 
-  async findOne(videoId: number, relations?: string[]): Promise<Video> {
+  async findOne(videoId: number, relations?: string[]): Promise<VideoEntity> {
     return await this.videosRepository.findOne(videoId,
       { relations: relations });
   }
 
   async findAll(userId: string, progress?: ProcessingProgress,
-                actionType?: UserActionType): Promise<Video[]> {
+                actionType?: UserActionType): Promise<VideoEntity[]> {
     const user = await this.usersService.findOne(userId, ['videos']);
     if (!user) throw new UserNotFoundError(`User ${userId} does not exist in the database.`);
     let videos = user.videos;

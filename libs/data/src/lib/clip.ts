@@ -1,7 +1,6 @@
 import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
 
-
-export interface ClipDto {
+export interface Clip {
   id: string;
   title: string;
   embedUrl: string;

@@ -1,13 +1,14 @@
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import Video from '../video/video.entity';
-import Label from '../entity/label.entity';
-import Album from '../entity/album.entity';
-import Artist from '../entity/artist.entity';
-import Clip from '../clip/clip.entity';
+import VideoEntity from '../video/video.entity';
+import LabelEntity from '../entity/label.entity';
+import AlbumEntity from '../entity/album.entity';
+import ArtistEntity from '../entity/artist.entity';
+import ClipEntity from '../clip/clip.entity';
 import { IdentifiedAudioRecording } from '../../acr_cloud/model/identified-audio-recording';
+import { IdentifiedSong, Label } from '@twitch-audio-copyright/data';
 
 @Entity('identified_song')
-export default class IdentifiedSong extends BaseEntity {
+export default class IdentifiedSongEntity extends BaseEntity {
 
   @PrimaryGeneratedColumn() id: number;
   @Column('text') acrId: string;
@@ -20,31 +21,31 @@ export default class IdentifiedSong extends BaseEntity {
   @Column('int') identificationEnd: number;
   @Column({type: 'text', nullable: true}) isrcId: string;
 
-  @ManyToOne('Video', 'identifiedSongs')
-  video: Video;
+  @ManyToOne(() => VideoEntity, video => video.identifiedSongs)
+  video: VideoEntity;
 
-  @ManyToOne('Clip', 'identifiedSongs')
-  clip: Clip;
+  @ManyToOne(() => ClipEntity, clip => clip.identifiedSongs)
+  clip: ClipEntity;
 
-  @ManyToOne('Label', 'identifiedSongs', {
+  @ManyToOne(() => LabelEntity, label => label.identifiedSongs, {
     cascade: true
   })
-  label: Label;
+  label: LabelEntity;
 
-  @ManyToOne('Album', 'identifiedSongs', {
+  @ManyToOne(() => AlbumEntity, album => album.identifiedSongs, {
     cascade: true
   })
-  album: Album;
+  album: AlbumEntity;
 
-  @ManyToMany('Artist', 'identifiedSongs', {
+  @ManyToMany(() => ArtistEntity, artist => artist.identifiedSongs, {
     cascade: true
   })
   @JoinTable()
-  artists: Artist[];
+  artists: ArtistEntity[];
 
   static FromAcrResponse(identifiedAudioRecording: IdentifiedAudioRecording, identificationStart: number,
-              identificationEnd: number, video?: Video, clip?: Clip): IdentifiedSong {
-    const identifiedSong = new IdentifiedSong();
+                         identificationEnd: number, video?: VideoEntity, clip?: ClipEntity): IdentifiedSongEntity {
+    const identifiedSong = new IdentifiedSongEntity();
     identifiedSong.video = video;
     identifiedSong.acrId = identifiedAudioRecording.acrid;
     identifiedSong.title = identifiedAudioRecording.title;
@@ -62,25 +63,30 @@ export default class IdentifiedSong extends BaseEntity {
     return identifiedSong;
   }
 
+  toIdentifiedSongDto(): IdentifiedSong {
+    const artists = this.artists.map(a => a.name);
+    const label = Object.assign(new Label(), this.label);
+    const album = this.album.name;
+    return Object.assign(new IdentifiedSong(), this, {artists: artists, label: label, album: album});
+  }
+
   private setAlbum(identifiedAudioRecording: IdentifiedAudioRecording): void {
-    const album = new Album();
+    const album = new AlbumEntity();
     album.name = identifiedAudioRecording.album.name;
     this.album = album;
   }
 
   private setLabel(identifiedAudioRecording: IdentifiedAudioRecording): void {
-    const label = new Label();
+    const label = new LabelEntity();
     label.name = identifiedAudioRecording.label;
     this.label = label;
   }
 
   private setArtists(identifiedAudioRecording: IdentifiedAudioRecording): void {
     this.artists = identifiedAudioRecording.artists.map(artistDto => {
-      const artist = new Artist();
+      const artist = new ArtistEntity();
       artist.name = artistDto.name;
       return artist;
     });
   }
-
-
 }

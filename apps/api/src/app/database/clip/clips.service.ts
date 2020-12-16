@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 import { PartialClipDto, ProcessingProgress, TwitchClipDto, UserActionType } from '@twitch-audio-copyright/data';
-import Clip from './clip.entity';
+import ClipEntity from './clip.entity';
 import { VideosService } from '../video/videos.service';
 import { UsersService } from '../user/users.service';
 import { ClipNotFoundError, UserNotFoundError, VideoNotFoundError } from '../errors';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { Logger } from '@nestjs/common';
-import Video from '../video/video.entity';
+import VideoEntity from '../video/video.entity';
 
 @Injectable()
 export class ClipsService {
 
   constructor(private readonly videosService: VideosService,
               private readonly usersService: UsersService,
-              @InjectRepository(Clip) private clipsRepository: Repository<Clip>) {
+              @InjectRepository(ClipEntity) private clipsRepository: Repository<ClipEntity>) {
   }
 
-  async insertOrUpdate(twitchClipDto: TwitchClipDto, video: Video): Promise<Clip> {
+  async insertOrUpdate(twitchClipDto: TwitchClipDto, video: VideoEntity): Promise<ClipEntity> {
     const user = await this.usersService.findOne(twitchClipDto.broadcaster_id);
     if (!video) {
       return Promise.reject(new VideoNotFoundError(`Clip insertion faile. Video with ID ${twitchClipDto.video_id}` +
@@ -27,19 +27,19 @@ export class ClipsService {
       return Promise.reject(new UserNotFoundError(`Clip insertion failed. User with ID ${twitchClipDto.broadcaster_id}` +
         `does not exist in the database.`));
     }
-    const clip = Clip.FromTwitchClip(twitchClipDto, video, user);
+    const clip = ClipEntity.FromTwitchClip(twitchClipDto, video, user);
     Logger.debug(`Clip with ID '${clip.id}' was inserted.`);
     return clip.save();
   }
 
-  async findOne(clipId: string, relations?: string[]): Promise<Clip> {
+  async findOne(clipId: string, relations?: string[]): Promise<ClipEntity> {
     return await this.clipsRepository.findOne(clipId, {
       relations: relations
     });
   }
 
   async findAll(userId: string, progress?: ProcessingProgress,
-                actionType?: UserActionType): Promise<Clip[]> {
+                actionType?: UserActionType): Promise<ClipEntity[]> {
     const user = await this.usersService.findOne(userId, ['clips']);
     if (!user) throw new UserNotFoundError(`User ${userId} does not exist in the database.`);
     let clips = user.clips;

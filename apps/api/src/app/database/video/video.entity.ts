@@ -1,12 +1,12 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import User from '../user/user.entity';
-import IdentifiedSong from '../identified-song/identified-song.entity';
-import Clip from '../clip/clip.entity';
+import UserEntity from '../user/user.entity';
+import IdentifiedSongEntity from '../identified-song/identified-song.entity';
+import ClipEntity from '../clip/clip.entity';
 import { HelixVideo } from 'twitch';
-import { ProcessingProgress, UserActionType, VideoDto, VideoType } from '@twitch-audio-copyright/data';
+import { ProcessingProgress, UserActionType, VideoType } from '@twitch-audio-copyright/data';
 
 @Entity('video')
-export default class Video extends BaseEntity {
+export default class VideoEntity extends BaseEntity {
 
   @PrimaryColumn({ type: 'int', unique: true }) id: number;
   @Column('text') title: string;
@@ -22,18 +22,18 @@ export default class Video extends BaseEntity {
   @Column({ type: 'enum', enum: ProcessingProgress, default: ProcessingProgress.QUEUED }) progress: ProcessingProgress;
   @Column({ type: 'enum', enum: UserActionType, default: UserActionType.NO_ACTION_NEEDED }) userAction: UserActionType;
 
-  @ManyToOne(() => User, user => user.videos)
-  user: User;
+  @ManyToOne(() => UserEntity, user => user.videos)
+  user: UserEntity;
 
-  @OneToMany('IdentifiedSong', 'video')
-  identifiedSongs: IdentifiedSong[];
+  @OneToMany(() => IdentifiedSongEntity, identifiedSong => identifiedSong.video)
+  identifiedSongs: IdentifiedSongEntity[];
 
-  @OneToMany('Clip', 'video')
-  clips: Clip[];
+  @OneToMany(() => ClipEntity, clip => clip.video)
+  clips: ClipEntity[];
 
-  static FromTwitchVideo(videoDto: HelixVideo, user: User, progress = ProcessingProgress.QUEUED,
-                         userActionType = UserActionType.NO_ACTION_NEEDED): Video {
-    const video = new Video();
+  static FromTwitchVideo(videoDto: HelixVideo, user: UserEntity, progress = ProcessingProgress.QUEUED,
+                         userActionType = UserActionType.NO_ACTION_NEEDED): VideoEntity {
+    const video = new VideoEntity();
     video.id = Number.parseInt(videoDto.id);
     video.title = videoDto.title;
     video.description = videoDto.description;

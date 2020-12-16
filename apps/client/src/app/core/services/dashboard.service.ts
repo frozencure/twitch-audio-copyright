@@ -8,12 +8,12 @@ import { Store } from '@ngxs/store';
 import { UserModel } from '../../store/auth.state';
 import { environment } from '../../../environments/environment';
 import {
-  ClipDto,
+  Clip,
   ProcessingProgress,
   SuccessDto,
   TwitchClipDto,
   UserActionType,
-  VideoDto
+  Video
 } from '@twitch-audio-copyright/data';
 
 @Injectable()
@@ -50,7 +50,7 @@ export class DashboardService {
       .pipe(first(), map(w => w.data));
   }
 
-  public getVideos(progress?: ProcessingProgress, userAction?: UserActionType): Observable<VideoDto[]> {
+  public getVideos(progress?: ProcessingProgress, userAction?: UserActionType): Observable<Video[]> {
     let params = {};
     if (progress && userAction) {
       params = { progress: progress, action: userAction };
@@ -61,14 +61,14 @@ export class DashboardService {
     }
     return this.videosRefreshSubject.pipe(
       switchMap(() => {
-        return this.http.get<VideoDto[]>('api/videos', {
+        return this.http.get<Video[]>('api/videos', {
           params: params
         });
       })
     );
   }
 
-  public getClips(progress?: ProcessingProgress, userAction?: UserActionType): Observable<ClipDto[]> {
+  public getClips(progress?: ProcessingProgress, userAction?: UserActionType): Observable<Clip[]> {
     let params = {};
     if (progress && userAction) {
       params = { progress: progress, action: userAction };
@@ -79,7 +79,7 @@ export class DashboardService {
     }
     return this.clipsRefreshSubject.pipe(
       switchMap(() => {
-        return this.http.get<ClipDto[]>('api/clips', {
+        return this.http.get<Clip[]>('api/clips', {
           params: params
         });
       })

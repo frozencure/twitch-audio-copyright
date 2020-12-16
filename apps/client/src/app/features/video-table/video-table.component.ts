@@ -47,7 +47,7 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
       this.subscriptions.sink = merge(this.sort.sortChange, this.paginator.page)
         .pipe(
           startWith({}),
-          switchMap(_ => {
+          switchMap(() => {
             this.isLoadingResults = true;
             return of(this.videos);
           }),
@@ -64,7 +64,7 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
           catchError(() => {
             this.isLoadingResults = false;
             return of([]);
-          })).subscribe(_ => this.isLoadingResults = false);
+          })).subscribe(() => this.isLoadingResults = false);
     }, 0);
   }
 

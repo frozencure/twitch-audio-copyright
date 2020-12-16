@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ClipDto, VideoDto } from '@twitch-audio-copyright/data';
+import { Clip, Video } from '@twitch-audio-copyright/data';
 import { DashboardItemType } from '../../shared/model/dashboard-item-type';
 import { DashboardService } from '../../core/services/dashboard.service';
 
@@ -19,8 +19,8 @@ export class HomeContainerComponent implements OnInit {
   clipType = DashboardItemType.CLIP;
   videoType = DashboardItemType.VIDEO;
 
-  videos$: Observable<VideoDto[]>;
-  clips$: Observable<ClipDto[]>;
+  videos$: Observable<Video[]>;
+  clips$: Observable<Clip[]>;
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(data => {

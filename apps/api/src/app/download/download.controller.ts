@@ -1,7 +1,7 @@
 import {
   Body,
   Controller,
-  Get,
+  Get, HttpCode,
   InternalServerErrorException,
   Logger,
   Param,
@@ -53,6 +53,7 @@ export class DownloadController {
 
   @Post('/clip')
   @UseGuards(TokenGuard)
+  @HttpCode(204)
   public async downloadClip(@Token() token: string,
                             @Body() clipDto: TwitchClipDto,
                             @Query('output') outputPath = DownloadController.tempPath,

@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AcrCloudService } from './acr-cloud.service';
-import { AcrCloudProcessingController } from './acr-cloud-processing.controller';
+import { AcrCloudFileService } from './files/acr-cloud-file.service';
+import { AcrCloudMonitorService } from './monitor/acr-cloud-monitor.service';
 
 @Module({
-  controllers: [AcrCloudProcessingController],
-  exports: [AcrCloudService],
-  providers: [AcrCloudService]
+  exports: [AcrCloudFileService, AcrCloudMonitorService],
+  providers: [AcrCloudFileService, AcrCloudMonitorService]
 })
 export class AcrCloudProcessingModule {
 }

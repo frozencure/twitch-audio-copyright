@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AcrCloudDto } from '../../acr_cloud/model/acr-cloud-dto';
-import IdentifiedSong from './identified-song.entity';
+import IdentifiedSongEntity from './identified-song.entity';
 import { VideosService } from '../video/videos.service';
 import { ClipNotFoundError, VideoNotFoundError } from '../errors';
 import { AcrEmptyResponseError } from '../../acr_cloud/model/errors';
 import { ClipsService } from '../clip/clips.service';
 import { MusicbrainzService } from '../../musicbrainz/musicbrainz.service';
-import LabelMetadata from '../entity/label-metadata.entity';
+import LabelMetadataEntity from '../entity/label-metadata.entity';
 
 @Injectable()
 export class IdentifiedSongsService {
@@ -17,7 +17,7 @@ export class IdentifiedSongsService {
   }
 
   async insertIdentifiedSongForClip(acrDto: AcrCloudDto, clipId: string,
-                                    identificationStart: number, identificationEnd: number): Promise<IdentifiedSong> {
+                                    identificationStart: number, identificationEnd: number): Promise<IdentifiedSongEntity> {
     const clip = await this.clipsService.findOne(clipId);
     //TODO: only top 1 result is saved currently -> test if saving all results works better
     const identifiedSongMetadata = acrDto.metadata.music.sort((a, b) => b.score - a.score)
@@ -29,7 +29,7 @@ export class IdentifiedSongsService {
       throw new AcrEmptyResponseError(`Song could not be inserted for clip with ID ${clipId}` +
         `ACR response contains no data.`);
     }
-    const identifiedSong = IdentifiedSong.FromAcrResponse(identifiedSongMetadata,
+    const identifiedSong = IdentifiedSongEntity.FromAcrResponse(identifiedSongMetadata,
       identificationStart, identificationEnd, null, clip);
     await this.setLabelMetadata(identifiedSong).catch(e =>
       Logger.warn(`Label-metadata could not be retrieved for ISRC ${identifiedSong.isrcId}. Error: ${e}`));
@@ -38,7 +38,7 @@ export class IdentifiedSongsService {
   }
 
   async insertIdentifiedSongForVideo(videoId: number, identificationStart: number, identificationEnd: number,
-                                     acrDto: AcrCloudDto): Promise<IdentifiedSong> {
+                                     acrDto: AcrCloudDto): Promise<IdentifiedSongEntity> {
     const video = await this.videosService.findOne(videoId);
     //TODO: only top 1 result is saved currently -> test if saving all results works better
     const identifiedSongMetadata = acrDto.metadata.music.sort((a, b) => b.score - a.score)
@@ -50,7 +50,7 @@ export class IdentifiedSongsService {
       throw new AcrEmptyResponseError(`Song could not be inserted for VOD with ID ${videoId}` +
         `ACR response contains no data.`);
     }
-    const identifiedSong = IdentifiedSong.FromAcrResponse(identifiedSongMetadata,
+    const identifiedSong = IdentifiedSongEntity.FromAcrResponse(identifiedSongMetadata,
       identificationStart, identificationEnd, video);
     await this.setLabelMetadata(identifiedSong).catch(e =>
       Logger.warn(`Label-metadata could not be retrieved for ISRC ${identifiedSong.isrcId}. Error: ${e}`));
@@ -58,10 +58,10 @@ export class IdentifiedSongsService {
     return await identifiedSong.save();
   }
 
-  private async setLabelMetadata(identifiedSong: IdentifiedSong): Promise<void> {
+  private async setLabelMetadata(identifiedSong: IdentifiedSongEntity): Promise<void> {
     const labelMetadata = await this.musicBrainzService.getLabelMetadata(identifiedSong.label.name);
     if (labelMetadata) {
-      identifiedSong.label.metadata = LabelMetadata.FromLabelMetadataModel(labelMetadata);
+      identifiedSong.label.metadata = LabelMetadataEntity.FromLabelMetadataModel(labelMetadata);
     }
   }
 }

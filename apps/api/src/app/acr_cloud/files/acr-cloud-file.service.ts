@@ -4,12 +4,12 @@ import { PythonShell } from 'python-shell';
 import * as crypto from 'crypto';
 import * as FormData from 'form-data';
 import fetch from 'node-fetch';
-import { AcrCloudDto, AcrResult } from './model/acr-cloud-dto';
-import { AcrEmptyResponseError, FingerprintCreationError } from './model/errors';
-import { FingerprintData } from './model/fingerprint-data';
+import { AcrCloudDto, AcrResult } from '../model/acr-cloud-dto';
+import { AcrEmptyResponseError, FingerprintCreationError } from '../model/errors';
+import { FingerprintData } from '../model/files/fingerprint-data';
 
 @Injectable()
-export class AcrCloudService {
+export class AcrCloudFileService {
 
   constructor(private readonly configService: ConfigService) {
   }
@@ -19,7 +19,7 @@ export class AcrCloudService {
     return [method, uri, accessKey, dataType, signatureVersion, timestamp].join('\n');
   }
 
-  private static sign(signString: string, accessSecret: string) {
+  public static sign(signString: string, accessSecret: string) {
     return crypto.createHmac('sha1', accessSecret)
       .update(Buffer.from(signString, 'utf-8'))
       .digest().toString('base64');
@@ -49,16 +49,16 @@ export class AcrCloudService {
       accessSecret: this.configService.get<string>('acr_cloud.secret_key')
     };
 
-    const stringToSign = AcrCloudService.buildStringToSign('POST',
+    const stringToSign = AcrCloudFileService.buildStringToSign('POST',
       options.endpoint,
       options.accessKey,
       options.dataType,
       options.signatureVersion,
       timestamp.toString());
 
-    const signature = AcrCloudService.sign(stringToSign, options.accessSecret);
+    const signature = AcrCloudFileService.sign(stringToSign, options.accessSecret);
     const fingerprint = await this.createFingerprint(audioFilePath);
-    const form = AcrCloudService.createFormData(fingerprint.data, options.accessKey, options.dataType,
+    const form = AcrCloudFileService.createFormData(fingerprint.data, options.accessKey, options.dataType,
       options.signatureVersion, signature, timestamp);
 
     try {

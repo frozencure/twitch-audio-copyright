@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { Resolve } from '@angular/router';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { HomeResolverModel } from './home-resolver-model';
 
@@ -9,7 +9,7 @@ export class HomeContainerResolver implements Resolve<HomeResolverModel> {
   constructor(private dashboardService: DashboardService) {
   }
 
-  resolve(route: ActivatedRouteSnapshot): HomeResolverModel {
+  resolve(): HomeResolverModel {
     const videos = this.dashboardService.getVideos();
     const clips = this.dashboardService.getClips();
     return {

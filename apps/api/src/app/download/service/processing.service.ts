@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AcrCloudService } from '../../acr_cloud/acr-cloud.service';
+import { AcrCloudFileService } from '../../acr_cloud/files/acr-cloud-file.service';
 import { IdentifiedSongsService } from '../../database/identified-song/identified-songs.service';
 import { VodSegmentList } from '../model/vod-segment-list';
 import { VodAudioFile } from '../model/vod-file';
@@ -11,7 +11,7 @@ import { VideosService } from '../../database/video/videos.service';
 @Injectable()
 export class ProcessingService {
 
-  constructor(private readonly acrService: AcrCloudService,
+  constructor(private readonly acrService: AcrCloudFileService,
               private readonly clipsService: ClipsService,
               private readonly videosService: VideosService,
               private readonly identifiedSongsService: IdentifiedSongsService) {
