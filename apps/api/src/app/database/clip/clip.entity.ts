@@ -1,13 +1,11 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import User from '../user/user.entity';
-import IdentifiedSong from '../identified-song/identified-song.entity';
-import { TwitchClipDto } from '@twitch-audio-copyright/data';
-import { ProcessingProgress } from '@twitch-audio-copyright/data';
-import Video from '../video/video.entity';
-import { UserActionType } from '@twitch-audio-copyright/data';
+import UserEntity from '../user/user.entity';
+import IdentifiedSongEntity from '../identified-song/identified-song.entity';
+import { ProcessingProgress, TwitchClipDto, UserActionType } from '@twitch-audio-copyright/data';
+import VideoEntity from '../video/video.entity';
 
 @Entity('clip')
-export default class Clip extends BaseEntity {
+export default class ClipEntity extends BaseEntity {
 
   @PrimaryColumn({ type: 'text', unique: true }) id: string;
   @Column('text') title: string;
@@ -20,19 +18,19 @@ export default class Clip extends BaseEntity {
   @Column({ type: 'enum', enum: ProcessingProgress, default: ProcessingProgress.QUEUED }) progress: ProcessingProgress;
   @Column({ type: 'enum', enum: UserActionType, default: UserActionType.NO_ACTION_NEEDED }) userAction: UserActionType;
 
-  @ManyToOne(() => User, user => user.clips)
-  user: User;
+  @ManyToOne(() => UserEntity, user => user.clips)
+  user: UserEntity;
 
-  @OneToMany('IdentifiedSong', 'clip')
-  identifiedSongs: IdentifiedSong[];
+  @OneToMany(() => IdentifiedSongEntity, identifiedSong => identifiedSong.clip)
+  identifiedSongs: IdentifiedSongEntity[];
 
-  @ManyToOne('Video', 'clips')
-  video: Video;
+  @ManyToOne(() => VideoEntity, video => video.clips)
+  video: VideoEntity;
 
   static FromTwitchClip(twitchClipDto: TwitchClipDto,
-                        video: Video, user: User, progress = ProcessingProgress.QUEUED,
-                        userActionType = UserActionType.NO_ACTION_NEEDED): Clip {
-    const clip = new Clip();
+                        video: VideoEntity, user: UserEntity, progress = ProcessingProgress.QUEUED,
+                        userActionType = UserActionType.NO_ACTION_NEEDED): ClipEntity {
+    const clip = new ClipEntity();
     clip.id = twitchClipDto.id;
     clip.title = twitchClipDto.title;
     clip.embedUrl = twitchClipDto.embed_url;
@@ -47,5 +45,4 @@ export default class Clip extends BaseEntity {
     clip.userAction = userActionType;
     return clip;
   }
-
 }

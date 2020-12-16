@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
-import { VideoDto, ClipDto } from '@twitch-audio-copyright/data';
+import { Video, Clip } from '@twitch-audio-copyright/data';
 
 export interface HomeResolverModel {
-  videosStream: Observable<VideoDto[]>;
-  clipsStream: Observable<ClipDto[]>
+  videosStream: Observable<Video[]>;
+  clipsStream: Observable<Clip[]>
 }

@@ -1,7 +1,7 @@
-export interface StreamMonitorDto {
+export interface AcrCloudStreamMonitorDto {
   id: string;
   url: string;
-  state: number;
+  state: string;
   interval: number;
   rec_length: number;
   rec_timeout: number;

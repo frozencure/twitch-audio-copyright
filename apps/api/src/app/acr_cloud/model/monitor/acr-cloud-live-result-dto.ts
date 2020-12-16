@@ -1,6 +1,6 @@
 import { Status } from '../status';
 import { MonitorMetadata } from './monitor-metadata';
-import { LiveSongDto } from '@twitch-audio-copyright/data';
+import { LiveSong } from '@twitch-audio-copyright/data';
 
 
 export class AcrCloudLiveResultDto {
@@ -10,7 +10,7 @@ export class AcrCloudLiveResultDto {
   metadata: MonitorMetadata;
   type: string;
 
-  public toLiveSongDto(): LiveSongDto {
+  public toLiveSongDto(): LiveSong {
     const identifiedSong = this.metadata.music.find(s => s);
     return {
       title: identifiedSong.title,

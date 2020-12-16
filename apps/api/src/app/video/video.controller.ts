@@ -3,8 +3,13 @@ import { TokenGuard } from '../auth/token-guard.service';
 import { User } from '../utils/decorators';
 import { UserCookieModel } from '../auth/model/user-cookie-model';
 import { VideosService } from '../database/video/videos.service';
-import { PartialVideoDto, ProcessingProgress, UserActionType, VideoDto } from '@twitch-audio-copyright/data';
-import IdentifiedSong from '../database/identified-song/identified-song.entity';
+import {
+  IdentifiedSong,
+  PartialVideoDto,
+  ProcessingProgress,
+  UserActionType,
+  Video
+} from '@twitch-audio-copyright/data';
 import { UpdateResult } from 'typeorm';
 
 @Controller('videos/')
@@ -17,7 +22,7 @@ export class VideoController {
   @UseGuards(TokenGuard)
   public async getVideos(@User() user: UserCookieModel,
                          @Query('progress') progress?: ProcessingProgress,
-                         @Query('action') action?: UserActionType): Promise<VideoDto[]> {
+                         @Query('action') action?: UserActionType): Promise<Video[]> {
     return await this.videosService.findAll(user.id, progress, action);
   }
 
@@ -32,15 +37,13 @@ export class VideoController {
   @Get(':id/songs')
   @UseGuards(TokenGuard)
   public async getIdentifiedSongs(@Param('id') videoId: number): Promise<IdentifiedSong[]> {
-    const video = await this.videosService.findOne(videoId, ['identifiedSongs']);
-    return video.identifiedSongs;
+    const video = await this.videosService.findOne(videoId, ['identifiedSongs', 'label', 'identifiedSongs.label']);
+    return video.identifiedSongs.map(song => song.toIdentifiedSongDto());
   }
 
   @Get(':id')
   @UseGuards(TokenGuard)
-  public async getVideo(@Param('id') videoId: number): Promise<VideoDto> {
+  public async getVideo(@Param('id') videoId: number): Promise<Video> {
     return await this.videosService.findOne(videoId);
   }
-
-
 }

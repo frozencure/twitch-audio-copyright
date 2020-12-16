@@ -7,7 +7,7 @@ import { VodVideoFile } from '../model/vod-file';
 import { VodDownloadDto } from '../model/vod-download-dto';
 import { getClipUrl } from '../../utils/url.manager';
 import { ClipFile } from '../model/clip-file';
-import Clip from '../../database/clip/clip.entity';
+import ClipEntity from '../../database/clip/clip.entity';
 
 @Injectable()
 export class DownloadService {
@@ -28,7 +28,7 @@ export class DownloadService {
       ));
   }
 
-  public scheduleClipDownloadJob(clip: Clip, authToken: string, outputPath: string,
+  public scheduleClipDownloadJob(clip: ClipEntity, authToken: string, outputPath: string,
                                  deleteTempFiles = true): Observable<Job<ClipFile>> {
     const clipDownload = new ClipFile(`${outputPath}/${clip.id}.mp4`,
       clip.id, deleteTempFiles, getClipUrl(clip.thumbnailUrl));

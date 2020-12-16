@@ -1,15 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import User from '../database/user/user.entity';
+import UserEntity from '../database/user/user.entity';
 import { ConfigService } from '@nestjs/config';
-import Artist from '../database/entity/artist.entity';
-import IdentifiedSong from '../database/identified-song/identified-song.entity';
-import Video from '../database/video/video.entity';
-import Label from '../database/entity/label.entity';
-import Album from '../database/entity/album.entity';
-import Clip from '../database/clip/clip.entity';
-import LabelMetadata from '../database/entity/label-metadata.entity';
-import { StreamMonitor } from '../database/stream-monitor/stream-monitor-entity';
+import ArtistEntity from '../database/entity/artist.entity';
+import IdentifiedSongEntity from '../database/identified-song/identified-song.entity';
+import VideoEntity from '../database/video/video.entity';
+import LabelEntity from '../database/entity/label.entity';
+import AlbumEntity from '../database/entity/album.entity';
+import ClipEntity from '../database/clip/clip.entity';
+import LabelMetadataEntity from '../database/entity/label-metadata.entity';
+import { StreamMonitorEntity } from '../database/stream-monitor/stream-monitor-entity';
 
 export enum DBTypes {
   postgres = 'postgres',
@@ -35,9 +35,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: this.configService.get<string>('database.username'),
       password: this.configService.get<string>('database.password'),
       database: this.configService.get<string>('database.name'),
-      entities: [Album, Artist, IdentifiedSong,
-        Label, User, Video, Clip, LabelMetadata,
-        StreamMonitor],
+      entities: [AlbumEntity, ArtistEntity, IdentifiedSongEntity,
+        LabelEntity, UserEntity, VideoEntity, ClipEntity, LabelMetadataEntity,
+        StreamMonitorEntity],
       ssl: this.configService.get<string>('database.ssl'),
 
       logging: true,

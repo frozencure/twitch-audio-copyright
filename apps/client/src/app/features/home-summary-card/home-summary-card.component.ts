@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ClipDto, ProcessingProgress, UserActionType, VideoDto } from '@twitch-audio-copyright/data';
+import { Clip, ProcessingProgress, UserActionType, Video } from '@twitch-audio-copyright/data';
 import { Observable } from 'rxjs';
 import { DashboardItemType } from '../../shared/model/dashboard-item-type';
 import { Router } from '@angular/router';
@@ -11,20 +11,20 @@ import { Router } from '@angular/router';
 })
 export class HomeSummaryCardComponent implements OnInit {
 
-  @Input() items$: Observable<VideoDto[] | ClipDto[]>;
+  @Input() items$: Observable<Video[] | Clip[]>;
   @Input() type: DashboardItemType;
 
   @Output() refreshEventEmitter = new EventEmitter<DashboardItemType>();
 
-  analyzedItems = new Array<VideoDto | ClipDto>();
-  itemsInQueue = new Array<VideoDto | ClipDto>();
-  needActionsItems = new Array<VideoDto | ClipDto>();
+  analyzedItems = new Array<Video | Clip>();
+  itemsInQueue = new Array<Video | Clip>();
+  needActionsItems = new Array<Video | Clip>();
 
   constructor(private router: Router) {
   }
 
   ngOnInit(): void {
-    this.items$.subscribe((items: Array<VideoDto | ClipDto>) => {
+    this.items$.subscribe((items: Array<Video | Clip>) => {
       this.analyzedItems = items.filter(item => item.progress === ProcessingProgress.COMPLETED);
       this.itemsInQueue = items.filter(item => item.progress === ProcessingProgress.QUEUED);
       this.needActionsItems = items.filter(item => item.userAction === UserActionType.NEEDS_ACTION);

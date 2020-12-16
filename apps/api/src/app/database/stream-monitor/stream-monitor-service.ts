@@ -1,7 +1,7 @@
-import { StreamMonitor } from './stream-monitor-entity';
+import { StreamMonitorEntity } from './stream-monitor-entity';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { StreamMonitorDto } from '../../acr_cloud/model/stream-monitor-dto';
+import { AcrCloudStreamMonitorDto } from '../../acr_cloud/model/acr-cloud-stream-monitor-dto';
 import { UsersService } from '../user/users.service';
 import { UserNotFoundError } from '../errors';
 import { Repository } from 'typeorm';
@@ -9,14 +9,14 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class StreamMonitorService {
 
-  constructor(@InjectRepository(StreamMonitor) private streamMonitorService: Repository<StreamMonitor>,
+  constructor(@InjectRepository(StreamMonitorEntity) private streamMonitorService: Repository<StreamMonitorEntity>,
               private userService: UsersService) {
   }
 
-  async insertOrUpdate(streamMonitorDto: StreamMonitorDto, userId: string): Promise<StreamMonitor> {
+  async insertOrUpdate(streamMonitorDto: AcrCloudStreamMonitorDto, userId: string): Promise<StreamMonitorEntity> {
     const user = await this.userService.findOne(userId);
     if (user) {
-      const streamMonitor = StreamMonitor.FromStreamMonitorDto(streamMonitorDto);
+      const streamMonitor = StreamMonitorEntity.FromAcrCloudMonitorDto(streamMonitorDto);
       Logger.debug(`Saving/Updating stream monitor with ID ${streamMonitorDto.id} to database.`);
       streamMonitor.user = user;
       return streamMonitor.save();
@@ -25,14 +25,14 @@ export class StreamMonitorService {
     }
   }
 
-  async deactivate(stream: StreamMonitor): Promise<StreamMonitor> {
+  async deactivate(stream: StreamMonitorEntity): Promise<StreamMonitorEntity> {
     if (!stream.deactivatedAt) {
       stream.deactivatedAt = new Date();
     }
     return stream.save();
   }
 
-  async findOne(streamId: string): Promise<StreamMonitor> {
+  async findOne(streamId: string): Promise<StreamMonitorEntity> {
     return await this.streamMonitorService.findOne(streamId);
   }
 

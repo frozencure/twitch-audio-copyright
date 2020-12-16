@@ -1,12 +1,12 @@
 import { BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
-import Video from '../video/video.entity';
+import VideoEntity from '../video/video.entity';
 import { HelixBroadcasterType, HelixUserType } from 'twitch';
 import { TwitchUserDto } from '@twitch-audio-copyright/data';
-import Clip from '../clip/clip.entity';
-import { StreamMonitor } from '../stream-monitor/stream-monitor-entity';
+import ClipEntity from '../clip/clip.entity';
+import { StreamMonitorEntity } from '../stream-monitor/stream-monitor-entity';
 
 @Entity('user')
-export default class User extends BaseEntity {
+export default class UserEntity extends BaseEntity {
 
   @PrimaryColumn({ type: 'text', unique: true }) id: string;
   @Column('text') userName: string;
@@ -22,17 +22,17 @@ export default class User extends BaseEntity {
   @Column('int') viewCount: number;
   @Column('text') email: string;
 
-  @OneToMany('Video', 'user')
-  videos: Video[];
+  @OneToMany(() => VideoEntity, video => video.user)
+  videos: VideoEntity[];
 
-  @OneToMany(() => StreamMonitor, streamMonitor => streamMonitor.user)
-  streamMonitors: StreamMonitor[];
+  @OneToMany(() => StreamMonitorEntity, streamMonitor => streamMonitor.user)
+  streamMonitors: StreamMonitorEntity[];
 
-  @OneToMany('Clip', 'user')
-  clips: Clip[];
+  @OneToMany(() => ClipEntity, clip => clip.user)
+  clips: ClipEntity[];
 
-  static FromTwitchUser(userDto: TwitchUserDto): User {
-    const user = new User();
+  static FromTwitchUser(userDto: TwitchUserDto): UserEntity {
+    const user = new UserEntity();
     user.id = userDto.id;
     user.userName = userDto.login;
     user.displayName = userDto.display_name;

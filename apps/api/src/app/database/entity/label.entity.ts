@@ -1,18 +1,18 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
-import IdentifiedSong from '../identified-song/identified-song.entity';
-import LabelMetadata from './label-metadata.entity';
+import IdentifiedSongEntity from '../identified-song/identified-song.entity';
+import LabelMetadataEntity from './label-metadata.entity';
 
 @Entity('label')
-export default class Label {
+export default class LabelEntity {
 
   @PrimaryColumn('text') name: string;
   @Column({ default: true }) isCopyright: boolean;
 
-  @OneToMany('IdentifiedSong', 'label')
-  identifiedSongs: IdentifiedSong[];
+  @OneToMany(() => IdentifiedSongEntity, song => song.label)
+  identifiedSongs: IdentifiedSongEntity[];
 
-  @OneToOne(() => LabelMetadata, metadata => metadata.label,
+  @OneToOne(() => LabelMetadataEntity, metadata => metadata.label,
     { cascade: true })
   @JoinColumn()
-  metadata: LabelMetadata;
+  metadata: LabelMetadataEntity;
 }

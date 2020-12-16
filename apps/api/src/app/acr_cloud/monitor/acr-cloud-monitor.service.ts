@@ -3,7 +3,7 @@ import { AddStreamModel } from '../model/add-stream-model';
 import { ConfigService } from '@nestjs/config';
 import { AcrCloudFileService } from '../files/acr-cloud-file.service';
 import fetch from 'node-fetch';
-import { StreamMonitorDto } from '../model/stream-monitor-dto';
+import { AcrCloudStreamMonitorDto } from '../model/acr-cloud-stream-monitor-dto';
 import { AcrStatusResponseError } from '../model/errors';
 import { AcrCloudLiveResultDto } from '../model/monitor/acr-cloud-live-result-dto';
 
@@ -42,7 +42,7 @@ export class AcrCloudMonitorService {
   }
 
   async addStream(url: string, streamName: string,
-                  isRealTime: boolean, isRecorded: boolean): Promise<StreamMonitorDto> {
+                  isRealTime: boolean, isRecorded: boolean): Promise<AcrCloudStreamMonitorDto> {
     const isRealTimeNumber = isRealTime ? 1 : 0;
     const isRecordedNumber = isRecorded ? 1 : 0;
     const model = new AddStreamModel(url, streamName, this.projectName, this.region,
@@ -60,7 +60,7 @@ export class AcrCloudMonitorService {
     return responseData;
   }
 
-  async getStream(streamId: string): Promise<StreamMonitorDto> {
+  async getStream(streamId: string): Promise<AcrCloudStreamMonitorDto> {
     const headers = this.headers('GET', streamId);
     const response = await fetch(`${AcrCloudMonitorService.BaseUrl}/${streamId}`,
       {

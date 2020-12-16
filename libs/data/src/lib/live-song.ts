@@ -1,4 +1,4 @@
-export interface LiveSongDto {
+export interface LiveSong {
   title: string;
   artists: string[];
   label: string;

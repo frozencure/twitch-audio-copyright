@@ -3,13 +3,11 @@ import { AcrCloudMonitorService } from '../acr_cloud/monitor/acr-cloud-monitor.s
 import { StreamMonitorService } from '../database/stream-monitor/stream-monitor-service';
 import { UsersService } from '../database/user/users.service';
 import { UserCookieModel } from '../auth/model/user-cookie-model';
-import { StreamMonitor } from '../database/stream-monitor/stream-monitor-entity';
-import { StreamMonitorDto } from '../acr_cloud/model/stream-monitor-dto';
-import User from '../database/user/user.entity';
+import { StreamMonitorEntity } from '../database/stream-monitor/stream-monitor-entity';
+import UserEntity from '../database/user/user.entity';
 import { MusicbrainzService } from '../musicbrainz/musicbrainz.service';
-import { LiveSongDto } from '@twitch-audio-copyright/data';
+import { LiveSong, StreamMonitor } from '@twitch-audio-copyright/data';
 import { TwitchService } from '../twitch/twitch.service';
-
 
 @Injectable()
 export class LiveService {
@@ -27,26 +25,30 @@ export class LiveService {
     const baseUrl = LiveService.TwitchBaseUrl;
     const streamMonitorDto = await
       this.acrMonitorService.addStream(`${baseUrl}${user.login}`, user.login, isRealTime, isRecorded);
-    return this.streamMonitorDbService.insertOrUpdate(streamMonitorDto, user.id);
+    const streamMonitorEntity = await this.streamMonitorDbService.insertOrUpdate(streamMonitorDto, user.id);
+    return streamMonitorEntity.toStreamMonitorDto();
   }
 
   public async deactivateStreamMonitor(userCookie: UserCookieModel): Promise<StreamMonitor> {
     const user = await this.usersService.findOne(userCookie.id, ['streamMonitors']);
     const activeStreamMonitor = LiveService.activeStreamMonitor(user);
     await this.acrMonitorService.deleteStream(activeStreamMonitor.acrId);
-    return this.streamMonitorDbService.deactivate(activeStreamMonitor);
+    const streamMontitorEntity = await this.streamMonitorDbService.deactivate(activeStreamMonitor);
+    return streamMontitorEntity.toStreamMonitorDto();
   }
 
-
-  public async getStreamMonitor(userCookie: UserCookieModel): Promise<StreamMonitorDto> {
+  public async getStreamMonitor(userCookie: UserCookieModel): Promise<StreamMonitor> {
     const user = await this.usersService.findOne(userCookie.id, ['streamMonitors']);
     const activeStreamMonitor = LiveService.activeStreamMonitor(user);
-    return this.acrMonitorService.getStream(activeStreamMonitor.acrId);
+    const acrMonitor = await this.acrMonitorService.getStream(activeStreamMonitor.acrId);
+    const streamMonitorDto = activeStreamMonitor.toStreamMonitorDto();
+    streamMonitorDto.state = acrMonitor.state;
+    return streamMonitorDto;
   }
 
   public async getResults(userCookie: UserCookieModel,
                           accessToken: string,
-                          date: Date): Promise<unknown> {
+                          date: Date): Promise<LiveSong[]> {
     const user = await this.usersService.findOne(userCookie.id, ['streamMonitors']);
     const activeStreamMonitor = LiveService.activeStreamMonitor(user);
     const acrResults = await this.acrMonitorService.getResultsByDate(date, activeStreamMonitor.acrId);
@@ -55,7 +57,7 @@ export class LiveService {
     return liveSongs;
   }
 
-  private async setTwitchVideoLink(liveSongs: LiveSongDto[], accessToken: string, userId: string): Promise<void> {
+  private async setTwitchVideoLink(liveSongs: LiveSong[], accessToken: string, userId: string): Promise<void> {
     const videos = await this.twitchService.getAllVideos(accessToken, userId);
     liveSongs.forEach(liveSong => {
       videos.forEach(video => {
@@ -68,6 +70,8 @@ export class LiveService {
     });
   }
 
+  // TODO: video timestamps are shifted with more than 1h (happens because Twitch saves videos with a delay)
+  //  => find a solution
   private static getVideoTimestamp(videoStart: Date, timestamp: Date): string {
     const secondsDifference = (timestamp.getTime() - videoStart.getTime()) / 1000;
     const hours = Math.floor(secondsDifference / 3600);
@@ -79,7 +83,7 @@ export class LiveService {
     return hoursString + minutesString + secondsString;
   }
 
-  private static activeStreamMonitor(user: User): StreamMonitor {
+  private static activeStreamMonitor(user: UserEntity): StreamMonitorEntity {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
