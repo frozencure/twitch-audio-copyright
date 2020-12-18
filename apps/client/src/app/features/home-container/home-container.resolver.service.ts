@@ -12,9 +12,11 @@ export class HomeContainerResolver implements Resolve<HomeResolverModel> {
   resolve(): HomeResolverModel {
     const videos = this.dashboardService.getVideos();
     const clips = this.dashboardService.getClips();
+    const songs = this.dashboardService.getLiveSongs();
     return {
       videosStream: videos,
-      clipsStream: clips
+      clipsStream: clips,
+      liveSongsStream: songs
     };
   }
 

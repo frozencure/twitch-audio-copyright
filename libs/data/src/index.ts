@@ -9,3 +9,4 @@ export * from './lib/live-song';
 export * from './lib/stream-monitor';
 export * from './lib/identified-song';
 export * from './lib/label';
+export * from './lib/time-conversion';

@@ -5,19 +5,27 @@
       <mat-icon>refresh</mat-icon>
     </button>
   </div>
-  <div class="frow row-between">
-    <div class="mr-20">
-      <h1 class="bold-64">{{analyzedItems.length}}</h1>
-      <h3>{{typeAsString() | titlecase}} analyzed</h3>
+  <div *ngIf="analyzedItems && needActionsItems && itemsInQueue && !isLoading; else loading">
+    <div class="frow row-between">
+      <div class="mr-20">
+        <h1 class="bold-64">{{analyzedItems.length}}</h1>
+        <h3>{{typeAsString() | titlecase}} analyzed</h3>
+      </div>
+      <div class="mr-20">
+        <h1 class="bold-64">{{needActionsItems.length}}</h1>
+        <h3>{{typeAsString() | titlecase}} need actions</h3>
+      </div>
+      <div class="mr-20">
+        <h1 class="bold-64">{{itemsInQueue.length}}</h1>
+        <h3>{{typeAsString() | titlecase}} in queue</h3>
+      </div>
+      <button mat-flat-button (click)="onAnalyzeMore()" color="primary">Analyze more {{typeAsString()}}</button>
     </div>
-    <div class="mr-20">
-      <h1 class="bold-64">{{needActionsItems.length}}</h1>
-      <h3>{{typeAsString() | titlecase}} need actions</h3>
-    </div>
-    <div class="mr-20">
-      <h1 class="bold-64">{{itemsInQueue.length}}</h1>
-      <h3>{{typeAsString() | titlecase}} in queue</h3>
-    </div>
-    <button mat-flat-button (click)="onAnalyzeMore()" color="primary">Analyze more {{typeAsString()}}</button>
   </div>
 </mat-card>
+
+<ng-template #loading>
+  <div class="frow centered mb-10 mt-10">
+    <mat-spinner color="primary"></mat-spinner>
+  </div>
+</ng-template>

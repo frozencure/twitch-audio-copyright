@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Clip, Video } from '@twitch-audio-copyright/data';
+import { Clip, LiveSong, Video } from '@twitch-audio-copyright/data';
 import { DashboardItemType } from '../../shared/model/dashboard-item-type';
 import { DashboardService } from '../../core/services/dashboard.service';
 
@@ -21,12 +21,18 @@ export class HomeContainerComponent implements OnInit {
 
   videos$: Observable<Video[]>;
   clips$: Observable<Clip[]>;
+  liveSongs$: Observable<LiveSong[]>;
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(data => {
       this.videos$ = data.routeResolver.videosStream;
       this.clips$ = data.routeResolver.clipsStream;
+      this.liveSongs$ = data.routeResolver.liveSongsStream;
     }, err => console.log(err));
+  }
+
+  onLiveCardRefresh(): void {
+    this.dashboardService.refreshLiveSongs();
   }
 
   onCardRefresh(type: DashboardItemType): void {

@@ -6,14 +6,17 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { HomeContainerResolver } from './home-container.resolver.service';
+import { HomeLiveCardComponent } from '../home-live-card/home-live-card.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
-  declarations: [HomeContainerComponent, HomeSummaryCardComponent],
+  declarations: [HomeContainerComponent, HomeSummaryCardComponent, HomeLiveCardComponent],
   imports: [
     CommonModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ],
   exports: [HomeContainerComponent],
   providers: [HomeContainerResolver]
