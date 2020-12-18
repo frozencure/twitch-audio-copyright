@@ -16,8 +16,12 @@
           <div class="col-md-6-7 mb-10 mt-10">
             <b>{{getLatestSong(liveSongs).title}}</b>
             <div class="frow justify-start">
-              <mat-icon class="text-icon">album</mat-icon>
+              <mat-icon class="text-icon">library_music</mat-icon>
               <span> {{getLatestSongSubtitle(liveSongs)}}</span>
+            </div>
+            <div class="frow justify-start">
+              <mat-icon class="text-icon">album</mat-icon>
+              <span> {{getLatestSong(liveSongs).label}}</span>
             </div>
             <div class="frow justify-start">
               <mat-icon class="text-icon">timer</mat-icon>
