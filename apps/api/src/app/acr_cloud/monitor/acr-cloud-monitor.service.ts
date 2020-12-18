@@ -99,9 +99,14 @@ export class AcrCloudMonitorService {
     }
     return responseData.map(r => {
       const song = Object.assign(new AcrCloudLiveResultDto(), r);
-      song.metadata.timestamp_utc = new Date(r.metadata.timestamp_utc);
+      song.metadata.timestamp_utc = new Date(AcrCloudMonitorService.toISODateString(r.metadata.timestamp_utc));
       return song;
     });
+  }
+
+  private static toISODateString(acrDate: string): string {
+    const segments = acrDate.split(' ');
+    return `${segments[0]}T${segments[1]}.000Z`
   }
 
   private static formatDate(date: Date): string {

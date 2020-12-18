@@ -6,7 +6,7 @@ import { UserCookieModel } from '../auth/model/user-cookie-model';
 import { StreamMonitorEntity } from '../database/stream-monitor/stream-monitor-entity';
 import UserEntity from '../database/user/user.entity';
 import { MusicbrainzService } from '../musicbrainz/musicbrainz.service';
-import { LiveSong, StreamMonitor } from '@twitch-audio-copyright/data';
+import { LiveSong, StreamMonitor, TimeConversion } from '@twitch-audio-copyright/data';
 import { TwitchService } from '../twitch/twitch.service';
 
 @Injectable()
@@ -74,13 +74,7 @@ export class LiveService {
   //  => find a solution
   private static getVideoTimestamp(videoStart: Date, timestamp: Date): string {
     const secondsDifference = (timestamp.getTime() - videoStart.getTime()) / 1000;
-    const hours = Math.floor(secondsDifference / 3600);
-    const minutes = Math.floor(secondsDifference % 3600 / 60);
-    const seconds = Math.floor(secondsDifference % 3600 % 60);
-    const hoursString = hours > 0 ? hours.toString() + 'h' : '';
-    const minutesString = minutes > 0 ? minutes.toString() + 'm' : '';
-    const secondsString = seconds > 0 ? seconds.toString() + 's' : '';
-    return hoursString + minutesString + secondsString;
+    return TimeConversion.secondToTwitchVodTimestamp(secondsDifference);
   }
 
   private static activeStreamMonitor(user: UserEntity): StreamMonitorEntity {

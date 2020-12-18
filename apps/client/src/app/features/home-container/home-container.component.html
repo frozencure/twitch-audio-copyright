@@ -1,9 +1,10 @@
 <div class="frow-container">
-  <div class="frow">
+  <div class="frow gutters">
     <app-home-summary-card [items$]="videos$" [type]="videoType"
-                           (refreshEventEmitter)="onCardRefresh($event)"></app-home-summary-card>
+                           (refreshEventEmitter)="onCardRefresh($event)" class="col-md-1-2"></app-home-summary-card>
     <app-home-summary-card [items$]="clips$" [type]="clipType"
-                           (refreshEventEmitter)="onCardRefresh($event)"></app-home-summary-card>
+                           (refreshEventEmitter)="onCardRefresh($event)" class="col-md-1-2"></app-home-summary-card>
+    <app-home-live-card class="col-md-1-1" [liveSongs$]="liveSongs$" (refreshEventEmitter)="onLiveCardRefresh()"></app-home-live-card>
   </div>
 </div>
 

@@ -15,6 +15,7 @@ export class AcrCloudLiveResultDto {
     return {
       title: identifiedSong.title,
       artists: identifiedSong.artists.map(artist => artist.name),
+      album: identifiedSong.album.name,
       label: identifiedSong.label,
       identifiedAt: this.metadata.timestamp_utc,
       playedDuration: this.metadata.played_duration,

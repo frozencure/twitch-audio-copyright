@@ -9,6 +9,7 @@ import { UserModel } from '../../store/auth.state';
 import { environment } from '../../../environments/environment';
 import {
   Clip,
+  LiveSong,
   ProcessingProgress,
   SuccessDto,
   TwitchClipDto,
@@ -21,6 +22,7 @@ export class DashboardService {
 
   private clipsRefreshSubject = new BehaviorSubject(null);
   private videosRefreshSubject = new BehaviorSubject(null);
+  private liveSongsRefreshSubject = new BehaviorSubject(null);
 
   constructor(private http: HttpClient, private store: Store) {
   }
@@ -84,6 +86,19 @@ export class DashboardService {
         });
       })
     );
+  }
+
+  public getLiveSongs(): Observable<LiveSong[]> {
+    return this.liveSongsRefreshSubject.pipe(
+      switchMap(() => {
+        return this.http.get<LiveSong[]>('api/live/results',
+          { params: { date: new Date().toISOString() } });
+      })
+    );
+  }
+
+  public refreshLiveSongs(): void {
+    this.liveSongsRefreshSubject.next(null);
   }
 
   public refreshVideos(): void {
