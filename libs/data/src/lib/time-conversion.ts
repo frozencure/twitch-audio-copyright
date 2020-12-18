@@ -8,7 +8,8 @@ export class TimeConversion {
     const hoursDisplay = hours > 0 ? hours.toString() + ':' : '';
     const minutesDisplay =
       minutes > 0 ? (minutes > 9 ? minutes.toString() : '0' + minutes.toString()) + ':' : '00:';
-    const secondsDisplay = remainingSeconds > 0 ? remainingSeconds.toString() : '00';
+    const secondsDisplay = remainingSeconds > 0 ?
+      (remainingSeconds > 9 ? remainingSeconds.toString() : '0' + remainingSeconds.toString()) : '00';
     return hoursDisplay + minutesDisplay + secondsDisplay;
   }
 

@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 @Component({
   selector: 'app-home-live-card',
   templateUrl: './home-live-card.component.html',
-  styleUrls: ['./home-live-card.component.scss']
+  styleUrls: ['./home-live-card.component.scss', './../home-container/home-container.component.scss']
 })
 export class HomeLiveCardComponent implements OnInit, OnDestroy {
 
@@ -48,6 +48,10 @@ export class HomeLiveCardComponent implements OnInit, OnDestroy {
     const played = this.getLatestSong(liveSongs).playedDuration;
     const total = this.getLatestSong(liveSongs).totalDuration;
     return `${TimeConversion.secondsToHoursMinutesSeconds(played)}`
-      + `out of ${TimeConversion.secondsToHoursMinutesSeconds(total)}`;
+      + ` out of ${TimeConversion.secondsToHoursMinutesSeconds(total)}`;
+  }
+
+  getLocalDate(liveSongs: LiveSong[]): Date {
+    return new Date(this.getLatestSong(liveSongs).identifiedAt);
   }
 }

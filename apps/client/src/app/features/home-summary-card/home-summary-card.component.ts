@@ -8,7 +8,7 @@ import { tap } from 'rxjs/operators';
 @Component({
   selector: 'app-home-summary-card',
   templateUrl: './home-summary-card.component.html',
-  styleUrls: ['./home-summary-card.component.scss']
+  styleUrls: ['./home-summary-card.component.scss', './../home-container/home-container.component.scss']
 })
 export class HomeSummaryCardComponent implements OnInit, OnDestroy {
 

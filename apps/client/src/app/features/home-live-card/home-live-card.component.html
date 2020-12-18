@@ -9,7 +9,7 @@
     <div *ngIf="liveSongs.length !== 0; else empty">
       <div class="frow">
         <div class="col-md-2-4 frow row-start">
-          <h3 class="col-md-1-1 mb-10 mt-10">Most recent detection</h3>
+          <h3 class="col-md-1-1 mb-10 mt-10">Most recent song</h3>
           <div class="col-md-1-7 mb-10 mt-10">
             <mat-icon class="icon-2x">audiotrack</mat-icon>
           </div>
@@ -25,14 +25,14 @@
             </div>
             <div class="frow justify-start">
               <mat-icon class="text-icon">access_time</mat-icon>
-              <span> {{getLatestSong(liveSongs).identifiedAt | date : 'shortTime'}}</span>
+              <span> {{getLocalDate(liveSongs) | date : 'shortTime'}}</span>
             </div>
           </div>
         </div>
         <div class="col-md-2-4 frow row-start">
-          <h3 class="col-md-1-1 mb-10 mt-10">Today's results</h3>
+          <h3 class="col-md-1-1 mb-10 mt-10">Today's songs</h3>
           <div class="col-md-1-1 mb-10 mt-10"><b class="bold-64">{{ liveSongs.length }}</b> Songs detected</div>
-          <button mat-flat-button color="primary" routerLink="live" class="mb-10">Go to results</button>
+          <button mat-flat-button color="primary" routerLink="/dashboard/live" class="mb-10">Go to results</button>
         </div>
       </div>
     </div>
