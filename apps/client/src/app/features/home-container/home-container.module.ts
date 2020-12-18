@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { HomeContainerResolver } from './home-container.resolver.service';
 import { HomeLiveCardComponent } from '../home-live-card/home-live-card.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [HomeContainerComponent, HomeSummaryCardComponent, HomeLiveCardComponent],
@@ -16,7 +17,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    RouterModule
   ],
   exports: [HomeContainerComponent],
   providers: [HomeContainerResolver]

@@ -11,6 +11,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { HomeContainerModule } from '../home-container/home-container.module';
 import { ClipContainerModule } from '../clip-container/clip-container.module';
+import { LiveContainerModule } from '../live-container/live-container.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -23,7 +24,8 @@ import { ClipContainerModule } from '../clip-container/clip-container.module';
     NavbarModule,
     VideoContainerModule,
     ClipContainerModule,
-    HomeContainerModule
+    HomeContainerModule,
+    LiveContainerModule
   ],
   providers: [CookieService, DashboardService],
   exports: [DashboardComponent]
