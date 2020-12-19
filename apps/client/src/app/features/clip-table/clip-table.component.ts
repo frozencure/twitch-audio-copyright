@@ -1,13 +1,11 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { TwitchClipDto } from '@twitch-audio-copyright/data';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SubSink } from 'subsink';
-import { merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
-import { videoThumbnailUrl } from '../../utils/video.manager';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
+import { HelixClip, HelixGame } from 'twitch';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-clip-table',
@@ -16,52 +14,63 @@ import { MatPaginator } from '@angular/material/paginator';
 })
 export class ClipTableComponent implements OnInit, AfterViewInit {
 
-  @Input() clips: TwitchClipDto[];
-  @Output() selectedClips: EventEmitter<TwitchClipDto[]> = new EventEmitter();
+  @Input() clips$: Observable<HelixClip[]>;
+  @Input() games$: Observable<HelixGame[]>;
+  games: HelixGame[];
+  clips: HelixClip[];
+  @Output() selectedClips: EventEmitter<HelixClip[]> = new EventEmitter();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public isLoadingResults: boolean;
-  public clipsModel: MatTableDataSource<TwitchClipDto>;
-  public displayedColumns = ['select', 'info', 'created_at', 'views'];
-  public selection = new SelectionModel<TwitchClipDto>(true, []);
-  public getThumbnailUrl = videoThumbnailUrl;
-  private clipsSortedAscending = true;
+  public dataSource: MatTableDataSource<HelixClip>;
+  public displayedColumns = ['select', 'title', 'game', 'created_at', 'views'];
+  public selection = new SelectionModel<HelixClip>(true, []);
   private subscriptions = new SubSink();
+  isLoading = false;
 
   constructor() {
-    this.isLoadingResults = true;
   }
 
   ngOnInit(): void {
-    this.selection.changed.asObservable().subscribe(data => this.selectedClips.emit(data.source.selected));
+    this.subscriptions.sink = this.selection.changed.asObservable()
+      .subscribe(data => this.selectedClips.emit(data.source.selected));
+    this.isLoading = true;
   }
+
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.subscriptions.sink = this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-      this.subscriptions.sink = merge(this.sort.sortChange, this.paginator.page)
-        .pipe(
-          startWith({}),
-          switchMap(() => {
-            this.isLoadingResults = true;
-            return of(this.clips);
-          }),
-          map((clipsStream) => {
-            this.isLoadingResults = false;
-            if (this.clipsSortedAscending) {
-              this.clipsSortedAscending = false;
-              this.clipsModel = new MatTableDataSource(clipsStream);
-            } else {
-              this.clipsSortedAscending = true;
-              this.clipsModel = new MatTableDataSource(clipsStream);
-            }
-          }),
-          catchError(() => {
-            this.isLoadingResults = false;
-            return of([]);
-          })).subscribe(() => this.isLoadingResults = false);
-    }, 0);
+    this.subscriptions.sink = forkJoin([this.clips$, this.games$]).subscribe(clipsAndGames => {
+        this.clips = clipsAndGames[0];
+        this.games = clipsAndGames[1];
+        this.dataSource = new MatTableDataSource<HelixClip>(clipsAndGames[0]);
+        this.initializeDataSourceOptions();
+        this.isLoading = false;
+      }
+    );
+  }
+
+  private initializeDataSourceOptions(): void {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'created_at':
+          return item.creationDate;
+        case 'views':
+          return item.views;
+        default:
+          return item[property];
+      }
+    };
+  }
+
+  getGameName(gameId: string): string {
+    const game = this.games.find(game => game.id === gameId);
+    if (game) {
+      return game.name;
+    } else {
+      return 'Unknown';
+    }
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -79,7 +88,7 @@ export class ClipTableComponent implements OnInit, AfterViewInit {
   }
 
   /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: TwitchClipDto): string {
+  checkboxLabel(row?: HelixClip): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }

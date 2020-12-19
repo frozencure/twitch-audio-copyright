@@ -1,14 +1,14 @@
 <section class="mt-20 frow-container">
     <mat-horizontal-stepper [linear]="false" #stepper class="mat-elevation-z8 border-radius-4">
       <mat-step label="Select clips">
-              <app-clip-table [clips]="clips" (selectedClips)="selectClips($event)"></app-clip-table>
+              <app-clip-table [clips$]="clips$" [games$]="games$" (selectedClips)="selectClips($event)"></app-clip-table>
         <div class="frow justify-end mt-10">
           <button mat-raised-button color="primary" [disabled]="selectedClips.length < 1"
                   matStepperNext>Select {{ selectedClips.length }} clips</button>
         </div>
       </mat-step>
       <mat-step label="Confirm your selection">
-        <app-clip-confirm [selectedClips]="selectedClips"></app-clip-confirm>
+        <app-clip-confirm [selectedClips]="selectedClips" [games$]="games$"></app-clip-confirm>
         <div class="frow justify-between mt-10">
           <button mat-raised-button (click)="stepper.reset()">Reset</button>
         </div>

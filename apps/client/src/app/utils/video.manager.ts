@@ -1,7 +1,3 @@
-import { TwitchVideoDto } from '../shared/model/TwitchVideoDto';
-import { TwitchClipDto } from '@twitch-audio-copyright/data';
-import { HelixVideo } from 'twitch';
-
 export const withWidthAndHeight = (imageUrl: string, width: number, height: number) => {
   return imageUrl.replace('%{height}', height.toString())
     .replace('%{width}', width.toString());
@@ -84,22 +80,3 @@ export const timeSince = (createdAt) => {
 export const videoThumbnailUrl = (thumbnailUrl: string, pixels: string) => {
   return thumbnailUrl.replace(/%{[a-zA-Z]*}/g, pixels);
 };
-
-export const clipThumbnailUrl = (thumbnailUrl: string, pixels: string) => {
-  return thumbnailUrl.replace(/\d+x\d+/g, `${pixels}x${pixels}`)
-}
-
-export const videoCompareViews = (a: HelixVideo, b: HelixVideo) => {
-  if (a.views === b.views) return 0;
-  return a.views > b.views ? 1 : -1;
-}
-
-export const videoCompareTime = (a: HelixVideo, b: HelixVideo) => {
-  if (a.publishDate === b.publishDate) return 0;
-  return a.publishDate > b.publishDate ? 1 : -1;
-}
-
-export const videoCompareDuration = (a: HelixVideo, b: HelixVideo) => {
-  if (a.durationInSeconds === b.durationInSeconds) return 0;
-  return a.durationInSeconds > b.durationInSeconds ? 1 : -1;
-}

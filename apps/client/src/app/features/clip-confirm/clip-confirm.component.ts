@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { getStringFromMilliseconds, videoThumbnailUrl } from '../../utils/video.manager';
-import { TwitchClipDto } from '@twitch-audio-copyright/data';
+import { TimeConversion } from '@twitch-audio-copyright/data';
+import { HelixClip, HelixGame } from 'twitch';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-clip-confirm',
@@ -9,9 +10,9 @@ import { TwitchClipDto } from '@twitch-audio-copyright/data';
 })
 export class ClipConfirmComponent implements OnInit {
 
-  @Input() selectedClips: TwitchClipDto[];
-  displayedColumns = ['info', 'title', 'created_at', 'views'];
-  public getThumbnailUrl = videoThumbnailUrl;
+  @Input() selectedClips: HelixClip[];
+  @Input() games$: Observable<HelixGame[]>;
+  displayedColumns = ['title', 'game', 'created_at', 'views'];
 
   constructor() {
   }
@@ -20,7 +21,17 @@ export class ClipConfirmComponent implements OnInit {
   }
 
   public getTotalClipsDuration() {
-    return getStringFromMilliseconds(this.selectedClips.length * 60 * 1000);
+    return TimeConversion.secondsToHoursMinutesSeconds(this.selectedClips.length * 60, true);
   }
+
+  getGameName(games: HelixGame[], gameId: string): string {
+    const game = games.find(game => game.id === gameId);
+    if (game) {
+      return game.name;
+    } else {
+      return 'Unknown';
+    }
+  }
+
 
 }

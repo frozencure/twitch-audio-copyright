@@ -11,7 +11,7 @@ import { TimeConversion } from '@twitch-audio-copyright/data';
 export class ConfirmVideosComponent {
 
   @Input() selectedVideos: HelixVideo[];
-  displayedColumns = ['info', 'created_at', 'views', 'duration'];
+  displayedColumns = ['title', 'created_at', 'views', 'duration'];
   public getThumbnailUrl = videoThumbnailUrl;
 
   public getTotalVideosDuration(): string {

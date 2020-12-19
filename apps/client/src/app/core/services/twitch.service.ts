@@ -20,10 +20,10 @@ export class TwitchService {
     return new ApiClient({ authProvider });
   }
 
-  public async getClips(): Promise<HelixClip[]> {
+  public async getClips(limit = 100): Promise<HelixClip[]> {
     const client = this.initializeClient();
     const clips = await client.helix.clips.getClipsForBroadcaster(this.userId, {
-      limit: 100
+      limit: limit
     });
     return clips.data;
   }

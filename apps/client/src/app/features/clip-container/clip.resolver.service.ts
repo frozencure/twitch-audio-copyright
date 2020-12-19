@@ -1,17 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
-import { DashboardService } from '../../core/services/dashboard.service';
-import { TwitchClipDto } from '@twitch-audio-copyright/data';
-import { Observable } from 'rxjs';
+import { from } from 'rxjs';
+import { TwitchService } from '../../core/services/twitch.service';
+import { ClipResolverModel } from './clip-resolver-model';
+import { map, mergeMap } from 'rxjs/operators';
 
 @Injectable()
-export class ClipResolver implements Resolve<TwitchClipDto[]> {
+export class ClipResolver implements Resolve<ClipResolverModel> {
 
-  constructor(private dashboardService: DashboardService) {
+  constructor(private twitchService: TwitchService) {
   }
 
-  resolve(): Observable<TwitchClipDto[]> {
-    return this.dashboardService.getTwitchClips();
+  resolve(): ClipResolverModel {
+    const clips$ = from(this.twitchService.getClips());
+    const games$ = clips$.pipe(
+      map(clips => clips.map(clip => clip.gameId)),
+      map(gameIds => from(this.twitchService.getGames(gameIds))),
+      mergeMap(games => games)
+    );
+    return {clipsStream: clips$, gamesStream: games$};
   }
 }
 

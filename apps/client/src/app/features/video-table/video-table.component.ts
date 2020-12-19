@@ -19,15 +19,13 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public isLoadingResults: boolean;
   public dataSource: MatTableDataSource<HelixVideo>;
-  public displayedColumns = ['select', 'info', 'created_at', 'views', 'duration'];
+  public displayedColumns = ['select', 'title', 'created_at', 'views', 'duration'];
   public getThumbnailUrl = videoThumbnailUrl;
   public selection = new SelectionModel<HelixVideo>(true, []);
   private subscriptions = new SubSink();
 
   constructor() {
-    this.isLoadingResults = true;
   }
 
   ngOnInit(): void {
