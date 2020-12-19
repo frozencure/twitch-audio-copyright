@@ -1,6 +1,6 @@
 <section class="mt-20 frow-container">
   <mat-horizontal-stepper [linear]="false" #stepper class="mat-elevation-z8 border-radius-4">
-    <mat-step label="Choose the videos">
+    <mat-step label="Select videos">
       <app-video-table [videos]="videos" (selectedVideos)="selectVideos($event)"></app-video-table>
       <div class="frow justify-end mt-10">
         <button mat-raised-button color="primary" [disabled]="selectedVideos.length<1"

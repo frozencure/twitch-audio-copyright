@@ -1,0 +1,54 @@
+<div class="frow justify-between mt-10">
+  <div class="col-1-4">
+    <h2>{{selectedClips.length}} clips selected</h2>
+  </div>
+  <div class="col-1-4">
+    <h2>{{getTotalClipsDuration()}} total time</h2>
+  </div>
+  <div class="col-1-4">
+    <h2>Costs</h2>
+  </div>
+  <div class="col-1-4">
+    <button mat-raised-button color="primary">Confirm Payment</button>
+  </div>
+</div>
+
+<div class="table-container">
+  <div class="table-inner-table-container">
+
+    <table mat-table [dataSource]="selectedClips">
+      <ng-container matColumnDef="info">
+        <th mat-header-cell *matHeaderCellDef>Info</th>
+        <td mat-cell *matCellDef="let clip">
+          <div class="frow row-start">
+            <img [src]="clip.thumbnail_url" class="mr-5" width="32" height="32" alt="image alt">
+            <span>{{clip.title}}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Title</th>
+        <td mat-cell *matCellDef="let clip">{{clip.title}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="created_at">
+        <th mat-header-cell *matHeaderCellDef>Created at</th>
+        <td mat-cell *matCellDef="let clip">{{clip.published_at | date}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="views">
+        <th mat-header-cell *matHeaderCellDef> Views</th>
+        <td mat-cell *matCellDef="let clip">
+          <span>
+            <mat-icon aria-hidden="true" inline>visibility</mat-icon>
+            {{clip.view_count}}
+          </span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

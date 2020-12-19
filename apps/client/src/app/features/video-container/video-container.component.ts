@@ -1,27 +1,27 @@
 import { Component, OnInit } from '@angular/core';
+import { HelixVideo } from 'twitch';
 import { ActivatedRoute } from '@angular/router';
-import { TwitchVideoDto } from '../../shared/model/TwitchVideoDto';
 
 @Component({
   selector: 'app-video-container',
   templateUrl: './video-container.component.html',
-  styleUrls: ['./video-container.component.scss']
+  styleUrls: ['./video-container.component.scss', './../dashboard/dashboard.component.scss']
 })
 export class VideoContainerComponent implements OnInit {
-  public videos: TwitchVideoDto[];
 
-  public selectedVideos: TwitchVideoDto[] = [];
+  public videos: HelixVideo[];
+  public selectedVideos: HelixVideo[] = [];
 
-  constructor(private actRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    this.actRoute.data.subscribe(data => {
+    this.activatedRoute.data.subscribe(data => {
       this.videos = data.routeResolver;
     }, err => console.log(err));
   }
 
-  public selectVideos(event) {
-    this.selectedVideos = event;
+  public selectVideos(selected: HelixVideo[]) {
+    this.selectedVideos = selected;
   }
 }
