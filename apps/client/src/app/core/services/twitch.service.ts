@@ -21,6 +21,7 @@ export class TwitchService {
   }
 
   public async getClips(limit = 100): Promise<HelixClip[]> {
+    // TODO: implement pagination => currently only first 100 are retrieved
     const client = this.initializeClient();
     const clips = await client.helix.clips.getClipsForBroadcaster(this.userId, {
       limit: limit
