@@ -1,40 +1,37 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { TwitchVideoDto } from '../../shared/model/TwitchVideoDto';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { thumbnailUrl, videoCompareCresc, videoCompareDesc } from '../../utils/video.manager';
+import { videoThumbnailUrl } from '../../utils/video.manager';
 import { SelectionModel } from '@angular/cdk/collections';
-import { merge, of } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { MatTableDataSource } from '@angular/material/table';
+import { HelixVideo } from 'twitch';
 
 @Component({
   selector: 'app-video-table',
   templateUrl: './video-table.component.html',
-  styleUrls: ['./video-table.component.scss']
+  styleUrls: ['./video-table.component.scss', './../dashboard/dashboard.component.scss']
 })
 export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() videos: TwitchVideoDto[];
-  @Output() selectedVideos: EventEmitter<TwitchVideoDto[]> = new EventEmitter();
+  @Input() videos: HelixVideo[];
+  @Output() selectedVideos: EventEmitter<HelixVideo[]> = new EventEmitter();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  public isLoadingResults: boolean;
-  public videosModel: MatTableDataSource<TwitchVideoDto>;
-  public displayedColumns = ['select', 'info', 'title', 'created_at', 'views'];
-  public getThumbnailUrl = thumbnailUrl;
-  public selection = new SelectionModel<TwitchVideoDto>(true, []);
-  private videoSortedCresc = true;
+  public dataSource: MatTableDataSource<HelixVideo>;
+  public displayedColumns = ['select', 'title', 'created_at', 'views', 'duration'];
+  public getThumbnailUrl = videoThumbnailUrl;
+  public selection = new SelectionModel<HelixVideo>(true, []);
   private subscriptions = new SubSink();
 
   constructor() {
-    this.isLoadingResults = true;
   }
 
   ngOnInit(): void {
-    this.selection.changed.asObservable().subscribe(data => this.selectedVideos.emit(data.source.selected));
+    this.subscriptions.sink = this.selection.changed.asObservable()
+      .subscribe(data => this.selectedVideos.emit(data.source.selected));
+    this.dataSource = new MatTableDataSource<HelixVideo>(this.videos);
   }
 
   ngOnDestroy(): void {
@@ -42,30 +39,20 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.subscriptions.sink = this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-      this.subscriptions.sink = merge(this.sort.sortChange, this.paginator.page)
-        .pipe(
-          startWith({}),
-          switchMap(() => {
-            this.isLoadingResults = true;
-            return of(this.videos);
-          }),
-          map((videoStream) => {
-            this.isLoadingResults = false;
-            if (this.videoSortedCresc) {
-              this.videoSortedCresc = false;
-              this.videosModel = new MatTableDataSource(videoStream.sort(videoCompareDesc));
-            } else {
-              this.videoSortedCresc = true;
-              this.videosModel = new MatTableDataSource(videoStream.sort(videoCompareCresc));
-            }
-          }),
-          catchError(() => {
-            this.isLoadingResults = false;
-            return of([]);
-          })).subscribe(() => this.isLoadingResults = false);
-    }, 0);
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'created_at':
+          return item.publishDate;
+        case 'views':
+          return item.views;
+        case 'duration':
+          return item.durationInSeconds;
+        default:
+          return item[property];
+      }
+    };
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -83,11 +70,10 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: TwitchVideoDto): string {
+  checkboxLabel(row?: HelixVideo): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
-
 }

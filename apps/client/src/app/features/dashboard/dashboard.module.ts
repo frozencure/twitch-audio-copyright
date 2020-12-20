@@ -12,6 +12,7 @@ import { DashboardService } from '../../core/services/dashboard.service';
 import { HomeContainerModule } from '../home-container/home-container.module';
 import { ClipContainerModule } from '../clip-container/clip-container.module';
 import { LiveContainerModule } from '../live-container/live-container.module';
+import { TwitchService } from '../../core/services/twitch.service';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -27,7 +28,7 @@ import { LiveContainerModule } from '../live-container/live-container.module';
     HomeContainerModule,
     LiveContainerModule
   ],
-  providers: [CookieService, DashboardService],
+  providers: [CookieService, DashboardService, TwitchService],
   exports: [DashboardComponent]
 })
 export class DashboardModule {

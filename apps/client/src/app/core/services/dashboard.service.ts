@@ -113,7 +113,7 @@ export class DashboardService {
     return this.http.post<SuccessDto>('api/download/clip', clip).pipe(first());
   }
 
-  private getTokenAndUser(): { user: UserModel, token: string } {
+  public getTokenAndUser(): { user: UserModel, token: string } {
     return {
       user: this.store.selectSnapshot<UserModel>((state: any) => state.auth?.user),
       token: this.store.selectSnapshot<string>((state: any) => state.auth?.token)
