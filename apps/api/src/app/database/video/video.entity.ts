@@ -3,7 +3,7 @@ import UserEntity from '../user/user.entity';
 import IdentifiedSongEntity from '../identified-song/identified-song.entity';
 import ClipEntity from '../clip/clip.entity';
 import { HelixVideo } from 'twitch';
-import { ProcessingProgress, UserActionType, VideoType } from '@twitch-audio-copyright/data';
+import { ProcessingProgress, TwitchVideoDto, UserActionType, VideoType } from '@twitch-audio-copyright/data';
 
 @Entity('video')
 export default class VideoEntity extends BaseEntity {
@@ -28,23 +28,20 @@ export default class VideoEntity extends BaseEntity {
   @OneToMany(() => IdentifiedSongEntity, identifiedSong => identifiedSong.video)
   identifiedSongs: IdentifiedSongEntity[];
 
-  @OneToMany(() => ClipEntity, clip => clip.video)
-  clips: ClipEntity[];
-
-  static FromTwitchVideo(videoDto: HelixVideo, user: UserEntity, progress = ProcessingProgress.QUEUED,
+  static FromTwitchVideo(videoDto: TwitchVideoDto, user: UserEntity, progress = ProcessingProgress.QUEUED,
                          userActionType = UserActionType.NO_ACTION_NEEDED): VideoEntity {
     const video = new VideoEntity();
-    video.id = Number.parseInt(videoDto.id);
+    video.id = videoDto.id;
     video.title = videoDto.title;
     video.description = videoDto.description;
-    video.type = VideoType[videoDto.type.toString()];
+    video.type = videoDto.type;
     video.url = videoDto.url;
-    video.views = videoDto.views;
-    video.isPublic = videoDto.isPublic;
+    video.views = videoDto.view_count;
+    video.isPublic = videoDto.viewable === 'public';
     video.durationInSeconds = videoDto.durationInSeconds;
     video.language = videoDto.language;
-    video.createdAt = videoDto.creationDate;
-    video.publishedAt = videoDto.publishDate;
+    video.createdAt = videoDto.created_at;
+    video.publishedAt = videoDto.published_at;
     video.user = user;
     video.progress = progress;
     video.userAction = userActionType;

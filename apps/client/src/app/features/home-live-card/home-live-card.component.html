@@ -5,8 +5,9 @@
       <mat-icon>refresh</mat-icon>
     </button>
   </div>
-  <div *ngIf="liveSongs && !isLoading; else loading">
-    <div *ngIf="liveSongs.length !== 0; else empty">
+
+  <div [ngSwitch]="state">
+    <div *ngSwitchCase="'hasContent'">
       <div class="frow">
         <div class="col-md-2-4 frow row-start">
           <h3 class="col-md-1-1 mb-10 mt-10">Most recent song</h3>
@@ -40,6 +41,18 @@
         </div>
       </div>
     </div>
+    <div *ngSwitchCase="'isLoading'" class="frow centered mb-10 mt-10">
+      <mat-spinner color="primary"></mat-spinner>
+    </div>
+    <div *ngSwitchCase="'noActiveMonitor'" class="frow row-between mb-10 mt-10">
+      <div class="mt-10 mb-10">
+        Live analysis is not active.
+      </div>
+      <button mat-flat-button color="primary">Enable Live Analysis</button>
+    </div>
+    <div *ngSwitchCase="'empty'" class="mt-10 mb-10">
+      No songs identified today
+    </div>
   </div>
 </mat-card>
 
@@ -48,6 +61,16 @@
     <mat-spinner color="primary"></mat-spinner>
   </div>
 </ng-template>
+
+<ng-template #noMonitor>
+  <div class="frow row-between mb-10 mt-10">
+    <div class="mt-10 mb-10">
+      Live analysis is not active.
+    </div>
+    <button mat-flat-button color="primary">Enable Live Analysis</button>
+  </div>
+</ng-template>
+
 
 <ng-template #empty>
   <div class="mt-10 mb-10">

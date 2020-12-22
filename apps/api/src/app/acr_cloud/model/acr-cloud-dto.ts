@@ -9,15 +9,16 @@ export interface AcrCloudDto {
 }
 
 export class AcrResult {
-  acrCloudDto: AcrCloudDto;
+  acrCloudDto?: AcrCloudDto;
   chunkDurationInSeconds: number;
 
-  constructor(acrCloudDto: AcrCloudDto, chunkDurationInSeconds: number) {
+  constructor(chunkDurationInSeconds: number, acrCloudDto?: AcrCloudDto) {
     this.acrCloudDto = acrCloudDto;
     this.chunkDurationInSeconds = chunkDurationInSeconds;
   }
 
   hasEmptyResult(): boolean {
-    return this.acrCloudDto.status.code === 1001;
+    return !this.acrCloudDto || !this.acrCloudDto.status
+      || this.acrCloudDto.status.code == 1001 || !this.acrCloudDto.metadata || !this.acrCloudDto.metadata.music;
   }
 }

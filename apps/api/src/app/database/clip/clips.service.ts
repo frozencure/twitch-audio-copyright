@@ -3,11 +3,10 @@ import { PartialClipDto, ProcessingProgress, TwitchClipDto, UserActionType } fro
 import ClipEntity from './clip.entity';
 import { VideosService } from '../video/videos.service';
 import { UsersService } from '../user/users.service';
-import { ClipNotFoundError, UserNotFoundError, VideoNotFoundError } from '../errors';
+import { ClipNotFoundError, UserNotFoundError } from '../errors';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { Logger } from '@nestjs/common';
-import VideoEntity from '../video/video.entity';
 
 @Injectable()
 export class ClipsService {
@@ -17,17 +16,13 @@ export class ClipsService {
               @InjectRepository(ClipEntity) private clipsRepository: Repository<ClipEntity>) {
   }
 
-  async insertOrUpdate(twitchClipDto: TwitchClipDto, video: VideoEntity): Promise<ClipEntity> {
-    const user = await this.usersService.findOne(twitchClipDto.broadcaster_id);
-    if (!video) {
-      return Promise.reject(new VideoNotFoundError(`Clip insertion faile. Video with ID ${twitchClipDto.video_id}` +
-        `does not exist in the database.`));
-    }
+  async insertOrUpdate(twitchClip: TwitchClipDto): Promise<ClipEntity> {
+    const user = await this.usersService.findOne(twitchClip.broadcaster_id);
     if (!user) {
-      return Promise.reject(new UserNotFoundError(`Clip insertion failed. User with ID ${twitchClipDto.broadcaster_id}` +
+      return Promise.reject(new UserNotFoundError(`Clip insertion failed. User with ID ${twitchClip.broadcaster_id}` +
         `does not exist in the database.`));
     }
-    const clip = ClipEntity.FromTwitchClip(twitchClipDto, video, user);
+    const clip = ClipEntity.FromTwitchClip(twitchClip, user);
     Logger.debug(`Clip with ID '${clip.id}' was inserted.`);
     return clip.save();
   }

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AcrCloudMonitorService } from '../acr_cloud/monitor/acr-cloud-monitor.service';
 import { StreamMonitorService } from '../database/stream-monitor/stream-monitor-service';
 import { UsersService } from '../database/user/users.service';
@@ -6,8 +6,10 @@ import { UserCookieModel } from '../auth/model/user-cookie-model';
 import { StreamMonitorEntity } from '../database/stream-monitor/stream-monitor-entity';
 import UserEntity from '../database/user/user.entity';
 import { MusicbrainzService } from '../musicbrainz/musicbrainz.service';
-import { LiveSong, StreamMonitor, TimeConversion } from '@twitch-audio-copyright/data';
+import { LiveSong, LiveSongsResults, StreamMonitor, TimeConversion } from '@twitch-audio-copyright/data';
 import { TwitchService } from '../twitch/twitch.service';
+import { UserNotFoundError } from '../database/errors';
+import { NoActiveStreamMonitorError } from './error';
 
 @Injectable()
 export class LiveService {
@@ -31,15 +33,15 @@ export class LiveService {
 
   public async deactivateStreamMonitor(userCookie: UserCookieModel): Promise<StreamMonitor> {
     const user = await this.usersService.findOne(userCookie.id, ['streamMonitors']);
-    const activeStreamMonitor = LiveService.activeStreamMonitor(user);
+    const activeStreamMonitor = LiveService.activeStreamMonitorWithException(user, userCookie);
     await this.acrMonitorService.deleteStream(activeStreamMonitor.acrId);
-    const streamMontitorEntity = await this.streamMonitorDbService.deactivate(activeStreamMonitor);
-    return streamMontitorEntity.toStreamMonitorDto();
+    const streamMonitorEntity = await this.streamMonitorDbService.deactivate(activeStreamMonitor);
+    return streamMonitorEntity.toStreamMonitorDto();
   }
 
   public async getStreamMonitor(userCookie: UserCookieModel): Promise<StreamMonitor> {
     const user = await this.usersService.findOne(userCookie.id, ['streamMonitors']);
-    const activeStreamMonitor = LiveService.activeStreamMonitor(user);
+    const activeStreamMonitor = LiveService.activeStreamMonitorWithException(user, userCookie);
     const acrMonitor = await this.acrMonitorService.getStream(activeStreamMonitor.acrId);
     const streamMonitorDto = activeStreamMonitor.toStreamMonitorDto();
     streamMonitorDto.state = acrMonitor.state;
@@ -48,13 +50,14 @@ export class LiveService {
 
   public async getResults(userCookie: UserCookieModel,
                           accessToken: string,
-                          date: Date): Promise<LiveSong[]> {
+                          date: Date): Promise<LiveSongsResults> {
     const user = await this.usersService.findOne(userCookie.id, ['streamMonitors']);
-    const activeStreamMonitor = LiveService.activeStreamMonitor(user);
+    const activeStreamMonitor = LiveService.activeStreamMonitor(user, userCookie);
+    if (!activeStreamMonitor) return { hasActiveStreamMonitor: false, liveSongs: [] };
     const acrResults = await this.acrMonitorService.getResultsByDate(date, activeStreamMonitor.acrId);
     const liveSongs = acrResults.map(result => result.toLiveSongDto());
     await this.setTwitchVideoLink(liveSongs, accessToken, userCookie.id);
-    return liveSongs;
+    return { hasActiveStreamMonitor: true, liveSongs: [] };
   }
 
   private async setTwitchVideoLink(liveSongs: LiveSong[], accessToken: string, userId: string): Promise<void> {
@@ -77,19 +80,36 @@ export class LiveService {
     return TimeConversion.secondToTwitchVodTimestamp(secondsDifference);
   }
 
-  private static activeStreamMonitor(user: UserEntity): StreamMonitorEntity {
+  private static activeStreamMonitor(user: UserEntity, userCookie: UserCookieModel): StreamMonitorEntity | null {
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new UserNotFoundError(`Data for user ${userCookie.login} could be found in the database` +
+        ` while activating the live-stream monitor.`);
     }
     if (!user.streamMonitors) {
-      throw new HttpException('No active stream monitor found',
-        HttpStatus.NOT_FOUND);
+      return null;
     }
     const activeStreamMonitor = user.streamMonitors.filter(streamMonitor => !streamMonitor.deactivatedAt)
       .find(s => s);
     if (!activeStreamMonitor) {
-      throw new HttpException('No active stream monitor found',
-        HttpStatus.NOT_FOUND);
+      return null;
+    }
+    return activeStreamMonitor;
+  }
+
+
+  private static activeStreamMonitorWithException(user: UserEntity, userCookie: UserCookieModel): StreamMonitorEntity {
+    if (!user) {
+      throw new UserNotFoundError(`Data for user ${userCookie.login} could be found in the database` +
+        ` while activating the live-stream monitor.`);
+    }
+    if (!user.streamMonitors) {
+      throw new NoActiveStreamMonitorError(`No stream monitors could be found for user ${userCookie.login}`);
+    }
+    const activeStreamMonitor = user.streamMonitors.filter(streamMonitor => !streamMonitor.deactivatedAt)
+      .find(s => s);
+    if (!activeStreamMonitor) {
+      throw new
+      NoActiveStreamMonitorError(`No active stream monitor could be found for user ${userCookie.login}`);
     }
     return activeStreamMonitor;
   }

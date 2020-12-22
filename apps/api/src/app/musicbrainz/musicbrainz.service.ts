@@ -26,7 +26,7 @@ export class MusicbrainzService {
       const wikipediaUrl = await this.getWikipediaUrl(labelWithUrlsDto);
       labelMetadata.wikipediaUrl = wikipediaUrl.sitelinks.enwiki.url;
     } catch (e) {
-      Logger.error(e);
+      Logger.log(`Wiki label could not be found for ${labelName}`);
     }
     return labelMetadata;
   }

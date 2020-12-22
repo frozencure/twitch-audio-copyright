@@ -1,4 +1,4 @@
-<div class="table-container">
+<div *ngIf="!isLoading; else loading" class="table-container">
   <div class="table-inner-table-container">
     <table mat-table [dataSource]="dataSource"
            matSort matSortActive="created_at" matSortDisableClear matSortDirection="desc">
@@ -41,7 +41,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Views</th>
         <td mat-cell *matCellDef="let video">
           <span>
-            <mat-icon aria-hidden="true" inline>visibility</mat-icon>
+            <mat-icon class="vertical-middle" inline>visibility</mat-icon>
             {{video.views}}
           </span>
         </td>
@@ -51,7 +51,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear>Duration</th>
         <td mat-cell *matCellDef="let video">
           <span>
-            <mat-icon aria-hidden="true" inline>schedule</mat-icon>
+            <mat-icon class="vertical-middle" inline>schedule</mat-icon>
             {{video.duration}}
           </span>
         </td>
@@ -65,3 +65,9 @@
   <mat-paginator [length]="this.videos.length" pageSize="25" [pageSizeOptions]="[25, 50, 100]"
                  color="primary"></mat-paginator>
 </div>
+
+<ng-template #loading>
+  <div class="frow centered mb-10 mt-10">
+    <mat-spinner color="primary"></mat-spinner>
+  </div>
+</ng-template>

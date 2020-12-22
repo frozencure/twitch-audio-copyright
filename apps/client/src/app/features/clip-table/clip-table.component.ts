@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { HelixClip, HelixGame } from 'twitch';
-import { forkJoin, Observable } from 'rxjs';
+import { combineLatest, forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-clip-table',
@@ -27,19 +27,16 @@ export class ClipTableComponent implements OnInit, AfterViewInit {
   public displayedColumns = ['select', 'title', 'game', 'created_at', 'views'];
   public selection = new SelectionModel<HelixClip>(true, []);
   private subscriptions = new SubSink();
-  isLoading = false;
-
-  constructor() {
-  }
+  isLoading = true;
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.subscriptions.sink = this.selection.changed.asObservable()
       .subscribe(data => this.selectedClips.emit(data.source.selected));
-    this.isLoading = true;
   }
 
   ngAfterViewInit(): void {
-    this.subscriptions.sink = forkJoin([this.clips$, this.games$]).subscribe(clipsAndGames => {
+    this.subscriptions.sink = combineLatest([this.clips$, this.games$]).subscribe(clipsAndGames => {
         this.clips = clipsAndGames[0];
         this.games = clipsAndGames[1];
         this.dataSource = new MatTableDataSource<HelixClip>(clipsAndGames[0]);
