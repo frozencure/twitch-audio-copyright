@@ -1,22 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HelixWrapper } from '../../shared/model/HelixWrapper';
-import { TwitchVideoDto } from '../../shared/model/TwitchVideoDto';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, first, map, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { UserModel } from '../../store/auth.state';
-import { environment } from '../../../environments/environment';
 import {
   Clip,
   ClipsDownloadResponseModel,
-  HttpExceptionModel,
-  LiveSong, LiveSongsResults,
+  LiveSongsResults,
   ProcessingProgress,
-  StreamMonitor,
-  SuccessDto,
   TwitchClip,
-  TwitchClipDto,
   TwitchVideo,
   UserActionType,
   Video,
@@ -26,24 +18,7 @@ import {
 @Injectable()
 export class DashboardService {
 
-  private clipsRefreshSubject = new BehaviorSubject(null);
-  private videosRefreshSubject = new BehaviorSubject(null);
-  private liveSongsRefreshSubject = new BehaviorSubject(null);
-
   constructor(private http: HttpClient, private store: Store) {
-  }
-
-  // TODO: replace this with package twitch
-  public getTwitchVideos(type = 'all', sort = 'time'): Observable<Array<TwitchVideoDto>> {
-    const credentials = this.getTokenAndUser();
-    return this.http.get<HelixWrapper<TwitchVideoDto>>
-    (`https://api.twitch.tv/helix/videos?user_id=${credentials.user.id}&type=${type}&sort=${sort}`, {
-      headers: {
-        'Authorization': `Bearer ${credentials.token}`,
-        'Client-Id': environment.client_id
-      }
-    })
-      .pipe(first(), map(w => w.data));
   }
 
   public getVideos(progress?: ProcessingProgress, userAction?: UserActionType): Observable<Video[]> {
@@ -55,13 +30,9 @@ export class DashboardService {
     } else if (userAction) {
       params = { action: userAction };
     }
-    return this.videosRefreshSubject.pipe(
-      switchMap(() => {
-        return this.http.get<Video[]>('api/videos', {
-          params: params
-        });
-      })
-    );
+    return this.http.get<Video[]>('api/videos', {
+      params: params
+    });
   }
 
   public getClips(progress?: ProcessingProgress, userAction?: UserActionType): Observable<Clip[]> {
@@ -73,22 +44,14 @@ export class DashboardService {
     } else if (userAction) {
       params = { action: userAction };
     }
-    return this.clipsRefreshSubject.pipe(
-      switchMap(() => {
-        return this.http.get<Clip[]>('api/clips', {
-          params: params
-        });
-      })
-    );
+    return this.http.get<Clip[]>('api/clips', {
+      params: params
+    });
   }
 
   public getLiveSongs(): Observable<LiveSongsResults> {
-    return this.liveSongsRefreshSubject.pipe(
-      switchMap(() => {
-          return this.http.get<LiveSongsResults>('api/live/results',
-            { params: { date: new Date().toISOString() } });
-        }
-      ));
+    return this.http.get<LiveSongsResults>('api/live/results',
+      { params: { date: new Date().toISOString() } });
   }
 
   public downloadClips(clips: TwitchClip[]): Observable<ClipsDownloadResponseModel> {
@@ -101,22 +64,6 @@ export class DashboardService {
     return this.http.post<VideosDownloadResponseModel>('api/download/videos', {
       videos: videos
     });
-  }
-
-  public refreshLiveSongs(): void {
-    this.liveSongsRefreshSubject.next(null);
-  }
-
-  public refreshVideos(): void {
-    this.videosRefreshSubject.next(null);
-  }
-
-  public refreshClips(): void {
-    this.clipsRefreshSubject.next(null);
-  }
-
-  public processClip(clip: TwitchClipDto): Observable<SuccessDto> {
-    return this.http.post<SuccessDto>('api/download/clip', clip).pipe(first());
   }
 
   public getTokenAndUser(): { user: UserModel, token: string } {

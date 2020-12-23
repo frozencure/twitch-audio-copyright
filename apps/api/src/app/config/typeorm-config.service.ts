@@ -44,7 +44,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       synchronize: true,
       autoLoadEntities: true
     };
-    Logger.debug(typeormConfig);
     return typeormConfig;
   }
 

@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { HelixClip, HelixGame } from 'twitch';
-import { combineLatest, forkJoin, Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-clip-table',

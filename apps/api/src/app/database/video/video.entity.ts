@@ -1,8 +1,6 @@
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import UserEntity from '../user/user.entity';
 import IdentifiedSongEntity from '../identified-song/identified-song.entity';
-import ClipEntity from '../clip/clip.entity';
-import { HelixVideo } from 'twitch';
 import { ProcessingProgress, TwitchVideoDto, UserActionType, VideoType } from '@twitch-audio-copyright/data';
 
 @Entity('video')
@@ -13,6 +11,7 @@ export default class VideoEntity extends BaseEntity {
   @Column({ type: 'text', nullable: true }) description: string;
   @Column({ type: 'enum', enum: VideoType, default: VideoType.ARCHIVE }) type: VideoType;
   @Column('text') url: string;
+  @Column('text') thumbnailUrl: string;
   @Column('int') views: number;
   @Column('boolean') isPublic: boolean;
   @Column('int') durationInSeconds: number;
@@ -42,6 +41,7 @@ export default class VideoEntity extends BaseEntity {
     video.language = videoDto.language;
     video.createdAt = videoDto.created_at;
     video.publishedAt = videoDto.published_at;
+    video.thumbnailUrl = videoDto.thumbnail_url;
     video.user = user;
     video.progress = progress;
     video.userAction = userActionType;

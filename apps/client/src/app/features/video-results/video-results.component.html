@@ -1,0 +1,59 @@
+<div class="frow-container mt-20">
+  <div class="frow centered">
+    <div class="frow column-start min-width-300">
+      <mat-form-field appearance="fill">
+        <mat-label>Filter videos</mat-label>
+        <mat-select (selectionChange)="onSelect($event.value)" [(value)]="selectedValue">
+          <mat-option value="{{UserActionType.NEEDS_ACTION}}">Needs action</mat-option>
+          <mat-option value="{{UserActionType.REMOVED}}">Removed</mat-option>
+          <mat-option value="{{UserActionType.NO_ACTION_TAKEN}}">No action taken</mat-option>
+          <mat-option value="{{UserActionType.NO_ACTION_NEEDED}}">No action needed</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <ng-container *ngIf="!isLoading; else loading">
+        <ng-container *ngIf="videos.length > 0; else empty">
+          <div *ngFor="let video of videos">
+            <mat-card class="no-padding mb-10">
+              <div class="frow row-between">
+                <img class="mr-10" src="{{getThumbnailUrl(video.thumbnailUrl, '177', '100')}}"
+                     alt="image-alt" />
+                <div class="frow column-start mr-100">
+                  <h3>{{video.title}}</h3>
+                  <span>
+                <span class="mr-5">
+                  <mat-icon inline class="vertical-middle">event</mat-icon>
+                  {{video.createdAt | date}}
+                </span>
+                <span class="mr-5">
+                  <mat-icon inline class="vertical-middle">schedule</mat-icon>
+                  {{formatDuration(video.durationInSeconds)}}
+                </span>
+                <span class="mr-5">
+                  <mat-icon inline class="vertical-middle">visibility</mat-icon>
+                  {{video.views}}
+                </span>
+                <span class="mr-5">
+                  <mat-icon inline class="vertical-middle">videocam</mat-icon>
+                  {{video.type | titlecase}}
+                </span>
+              </span>
+                </div>
+                <button class="mr-20" mat-flat-button color="primary">Go to results</button>
+              </div>
+            </mat-card>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="frow centered mb-10 mt-10 min-width-300">
+    <mat-spinner color="primary"></mat-spinner>
+  </div>
+</ng-template>
+
+<ng-template #empty>
+  <h2>No videos to show.</h2>
+</ng-template>

@@ -17,11 +17,16 @@ export class AcrCloudLiveResultDto {
       artists: identifiedSong.artists.map(artist => artist.name),
       album: identifiedSong.album.name,
       label: identifiedSong.label,
-      identifiedAt: this.metadata.timestamp_utc,
+      identifiedAt: new Date(this.toISODateString(this.metadata.timestamp_utc)),
       playedDuration: this.metadata.played_duration,
       totalDuration: identifiedSong.duration_ms / 1000,
       score: identifiedSong.score
     };
+  }
+
+  private toISODateString(acrDate: string): string {
+    const segments = acrDate.split(' ');
+    return `${segments[0]}T${segments[1]}.000Z`;
   }
 
 }

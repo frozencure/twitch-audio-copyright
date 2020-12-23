@@ -22,6 +22,7 @@ export interface Video {
   publishedAt: Date;
   progress: ProcessingProgress;
   userAction: UserActionType;
+  thumbnailUrl: string;
 }
 
 export interface PartialVideoDto {

@@ -1,8 +1,3 @@
-export const withWidthAndHeight = (imageUrl: string, width: number, height: number) => {
-  return imageUrl.replace('%{height}', height.toString())
-    .replace('%{width}', width.toString());
-};
-
 export const views = (viewCount) => {
   const millions = viewCount / 1_000_000;
   if (millions > 1) {
@@ -77,6 +72,11 @@ export const timeSince = (createdAt) => {
   }
 };
 
-export const videoThumbnailUrl = (thumbnailUrl: string, pixels: string) => {
+export const videoSquareThumbnailUrl = (thumbnailUrl: string, pixels: string) => {
   return thumbnailUrl.replace(/%{[a-zA-Z]*}/g, pixels);
+};
+
+export const videoThumbnailUrl = (thumbnailUrl: string, width: string, height: string) => {
+  return thumbnailUrl.replace(/%{[a-zA-Z]*}/, width)
+    .replace(/%{[a-zA-Z]*}/, height);
 };

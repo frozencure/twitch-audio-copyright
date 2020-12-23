@@ -13,6 +13,7 @@ import { HomeContainerModule } from '../home-container/home-container.module';
 import { ClipContainerModule } from '../clip-container/clip-container.module';
 import { LiveContainerModule } from '../live-container/live-container.module';
 import { TwitchService } from '../../core/services/twitch.service';
+import { VideoResultsModule } from '../video-results/video-results.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -26,7 +27,8 @@ import { TwitchService } from '../../core/services/twitch.service';
     VideoContainerModule,
     ClipContainerModule,
     HomeContainerModule,
-    LiveContainerModule
+    LiveContainerModule,
+    VideoResultsModule
   ],
   providers: [CookieService, DashboardService, TwitchService],
   exports: [DashboardComponent]

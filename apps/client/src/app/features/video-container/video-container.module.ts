@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { VideoContainerComponent } from './video-container.component';
 import { CommonModule } from '@angular/common';
-import { ClipItemModule } from '../clip-item/clip-item.module';
 import { VideoTableModule } from '../video-table/video-table.module';
 import { ConfirmVideosModule } from '../video-confirm/confirm-videos.module';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -15,7 +14,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     VideoTableModule,
     ConfirmVideosModule,
-    ClipItemModule,
     MatStepperModule,
     MatButtonModule
   ],
