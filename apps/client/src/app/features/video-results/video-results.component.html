@@ -1,6 +1,6 @@
 <div class="frow-container mt-20">
   <div class="frow centered">
-    <div class="frow column-start min-width-300">
+    <div class="frow column-start min-width-700">
       <mat-form-field appearance="fill">
         <mat-label>Filter videos</mat-label>
         <mat-select (selectionChange)="onSelect($event.value)" [(value)]="selectedValue">
@@ -49,7 +49,7 @@
 </div>
 
 <ng-template #loading>
-  <div class="frow centered mb-10 mt-10 min-width-300">
+  <div class="frow centered mb-10 mt-10 min-width-700">
     <mat-spinner color="primary"></mat-spinner>
   </div>
 </ng-template>
