@@ -1,5 +1,6 @@
 @import '~material-icons/iconfont/material-icons.css';
 @import "assets/styles/icon-style";
+@import "assets/styles/frow-variables";
 @import "~frow/frow";
 
 body {
@@ -20,8 +21,4 @@ nav {
 
 .mat-checkbox-layout {
   margin-bottom: 0;
-}
-
-.vertical-middle {
-  vertical-align: middle;
 }
