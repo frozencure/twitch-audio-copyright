@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { videoThumbnailUrl } from '../../utils/video.manager';
+import { videoSquareThumbnailUrl } from '../../utils/video.manager';
 import { HelixVideo } from 'twitch';
 import { TimeConversion } from '@twitch-audio-copyright/data';
 import { DashboardService } from '../../core/services/dashboard.service';
@@ -21,7 +21,7 @@ export class ConfirmVideosComponent {
 
   @Input() selectedVideos: HelixVideo[];
   displayedColumns = ['title', 'created_at', 'views', 'duration'];
-  public getThumbnailUrl = videoThumbnailUrl;
+  public getThumbnailUrl = videoSquareThumbnailUrl;
   isLoading = false;
 
   public getTotalVideosDuration(): string {

@@ -40,5 +40,4 @@ export default () => ({
     remove_temp_video: true,
     remove_temp_clip: true
   }
-
 });

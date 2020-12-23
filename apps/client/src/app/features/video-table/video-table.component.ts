@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { videoThumbnailUrl } from '../../utils/video.manager';
+import { videoSquareThumbnailUrl } from '../../utils/video.manager';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SubSink } from 'subsink';
 import { MatTableDataSource } from '@angular/material/table';
@@ -22,7 +22,7 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public dataSource: MatTableDataSource<HelixVideo>;
   public displayedColumns = ['select', 'title', 'created_at', 'views', 'duration'];
-  public getThumbnailUrl = videoThumbnailUrl;
+  public getThumbnailUrl = videoSquareThumbnailUrl;
   public selection = new SelectionModel<HelixVideo>(true, []);
   private subscriptions = new SubSink();
   videos: HelixVideo[];

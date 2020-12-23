@@ -1,7 +1,7 @@
 import {
   getMillisFromString,
   getStringFromMilliseconds,
-  videoThumbnailUrl,
+  videoSquareThumbnailUrl,
   videoCompareCresc,
   videoCompareDesc
 } from './video.manager';
@@ -23,7 +23,7 @@ const videos = [
 ];
 describe('VideoManager', () => {
   it('should create the thumbnail correctly', () => {
-    expect(videoThumbnailUrl(thumbnailUrlExample, '32')).toEqual('https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/e46e52a31f17c495f33c_frozencure_39983712652_1605362913//thumb/thumb0-32x32.jpg');
+    expect(videoSquareThumbnailUrl(thumbnailUrlExample, '32')).toEqual('https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/e46e52a31f17c495f33c_frozencure_39983712652_1605362913//thumb/thumb0-32x32.jpg');
   });
 
   it('should sort cresc', () => {

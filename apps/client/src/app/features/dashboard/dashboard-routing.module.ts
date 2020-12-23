@@ -6,6 +6,7 @@ import { HomeContainerComponent } from '../home-container/home-container.compone
 import { ClipContainerComponent } from '../clip-container/clip-container.component';
 import { HomeContainerResolver } from '../home-container/home-container.resolver.service';
 import { LiveContainerComponent } from '../live-container/live-container.component';
+import { VideoResultsComponent } from '../video-results/video-results.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'videos', component: VideoContainerComponent },
       { path: 'clips', component: ClipContainerComponent },
       { path: 'home', component: HomeContainerComponent, resolve: { routeResolver: HomeContainerResolver } },
+      {path: 'video-results', component: VideoResultsComponent},
       { path: 'live', component: LiveContainerComponent },
       { path: '', redirectTo: 'home' }
     ]

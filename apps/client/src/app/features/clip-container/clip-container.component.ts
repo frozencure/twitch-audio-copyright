@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HelixClip, HelixGame } from 'twitch';
-import { combineLatest, from, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs';
 import { TwitchService } from '../../core/services/twitch.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { map, mergeMap } from 'rxjs/operators';
