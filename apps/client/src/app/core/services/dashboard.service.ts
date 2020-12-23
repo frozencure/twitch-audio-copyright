@@ -2,19 +2,25 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HelixWrapper } from '../../shared/model/HelixWrapper';
 import { TwitchVideoDto } from '../../shared/model/TwitchVideoDto';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, first, map, switchMap } from 'rxjs/operators';
 import { Store } from '@ngxs/store';
 import { UserModel } from '../../store/auth.state';
 import { environment } from '../../../environments/environment';
 import {
   Clip,
-  LiveSong,
+  ClipsDownloadResponseModel,
+  HttpExceptionModel,
+  LiveSong, LiveSongsResults,
   ProcessingProgress,
+  StreamMonitor,
   SuccessDto,
+  TwitchClip,
   TwitchClipDto,
+  TwitchVideo,
   UserActionType,
-  Video
+  Video,
+  VideosDownloadResponseModel
 } from '@twitch-audio-copyright/data';
 
 @Injectable()
@@ -32,18 +38,6 @@ export class DashboardService {
     const credentials = this.getTokenAndUser();
     return this.http.get<HelixWrapper<TwitchVideoDto>>
     (`https://api.twitch.tv/helix/videos?user_id=${credentials.user.id}&type=${type}&sort=${sort}`, {
-      headers: {
-        'Authorization': `Bearer ${credentials.token}`,
-        'Client-Id': environment.client_id
-      }
-    })
-      .pipe(first(), map(w => w.data));
-  }
-
-  public getTwitchClips(firstString = '100'): Observable<Array<TwitchClipDto>> {
-    const credentials = this.getTokenAndUser();
-    return this.http.get<HelixWrapper<TwitchClipDto>>
-    (`https://api.twitch.tv/helix/clips?broadcaster_id=${credentials.user.id}&first=${firstString} `, {
       headers: {
         'Authorization': `Bearer ${credentials.token}`,
         'Client-Id': environment.client_id
@@ -88,13 +82,25 @@ export class DashboardService {
     );
   }
 
-  public getLiveSongs(): Observable<LiveSong[]> {
+  public getLiveSongs(): Observable<LiveSongsResults> {
     return this.liveSongsRefreshSubject.pipe(
       switchMap(() => {
-        return this.http.get<LiveSong[]>('api/live/results',
-          { params: { date: new Date().toISOString() } });
-      })
-    );
+          return this.http.get<LiveSongsResults>('api/live/results',
+            { params: { date: new Date().toISOString() } });
+        }
+      ));
+  }
+
+  public downloadClips(clips: TwitchClip[]): Observable<ClipsDownloadResponseModel> {
+    return this.http.post<ClipsDownloadResponseModel>('api/download/clips', {
+      clips: clips
+    });
+  }
+
+  public downloadVideos(videos: TwitchVideo[]): Observable<VideosDownloadResponseModel> {
+    return this.http.post<VideosDownloadResponseModel>('api/download/videos', {
+      videos: videos
+    });
   }
 
   public refreshLiveSongs(): void {

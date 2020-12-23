@@ -1,57 +1,65 @@
-<div class="frow justify-between mt-10 mb-10">
-  <div class="col-1-4 frow row-start mr-10">
-    <mat-icon class="mr-5">video_library</mat-icon>
-    <h2 class="mb-0">{{selectedClips.length}} clips selected</h2>
+<div *ngIf="!isLoading; else loading">
+  <div class="frow justify-between mt-10 mb-10">
+    <div class="col-1-4 frow row-start mr-10">
+      <mat-icon class="mr-5">video_library</mat-icon>
+      <h2 class="mb-0">{{selectedClips.length}} clips selected</h2>
+    </div>
+    <div class="col-1-4 frow row-start mr-10">
+      <mat-icon class="mr-5">timer</mat-icon>
+      <h2 class="mb-0">{{getTotalClipsDuration()}} total time</h2>
+    </div>
+    <div class="col-1-4 frow row-start mr-10">
+      <mat-icon class="mr-5">payment</mat-icon>
+      <h2 class="mb-0">Costs</h2>
+    </div>
+    <div class="col-1-4">
+      <button mat-raised-button color="primary" (click)="onConfirm()">Confirm Payment</button>
+    </div>
   </div>
-  <div class="col-1-4 frow row-start mr-10">
-    <mat-icon class="mr-5">timer</mat-icon>
-    <h2 class="mb-0">{{getTotalClipsDuration()}} total time</h2>
-  </div>
-  <div class="col-1-4 frow row-start mr-10">
-    <mat-icon class="mr-5">payment</mat-icon>
-    <h2 class="mb-0">Costs</h2>
-  </div>
-  <div class="col-1-4">
-    <button mat-raised-button color="primary">Confirm Payment</button>
-  </div>
-</div>
 
-<div class="table-container" *ngIf="games$ | async as games">
-  <div class="table-inner-table-container">
+  <div class="table-container" *ngIf="games$ | async as games">
+    <div class="table-inner-table-container">
 
-    <table mat-table [dataSource]="selectedClips">
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let clip">
-          <div class="frow row-start">
-            <img [src]="clip.thumbnailUrl" class="mr-5" width="32" height="32" alt="image alt">
-            <span>{{clip.title}}</span>
-          </div>
-        </td>
-      </ng-container>
+      <table mat-table [dataSource]="selectedClips">
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let clip">
+            <div class="frow row-start">
+              <img [src]="clip.thumbnailUrl" class="mr-5" width="32" height="32" alt="image alt">
+              <span>{{clip.title}}</span>
+            </div>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="game">
-        <th mat-header-cell *matHeaderCellDef>Category</th>
-        <td mat-cell *matCellDef="let clip">{{getGameName(games, clip.gameId)}}</td>
-      </ng-container>
+        <ng-container matColumnDef="game">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let clip">{{getGameName(games, clip.gameId)}}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="created_at">
-        <th mat-header-cell *matHeaderCellDef>Created at</th>
-        <td mat-cell *matCellDef="let clip">{{clip.creationDate | date}}</td>
-      </ng-container>
+        <ng-container matColumnDef="created_at">
+          <th mat-header-cell *matHeaderCellDef>Created at</th>
+          <td mat-cell *matCellDef="let clip">{{clip.creationDate | date}}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="views">
-        <th mat-header-cell *matHeaderCellDef> Views</th>
-        <td mat-cell *matCellDef="let clip">
+        <ng-container matColumnDef="views">
+          <th mat-header-cell *matHeaderCellDef> Views</th>
+          <td mat-cell *matCellDef="let clip">
           <span>
-            <mat-icon aria-hidden="true" inline>visibility</mat-icon>
+            <mat-icon inline>visibility</mat-icon>
             {{clip.views}}
           </span>
-        </td>
-      </ng-container>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
   </div>
 </div>
+
+<ng-template #loading>
+  <div class="frow centered mb-10 mt-10">
+    <mat-spinner color="primary"></mat-spinner>
+  </div>
+</ng-template>

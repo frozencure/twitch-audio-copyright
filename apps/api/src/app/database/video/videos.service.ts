@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HelixVideo } from 'twitch';
 import { Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from '@nestjs/common';
 import { UsersService } from '../user/users.service';
 import VideoEntity from './video.entity';
-import { PartialVideoDto, ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
+import { PartialVideoDto, ProcessingProgress, TwitchVideoDto, UserActionType } from '@twitch-audio-copyright/data';
 import { UserNotFoundError, VideoNotFoundError } from '../errors';
 
 @Injectable()
@@ -15,23 +14,19 @@ export class VideosService {
               @InjectRepository(VideoEntity) private readonly videosRepository: Repository<VideoEntity>) {
   }
 
-  async insertOrUpdate(userId: string, twitchVideo: HelixVideo): Promise<VideoEntity> {
+  async insertOrUpdate(userId: string, twitchVideo: TwitchVideoDto): Promise<VideoEntity> {
     const user = await this.usersService.findOne(userId);
     if (user) {
-      try {
-        const video = VideoEntity.FromTwitchVideo(twitchVideo, user);
-        Logger.debug(`Saving/Updating video with ID ${video.id} to database.`);
-        return await video.save();
-      } catch (e) {
-        return Promise.reject(e);
-      }
+      const video = VideoEntity.FromTwitchVideo(twitchVideo, user);
+      Logger.debug(`Saving/Updating video with ID ${video.id} to database.`);
+      return await video.save();
     } else {
-      return Promise.reject('User does not exist.');
+      throw new UserNotFoundError(`User ${userId} could not be found while inserting video ${twitchVideo.id}.`);
     }
   }
 
-  async insertIfNotFound(userId: string, twitchVideo: HelixVideo): Promise<VideoEntity> {
-    const video = await this.findOne(Number.parseInt(twitchVideo.id));
+  async insertIfNotFound(userId: string, twitchVideo: TwitchVideoDto): Promise<VideoEntity> {
+    const video = await this.findOne(twitchVideo.id);
     if (!video) {
       return await this.insertOrUpdate(userId, twitchVideo);
     }

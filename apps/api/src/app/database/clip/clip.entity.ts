@@ -2,7 +2,6 @@ import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 
 import UserEntity from '../user/user.entity';
 import IdentifiedSongEntity from '../identified-song/identified-song.entity';
 import { ProcessingProgress, TwitchClipDto, UserActionType } from '@twitch-audio-copyright/data';
-import VideoEntity from '../video/video.entity';
 
 @Entity('clip')
 export default class ClipEntity extends BaseEntity {
@@ -24,11 +23,7 @@ export default class ClipEntity extends BaseEntity {
   @OneToMany(() => IdentifiedSongEntity, identifiedSong => identifiedSong.clip)
   identifiedSongs: IdentifiedSongEntity[];
 
-  @ManyToOne(() => VideoEntity, video => video.clips)
-  video: VideoEntity;
-
-  static FromTwitchClip(twitchClipDto: TwitchClipDto,
-                        video: VideoEntity, user: UserEntity, progress = ProcessingProgress.QUEUED,
+  static FromTwitchClip(twitchClipDto: TwitchClipDto, user: UserEntity, progress = ProcessingProgress.QUEUED,
                         userActionType = UserActionType.NO_ACTION_NEEDED): ClipEntity {
     const clip = new ClipEntity();
     clip.id = twitchClipDto.id;
@@ -40,7 +35,6 @@ export default class ClipEntity extends BaseEntity {
     clip.createdAt = twitchClipDto.created_at;
     clip.thumbnailUrl = twitchClipDto.thumbnail_url;
     clip.user = user;
-    clip.video = video;
     clip.progress = progress;
     clip.userAction = userActionType;
     return clip;

@@ -6,6 +6,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { SubSink } from 'subsink';
 import { MatTableDataSource } from '@angular/material/table';
 import { HelixVideo } from 'twitch';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-video-table',
@@ -13,7 +14,7 @@ import { HelixVideo } from 'twitch';
   styleUrls: ['./video-table.component.scss', './../dashboard/dashboard.component.scss']
 })
 export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() videos: HelixVideo[];
+  @Input() videos$: Observable<HelixVideo[]>;
   @Output() selectedVideos: EventEmitter<HelixVideo[]> = new EventEmitter();
 
   @ViewChild(MatSort) sort: MatSort;
@@ -24,14 +25,16 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
   public getThumbnailUrl = videoThumbnailUrl;
   public selection = new SelectionModel<HelixVideo>(true, []);
   private subscriptions = new SubSink();
+  videos: HelixVideo[];
+  isLoading = false;
 
   constructor() {
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.subscriptions.sink = this.selection.changed.asObservable()
       .subscribe(data => this.selectedVideos.emit(data.source.selected));
-    this.dataSource = new MatTableDataSource<HelixVideo>(this.videos);
   }
 
   ngOnDestroy(): void {
@@ -39,20 +42,12 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sortingDataAccessor = (item, property) => {
-      switch (property) {
-        case 'created_at':
-          return item.publishDate;
-        case 'views':
-          return item.views;
-        case 'duration':
-          return item.durationInSeconds;
-        default:
-          return item[property];
-      }
-    };
+    this.subscriptions.sink = this.videos$.subscribe(videos => {
+      this.videos = videos;
+      this.dataSource = new MatTableDataSource<HelixVideo>(videos);
+      this.initializeDataSourceOptions();
+      this.isLoading = false;
+    });
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -75,5 +70,22 @@ export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+
+  private initializeDataSourceOptions(): void {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'created_at':
+          return item.publishDate;
+        case 'views':
+          return item.views;
+        case 'duration':
+          return item.durationInSeconds;
+        default:
+          return item[property];
+      }
+    };
   }
 }

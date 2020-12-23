@@ -5,6 +5,13 @@ export class FingerprintCreationError extends Error {
   }
 }
 
+export class EmptyFingerprintError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'EmptyFingerprintError';
+  }
+}
+
 export class AcrEmptyResponseError extends Error {
   constructor(message) {
     super(message);
@@ -15,6 +22,6 @@ export class AcrEmptyResponseError extends Error {
 export class AcrStatusResponseError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'AcrEmptyResponseError';
+    this.name = 'AcrStatusResponseError';
   }
 }

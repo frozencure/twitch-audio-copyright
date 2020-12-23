@@ -55,7 +55,8 @@ export class AcrCloudMonitorService {
       });
     const responseData = await response.json();
     if (response.status !== 201) {
-      throw new AcrStatusResponseError(`Could not add ACR stream. Reason: ${responseData}`);
+      throw new AcrStatusResponseError(`Could not add ACR stream.
+      Reason: ${responseData.message}. Status: ${response.status}`);
     }
     return responseData;
   }
@@ -69,7 +70,8 @@ export class AcrCloudMonitorService {
       });
     const responseData = await response.json();
     if (response.status !== 200) {
-      throw new AcrStatusResponseError(`Could not retrieve ACR data. Reason: ${responseData}`);
+      throw new AcrStatusResponseError(`Could not retrieve ACR data. Reason: ${responseData.message}. ` +
+        `Status: ${response.status}.`);
     }
     return responseData;
   }
@@ -82,7 +84,8 @@ export class AcrCloudMonitorService {
       });
     if (response.status !== 204) {
       const responseData = await response.json();
-      throw new AcrStatusResponseError(`Could not delete ACR stream. Reason: ${responseData}`);
+      throw new AcrStatusResponseError(`Could not delete ACR stream. Reason: ${responseData.message}. ` +
+        `Status: ${responseData.status}`);
     }
     return true;
   }
@@ -95,7 +98,8 @@ export class AcrCloudMonitorService {
     });
     const responseData = await response.json();
     if (response.status !== 200) {
-      throw new AcrStatusResponseError(`Could not retrieve ACR results. Reason: ${responseData}`);
+      throw new AcrStatusResponseError(`Could not retrieve ACR results. Reason: ${responseData.message}. ` +
+        `Status: ${response.status}.`);
     }
     return responseData.map(r => {
       const song = Object.assign(new AcrCloudLiveResultDto(), r);
@@ -106,7 +110,7 @@ export class AcrCloudMonitorService {
 
   private static toISODateString(acrDate: string): string {
     const segments = acrDate.split(' ');
-    return `${segments[0]}T${segments[1]}.000Z`
+    return `${segments[0]}T${segments[1]}.000Z`;
   }
 
   private static formatDate(date: Date): string {

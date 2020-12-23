@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { LiveSong, TimeConversion } from '@twitch-audio-copyright/data';
-import { tap } from 'rxjs/operators';
+import { LiveSong, LiveSongsResults, TimeConversion } from '@twitch-audio-copyright/data';
 
 @Component({
   selector: 'app-home-live-card',
@@ -10,19 +9,29 @@ import { tap } from 'rxjs/operators';
 })
 export class HomeLiveCardComponent implements OnInit, OnDestroy {
 
-  @Input() liveSongs$: Observable<LiveSong[]>;
+  @Input() liveSongs$: Observable<LiveSongsResults>;
   liveSongs: LiveSong[];
   liveSongsSubscription: Subscription;
   @Output() refreshEventEmitter = new EventEmitter<void>();
-  isLoading = false;
+  state: 'isLoading' | 'noActiveMonitor' | 'empty' | 'hasContent';
 
   constructor() {
   }
 
   ngOnInit(): void {
-    this.liveSongsSubscription = this.liveSongs$.pipe(
-      tap(() => this.isLoading = false)
-    ).subscribe(songs => this.liveSongs = songs);
+    this.state = 'isLoading';
+    this.liveSongsSubscription = this.liveSongs$.subscribe(liveSongsResults => {
+      if (liveSongsResults.hasActiveStreamMonitor) {
+        if (liveSongsResults.liveSongs.length > 0) {
+          this.state = 'hasContent';
+        } else {
+          this.state = 'empty';
+        }
+        this.liveSongs = liveSongsResults.liveSongs;
+      } else {
+        this.state = 'noActiveMonitor';
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -30,7 +39,7 @@ export class HomeLiveCardComponent implements OnInit, OnDestroy {
   }
 
   onRefresh(): void {
-    this.isLoading = true;
+    this.state = 'isLoading';
     this.refreshEventEmitter.emit();
   }
 

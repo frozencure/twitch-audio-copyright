@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Download started</h2>
+<div mat-dialog-content class="dialog-content frow centered p-20">
+  <div *ngFor="let result of data.results">
+    <mat-card class="download-item frow row-start mt-5">
+      <div [ngSwitch]="data.type">
+        <div *ngSwitchCase="'clip'" class="frow row-start mb-10">
+          <img [src]="result.item.thumbnail_url" class="mr-5" width="32" height="32" alt="image alt">
+          <span>{{result.item.title}}</span>
+        </div>
+        <div *ngSwitchCase="'video'" class="frow row-start mb-10">
+          <img *ngIf="result.item.thumbnail_url" [src]="getThumbnailUrl(result.item.thumbnail_url,'32')" alt="image alt"
+               class="mr-5">
+          <span>{{result.item.title}}</span>
+        </div>
+      </div>
+      <div class="mb-5">Status: {{result.status}}</div>
+      <div *ngIf="result.error">
+        {{result.error.userMessage}}
+      </div>
+    </mat-card>
+  </div>
+  <div mat-dialog-actions class="frow centered">
+    <button mat-stroked-button [mat-dialog-close]
+            routerLink="dashboard/home">Go to dashboard
+    </button>
+  </div>
+</div>

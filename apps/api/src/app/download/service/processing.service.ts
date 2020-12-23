@@ -24,18 +24,25 @@ export class ProcessingService {
         await this.identifiedSongsService.insertIdentifiedSongForClip(acrResult.acrCloudDto,
           clipAudioFile.clipId, 0, acrResult.chunkDurationInSeconds);
       } else {
-        Logger.debug(`No song was identified for clip ${clipAudioFile.clipId}`);
+        if (acrResult.acrCloudDto && acrResult.acrCloudDto.status && acrResult.acrCloudDto.status) {
+          Logger.log(`No song was identified for clip ${clipAudioFile.clipId}.` +
+          ` Reason: ${acrResult.acrCloudDto.status.code}`);
+        } else {
+          Logger.log(`No song was identified for clip ${clipAudioFile.clipId}. Reason: Empty response.`);
+        }
       }
     } catch (e) {
       Logger.error(`Could not process audio file ${clipAudioFile.filePath}. Reason: ${e}`);
     }
   }
 
-  public async processAudioChunksForVideo(vodAudioFile: VodAudioFile, vodList: VodSegmentList): Promise<void[]> {
+  public async processAudioChunksForVideo(vodAudioFile: VodAudioFile, vodList: VodSegmentList): Promise<void> {
     try {
       const audioFiles = await vodList.getAudioChunks();
-      const identificationResults = audioFiles.map(file => this.processAudioChunk(file, vodAudioFile));
-      return Promise.all(identificationResults);
+      for (const audioFile of audioFiles) {
+        await this.processAudioChunk(audioFile, vodAudioFile);
+      }
+      return Promise.resolve();
     } catch (e) {
       Logger.error(`Could not process audio files for VOD ${vodAudioFile.vodId}. Reason: ${e}`);
     }
@@ -51,8 +58,12 @@ export class ProcessingService {
             acrResult.chunkDurationInSeconds),
           acrResult.acrCloudDto);
       } else {
-        Logger.debug(`No song was identified for VOD ` +
-          `${vodAudioFile.vodId}, chunk ${audioChunk.chunkNumber}`);
+        if (acrResult.acrCloudDto && acrResult.acrCloudDto.status && acrResult.acrCloudDto.status) {
+          Logger.log(`No song was identified for video ${vodAudioFile.vodId}, chunk ${audioChunk.chunkNumber}.`
+            + ` Reason: Status ${acrResult.acrCloudDto.status.code}`);
+        } else {
+          Logger.log(`No song was identified for clip ${vodAudioFile.vodId}. Reason: Empty response.`);
+        }
       }
     } catch (e) {
       Logger.error(`Could not process audio file ${audioChunk.filePath}. Reason: ${e}`);

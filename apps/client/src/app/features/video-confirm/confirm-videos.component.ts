@@ -2,6 +2,11 @@ import { Component, Input } from '@angular/core';
 import { videoThumbnailUrl } from '../../utils/video.manager';
 import { HelixVideo } from 'twitch';
 import { TimeConversion } from '@twitch-audio-copyright/data';
+import { DashboardService } from '../../core/services/dashboard.service';
+import { TwitchVideo } from '@twitch-audio-copyright/data';
+import { map } from 'rxjs/operators';
+import { DownloadDialogComponent } from '../download-dialog/download-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-confirm-videos',
@@ -10,9 +15,14 @@ import { TimeConversion } from '@twitch-audio-copyright/data';
 })
 export class ConfirmVideosComponent {
 
+  constructor(private dashboardService: DashboardService,
+              public dialog: MatDialog) {
+  }
+
   @Input() selectedVideos: HelixVideo[];
   displayedColumns = ['title', 'created_at', 'views', 'duration'];
   public getThumbnailUrl = videoThumbnailUrl;
+  isLoading = false;
 
   public getTotalVideosDuration(): string {
     if (this.selectedVideos.length === 0) {
@@ -23,4 +33,19 @@ export class ConfirmVideosComponent {
     return TimeConversion.secondsToHoursMinutesSeconds(totalDurationInSeconds, true);
   }
 
+  onConfirm() {
+    this.isLoading = true;
+    this.dashboardService.downloadVideos(this.selectedVideos.map(helixVideo => new TwitchVideo(helixVideo)))
+      .pipe(map(response => response.videoDownloads.map(result => {
+        return { item: result.video, status: result.status, error: result.error };
+      }))).subscribe(results => {
+      console.log(results);
+      this.isLoading = false;
+      this.dialog.open(DownloadDialogComponent, {
+        data: { type: 'video', results: results },
+        disableClose: true,
+        hasBackdrop: true
+      });
+    });
+  }
 }

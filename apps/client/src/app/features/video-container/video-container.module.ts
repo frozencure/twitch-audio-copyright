@@ -7,7 +7,6 @@ import { ConfirmVideosModule } from '../video-confirm/confirm-videos.module';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
-import { VideoResolver } from './video.resolver.service';
 
 @NgModule({
   declarations: [VideoContainerComponent],
@@ -20,8 +19,7 @@ import { VideoResolver } from './video.resolver.service';
     MatStepperModule,
     MatButtonModule
   ],
-  exports: [VideoContainerComponent],
-  providers: [VideoResolver]
+  exports: [VideoContainerComponent]
 })
 export class VideoContainerModule {
 }

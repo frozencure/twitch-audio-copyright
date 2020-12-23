@@ -1,6 +1,6 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { HttpService, Injectable, Logger } from '@nestjs/common';
 import { from, interval, Observable } from 'rxjs';
-import { filter, map, mergeMap, takeWhile } from 'rxjs/operators';
+import { filter, map, mergeMap, takeWhile, tap } from 'rxjs/operators';
 import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { VodVideoFile } from '../model/vod-file';
@@ -18,14 +18,14 @@ export class DownloadService {
 
   public scheduleVideoDownloadJob(vodId: number, authToken: string, outputPath: string,
                                   chunkLength: number, deleteTempFiles = true,
-                                  intervalPeriod = 1000): Observable<Job<VodVideoFile>> {
-    return this.getVodDownloadModel(vodId, authToken, intervalPeriod).pipe(
-      mergeMap(downloadModelDto => {
-          const vodDownload = new VodVideoFile(`${outputPath}/${vodId}/${vodId}.mp4`,
-            vodId, chunkLength, deleteTempFiles, downloadModelDto.download_url);
-          return from(this.downloadQueue.add('download-video', vodDownload)) as Observable<Job<VodVideoFile>>;
-        }
-      ));
+                                  intervalPeriod = 1000): void {
+    this.getVodDownloadModel(vodId, authToken, intervalPeriod).subscribe(model => {
+      const vodDownload = new VodVideoFile(`${outputPath}/${vodId}/${vodId}.mp4`,
+        vodId, chunkLength, deleteTempFiles, model.download_url);
+      this.downloadQueue.add('download-video', vodDownload).then(() => {
+        Logger.log(`Download for video ${vodId} successfully started.`);
+      });
+    });
   }
 
   public scheduleClipDownloadJob(clip: ClipEntity, authToken: string, outputPath: string,
@@ -35,7 +35,7 @@ export class DownloadService {
     return from(this.downloadQueue.add('download-clip', clipDownload)) as Observable<Job<ClipFile>>;
   }
 
-  private createHeaders(authToken: string) {
+  private static createHeaders(authToken: string) {
     return {
       'Content-Type': 'application/json',
       'Authorization': `OAuth ${authToken}`
@@ -44,12 +44,13 @@ export class DownloadService {
 
   private getVodDownloadModel(vodId: number, authToken: string, intervalPeriod: number): Observable<VodDownloadDto> {
     const vodDownloadObs = this.httpService.get(`https://api.twitch.tv/v5/vods/${vodId}/download`, {
-      headers: this.createHeaders(authToken)
+      headers: DownloadService.createHeaders(authToken)
     }).pipe(
       map(r => r.data)
     ) as Observable<VodDownloadDto>;
     return interval(intervalPeriod).pipe(
       mergeMap(() => vodDownloadObs),
+      tap(vodDownload => Logger.debug(`Vod download url: ${vodDownload.download_url}`)),
       takeWhile(vodDownload => vodDownload.download_url === '', true),
       filter(vodDownloadModel => vodDownloadModel.download_url !== '')
     );

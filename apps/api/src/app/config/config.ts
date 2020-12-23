@@ -33,5 +33,12 @@ export default () => ({
     monitor_access_key: process.env.ACR_MONITOR_ACCESS_KEY,
     monitor_secret: process.env.ACR_MONITOR_SECRET,
     monitor_results_access_key: process.env.ACR_MONITOR_RESULTS_ACCESS_KEY
+  },
+  download: {
+    temp_path: `${__dirname}/assets/temp`,
+    video_batch_size: 60,
+    remove_temp_video: true,
+    remove_temp_clip: true
   }
+
 });
