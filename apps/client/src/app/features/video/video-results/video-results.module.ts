@@ -7,10 +7,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [VideoResultsComponent],
-  imports: [CommonModule, MatProgressSpinnerModule, MatFormFieldModule, MatSelectModule, MatCardModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatProgressSpinnerModule, MatFormFieldModule, MatSelectModule, MatCardModule, MatIconModule, MatButtonModule, RouterModule],
   exports: [VideoResultsComponent]
 })
 export class VideoResultsModule {

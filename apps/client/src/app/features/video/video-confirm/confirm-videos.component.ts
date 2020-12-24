@@ -1,17 +1,17 @@
 import { Component, Input } from '@angular/core';
-import { videoSquareThumbnailUrl } from '../../utils/video.manager';
+import { videoSquareThumbnailUrl } from '../../../utils/video.manager';
 import { HelixVideo } from 'twitch';
 import { TimeConversion } from '@twitch-audio-copyright/data';
-import { DashboardService } from '../../core/services/dashboard.service';
+import { DashboardService } from '../../../core/services/dashboard.service';
 import { TwitchVideo } from '@twitch-audio-copyright/data';
 import { map } from 'rxjs/operators';
-import { DownloadDialogComponent } from '../download-dialog/download-dialog.component';
+import { DownloadDialogComponent } from '../../download-dialog/download-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-confirm-videos',
   templateUrl: './confirm-videos.component.html',
-  styleUrls: ['./confirm-videos.component.scss', './../dashboard/dashboard.component.scss']
+  styleUrls: ['./confirm-videos.component.scss', '../../dashboard/dashboard.component.scss']
 })
 export class ConfirmVideosComponent {
 

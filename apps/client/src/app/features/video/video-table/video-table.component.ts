@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { videoSquareThumbnailUrl } from '../../utils/video.manager';
+import { videoSquareThumbnailUrl } from '../../../utils/video.manager';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SubSink } from 'subsink';
 import { MatTableDataSource } from '@angular/material/table';
@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-video-table',
   templateUrl: './video-table.component.html',
-  styleUrls: ['./video-table.component.scss', './../dashboard/dashboard.component.scss']
+  styleUrls: ['./video-table.component.scss', '../../dashboard/dashboard.component.scss']
 })
 export class VideoTableComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() videos$: Observable<HelixVideo[]>;

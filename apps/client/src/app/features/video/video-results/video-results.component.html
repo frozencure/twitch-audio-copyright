@@ -38,7 +38,8 @@
                 </span>
               </span>
                 </div>
-                <button class="mr-20" mat-flat-button color="primary">Go to results</button>
+                <button class="mr-20" mat-flat-button color="primary"
+                        [routerLink]="['/dashboard', 'video-results', video.id]">Go to results</button>
               </div>
             </mat-card>
           </div>

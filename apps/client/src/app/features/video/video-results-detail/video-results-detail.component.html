@@ -1,0 +1,22 @@
+<ng-container *ngIf="!isLoading; else loading">
+  <div class="frow-container">
+    <div class="frow column-center">
+      <app-video-result-card [video]="video"
+                             [songCount]="identifiedSongs.length"
+                             [songsDuration]="songsDuration()"></app-video-result-card>
+      <app-video-result-timeline [songs]="identifiedSongs"
+                                 [video]="video"
+                                 class="col-md-1-1"></app-video-result-timeline>
+    </div>
+    <ng-container *ngFor="let song of identifiedSongs">
+      {{song.title}}
+    </ng-container>
+  </div>
+</ng-container>
+
+
+<ng-template #loading>
+  <div class="frow centered mb-10 mt-10">
+    <mat-spinner color="primary"></mat-spinner>
+  </div>
+</ng-template>

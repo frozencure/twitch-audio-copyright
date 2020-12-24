@@ -1,0 +1,7 @@
+<div class="segment-bar">
+  <ng-container *ngFor="let colorTuple of colorDictionary">
+    <div class="segment" [ngStyle]="{'width': durationToPercentage(colorTuple.item) + '%',
+    'backgroundColor': colorTuple.color,
+    'left': secondsToPercentage(colorTuple.item.identificationStart) + '%'}"></div>
+  </ng-container>
+</div>

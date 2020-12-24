@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { HelixVideo } from 'twitch';
 import { ActivatedRoute } from '@angular/router';
-import { DashboardService } from '../../core/services/dashboard.service';
-import { TwitchService } from '../../core/services/twitch.service';
+import { DashboardService } from '../../../core/services/dashboard.service';
+import { TwitchService } from '../../../core/services/twitch.service';
 import { combineLatest, from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-video-container',
   templateUrl: './video-container.component.html',
-  styleUrls: ['./video-container.component.scss', './../dashboard/dashboard.component.scss']
+  styleUrls: ['./video-container.component.scss', '../../dashboard/dashboard.component.scss']
 })
 export class VideoContainerComponent {
 

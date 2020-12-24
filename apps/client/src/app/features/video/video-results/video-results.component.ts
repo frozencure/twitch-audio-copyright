@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DashboardService } from '../../core/services/dashboard.service';
+import { DashboardService } from '../../../core/services/dashboard.service';
 import { TimeConversion, UserActionType, Video } from '@twitch-audio-copyright/data';
 import { SubSink } from 'subsink';
-import { videoSquareThumbnailUrl, videoThumbnailUrl } from '../../utils/video.manager';
+import { videoSquareThumbnailUrl, videoThumbnailUrl } from '../../../utils/video.manager';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 

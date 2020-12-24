@@ -2,15 +2,15 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TimeConversion, TwitchClip } from '@twitch-audio-copyright/data';
 import { HelixClip, HelixGame } from 'twitch';
 import { Observable } from 'rxjs';
-import { DashboardService } from '../../core/services/dashboard.service';
+import { DashboardService } from '../../../core/services/dashboard.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DownloadDialogComponent } from '../download-dialog/download-dialog.component';
+import { DownloadDialogComponent } from '../../download-dialog/download-dialog.component';
 import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-clip-confirm',
   templateUrl: './clip-confirm.component.html',
-  styleUrls: ['./clip-confirm.component.scss', './../dashboard/dashboard.component.scss']
+  styleUrls: ['./clip-confirm.component.scss', '../../dashboard/dashboard.component.scss']
 })
 export class ClipConfirmComponent implements OnInit {
 

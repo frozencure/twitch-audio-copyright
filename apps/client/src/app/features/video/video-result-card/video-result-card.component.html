@@ -1,0 +1,39 @@
+<mat-card class="no-padding m-20">
+  <div class="frow row-start">
+    <img src="{{getVideoThumbnail(video.thumbnailUrl, '228', '128')}}"
+         class="mr-10" alt="alt-text">
+    <div class="frow column-start mr-50">
+      <h2 class="mb-20">{{video.title}}</h2>
+
+      <div class="mr-5 mb-10 frow row-start">
+        <mat-icon class="vertical-middle mr-5">assessment</mat-icon>
+        <div class="mat-h3 mb-0 mr-10">{{songCount}} detected songs</div>
+        <mat-icon class="vertical-middle mr-5">timer</mat-icon>
+        <div class="mat-h3 mb-0">{{songsDuration}}</div>
+      </div>
+
+      <div>
+        <span class="mr-5">
+          <mat-icon inline class="vertical-middle">event</mat-icon>
+          {{video.createdAt | date}}
+        </span>
+        <span class="mr-5">
+          <mat-icon inline class="vertical-middle">schedule</mat-icon>
+          {{video.durationInSeconds}}
+        </span>
+        <span class="mr-5">
+          <mat-icon inline class="vertical-middle">visibility</mat-icon>
+          {{video.views}}
+        </span>
+        <span class="mr-5">
+          <mat-icon inline class="vertical-middle">videocam</mat-icon>
+          {{video.type | titlecase}}
+        </span>
+      </div>
+    </div>
+    <div class="frow column-center mr-10">
+      <button mat-flat-button color="accent" class="mb-10 col-1-1">Keep video</button>
+      <button mat-flat-button color="primary" class="col-1-1">Delete video</button>
+    </div>
+  </div>
+</mat-card>
