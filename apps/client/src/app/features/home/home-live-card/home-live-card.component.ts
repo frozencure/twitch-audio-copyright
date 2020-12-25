@@ -5,7 +5,7 @@ import { LiveSong, LiveSongsResults, TimeConversion } from '@twitch-audio-copyri
 @Component({
   selector: 'app-home-live-card',
   templateUrl: './home-live-card.component.html',
-  styleUrls: ['./home-live-card.component.scss', '../home/home-container/home-container.component.scss']
+  styleUrls: ['./home-live-card.component.scss', '../home-container/home-container.component.scss']
 })
 export class HomeLiveCardComponent implements OnInit, OnDestroy {
 

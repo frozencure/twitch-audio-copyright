@@ -5,15 +5,16 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { NavbarModule } from '../../shared/navbar/navbar.module';
 import { MatListModule } from '@angular/material/list';
-import { VideoContainerModule } from '../video-container/video-container.module';
+import { VideoContainerModule } from '../video/video-container/video-container.module';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { CookieService } from 'ngx-cookie-service';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { HomeContainerModule } from '../home-container/home-container.module';
-import { ClipContainerModule } from '../clip-container/clip-container.module';
+import { HomeContainerModule } from '../home/home-container/home-container.module';
+import { ClipContainerModule } from '../clip/clip-container/clip-container.module';
 import { LiveContainerModule } from '../live-container/live-container.module';
 import { TwitchService } from '../../core/services/twitch.service';
-import { VideoResultsModule } from '../video-results/video-results.module';
+import { VideoResultsModule } from '../video/video-results/video-results.module';
+import { VideoResultsDetailModule } from '../video/video-results-detail/video-results-detail.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -28,7 +29,8 @@ import { VideoResultsModule } from '../video-results/video-results.module';
     ClipContainerModule,
     HomeContainerModule,
     LiveContainerModule,
-    VideoResultsModule
+    VideoResultsModule,
+    VideoResultsDetailModule
   ],
   providers: [CookieService, DashboardService, TwitchService],
   exports: [DashboardComponent]

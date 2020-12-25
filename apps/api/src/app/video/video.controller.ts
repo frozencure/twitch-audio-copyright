@@ -13,11 +13,13 @@ import {
 import { UpdateResult } from 'typeorm';
 import { UserNotFoundError } from '../database/errors';
 import { NoUserDatabaseHttpError, UnknownDatabaseHttpError } from '../errors';
+import { IdentifiedSongsService } from '../database/identified-song/identified-songs.service';
 
 @Controller('videos/')
 export class VideoController {
 
-  constructor(private readonly videosService: VideosService) {
+  constructor(private readonly videosService: VideosService,
+              private readonly identifiedSongsService: IdentifiedSongsService) {
   }
 
   @Get()
@@ -54,10 +56,10 @@ export class VideoController {
   @UseGuards(TokenGuard)
   public async getIdentifiedSongs(@Param('id') videoId: number): Promise<IdentifiedSong[]> {
     try {
-      const video = await this.videosService.findOne(videoId, ['identifiedSongs', 'label', 'identifiedSongs.label']);
-      return video.identifiedSongs.map(song => song.toIdentifiedSongDto());
+      const songs = await this.identifiedSongsService.findAllForVideo(videoId);
+      return this.identifiedSongsService.mergeSongs(songs.map(song => song.toIdentifiedSongDto()));
     } catch (e) {
-      Logger.error(e);
+      Logger.error(e.message);
       throw new UnknownDatabaseHttpError(e.message);
     }
   }

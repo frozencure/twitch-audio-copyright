@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Clip, ProcessingProgress, UserActionType, Video } from '@twitch-audio-copyright/data';
 import { Observable, Subscription } from 'rxjs';
-import { DashboardItemType } from '../../shared/model/dashboard-item-type';
+import { DashboardItemType } from '../../../shared/model/dashboard-item-type';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home-summary-card',
   templateUrl: './home-summary-card.component.html',
-  styleUrls: ['./home-summary-card.component.scss', '../home/home-container/home-container.component.scss']
+  styleUrls: ['./home-summary-card.component.scss', '../home-container/home-container.component.scss']
 })
 export class HomeSummaryCardComponent implements OnInit, OnDestroy {
 

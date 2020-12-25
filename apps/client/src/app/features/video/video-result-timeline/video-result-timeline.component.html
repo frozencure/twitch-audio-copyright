@@ -1,6 +1,6 @@
 <div class="segment-bar">
   <ng-container *ngFor="let song of songs">
-    <div class="segment" id="segment" [ngStyle]="{'width': durationToPercentage(song) + '%',
+    <div class="segment" [ngStyle]="{'width': durationToPercentage(song) + '%',
     'backgroundColor': getColorForLabel(song.label),
     'left': secondsToPercentage(song.identificationStart) + '%'}"
          [mdePopoverTriggerFor]="appPopover"

@@ -7,13 +7,57 @@ import { AcrEmptyResponseError } from '../../acr_cloud/model/errors';
 import { ClipsService } from '../clip/clips.service';
 import { MusicbrainzService } from '../../musicbrainz/musicbrainz.service';
 import LabelMetadataEntity from '../entity/label-metadata.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { IdentifiedSong } from '@twitch-audio-copyright/data';
 
 @Injectable()
 export class IdentifiedSongsService {
 
   constructor(private readonly videosService: VideosService,
+              @InjectRepository(IdentifiedSongEntity)
+              private readonly songsRepository: Repository<IdentifiedSongEntity>,
               private readonly clipsService: ClipsService,
               private readonly musicBrainzService: MusicbrainzService) {
+  }
+
+  findAllForVideo(videoId: number): Promise<IdentifiedSongEntity[]> {
+    return this.findAll(videoId, null, ['label', 'album', 'artists', 'label.metadata']);
+  }
+
+  findAllForCLip(clipId: string): Promise<IdentifiedSongEntity[]> {
+    return this.findAll(null, clipId, ['label', 'album', 'artists', 'label.metadata']);
+  }
+
+  mergeSongs(songs: IdentifiedSong[]): IdentifiedSong[] {
+    if (songs.length < 2) {
+      return songs;
+    }
+    const results = new Array<IdentifiedSong>();
+    let currentSong = songs[0];
+    for (let i = 1; i < songs.length; i++) {
+      if (songs[i - 1].title === songs[i].title) {
+        currentSong.identificationEnd = songs[i].identificationEnd;
+      } else {
+        results.push(currentSong);
+        currentSong = songs[i];
+      }
+    }
+    results.push(currentSong);
+    return results;
+  }
+
+  private findAll(videoId?: number, clipId?: string, relations?: string[]): Promise<IdentifiedSongEntity[]> {
+    let conditions = {};
+    if (videoId) {
+      conditions = { video: videoId };
+    } else if (clipId) {
+      conditions = { clip: clipId };
+    }
+    return this.songsRepository.find({
+      relations: relations,
+      where: conditions
+    });
   }
 
   async insertIdentifiedSongForClip(acrDto: AcrCloudDto, clipId: string,

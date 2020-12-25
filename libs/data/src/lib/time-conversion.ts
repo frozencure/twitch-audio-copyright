@@ -5,7 +5,7 @@ export class TimeConversion {
     const minutes = Math.floor(seconds % 3600 / 60);
     const remainingSeconds = Math.floor(seconds % 3600 % 60);
 
-    let hoursDisplay = hours > 0 ? hours.toString() + ':' : ':';
+    let hoursDisplay = hours > 0 ? hours.toString() + ':' : '';
     if(alwaysDisplayHours) {
       hoursDisplay = hours > 0 ? hours.toString() + ':' : '0:';
     }

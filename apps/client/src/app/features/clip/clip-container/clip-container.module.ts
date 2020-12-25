@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { ClipContainerComponent } from './clip-container.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
-import { ClipTableComponent } from '../../clip-table/clip-table.component';
+import { ClipTableComponent } from '../clip-table/clip-table.component';
 import { ClipConfirmComponent } from '../clip-confirm/clip-confirm.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';

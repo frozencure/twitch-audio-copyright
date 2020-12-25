@@ -10,7 +10,7 @@ import { combineLatest, Observable } from 'rxjs';
 @Component({
   selector: 'app-clip-table',
   templateUrl: './clip-table.component.html',
-  styleUrls: ['./clip-table.component.scss', './../dashboard/dashboard.component.scss']
+  styleUrls: ['./clip-table.component.scss', '../../dashboard/dashboard.component.scss']
 })
 export class ClipTableComponent implements OnInit, AfterViewInit {
 

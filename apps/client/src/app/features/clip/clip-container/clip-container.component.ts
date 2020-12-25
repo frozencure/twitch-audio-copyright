@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { HelixClip, HelixGame } from 'twitch';
 import { BehaviorSubject, combineLatest, from, Observable } from 'rxjs';
-import { TwitchService } from '../../core/services/twitch.service';
-import { DashboardService } from '../../core/services/dashboard.service';
+import { TwitchService } from '../../../core/services/twitch.service';
+import { DashboardService } from '../../../core/services/dashboard.service';
 import { map, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-clip-container',
   templateUrl: './clip-container.component.html',
-  styleUrls: ['./clip-container.component.scss', './../dashboard/dashboard.component.scss']
+  styleUrls: ['./clip-container.component.scss', '../../dashboard/dashboard.component.scss']
 })
 export class ClipContainerComponent {
 

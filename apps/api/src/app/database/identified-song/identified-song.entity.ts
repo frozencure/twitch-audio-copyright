@@ -5,7 +5,7 @@ import AlbumEntity from '../entity/album.entity';
 import ArtistEntity from '../entity/artist.entity';
 import ClipEntity from '../clip/clip.entity';
 import { IdentifiedAudioRecording } from '../../acr_cloud/model/identified-audio-recording';
-import { IdentifiedSong, Label } from '@twitch-audio-copyright/data';
+import { IdentifiedSong } from '@twitch-audio-copyright/data';
 
 @Entity('identified_song')
 export default class IdentifiedSongEntity extends BaseEntity {
@@ -19,7 +19,7 @@ export default class IdentifiedSongEntity extends BaseEntity {
   @Column('int') identificationScore: number;
   @Column('int') identificationStart: number;
   @Column('int') identificationEnd: number;
-  @Column({type: 'text', nullable: true}) isrcId: string;
+  @Column({ type: 'text', nullable: true }) isrcId: string;
 
   @ManyToOne(() => VideoEntity, video => video.identifiedSongs)
   video: VideoEntity;
@@ -65,9 +65,9 @@ export default class IdentifiedSongEntity extends BaseEntity {
 
   toIdentifiedSongDto(): IdentifiedSong {
     const artists = this.artists.map(a => a.name);
-    const label = Object.assign(new Label(), this.label);
+    const label = this.label.toLabelDto();
     const album = this.album.name;
-    return Object.assign(new IdentifiedSong(), this, {artists: artists, label: label, album: album});
+    return Object.assign(new IdentifiedSong(), this, { artists: artists, label: label, album: album });
   }
 
   private setAlbum(identifiedAudioRecording: IdentifiedAudioRecording): void {

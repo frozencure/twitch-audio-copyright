@@ -45,6 +45,7 @@
     "@angular/platform-browser-dynamic": "^11.0.5",
     "@angular/platform-server": "^11.0.5",
     "@angular/router": "^11.0.5",
+    "@material-extended/mde": "^3.0.3",
     "@nestjs/bull": "^0.2.3",
     "@nestjs/common": "^7.0.0",
     "@nestjs/config": "^0.5.0",

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Clip, LiveSongsResults, Video } from '@twitch-audio-copyright/data';
-import { DashboardItemType } from '../../shared/model/dashboard-item-type';
+import { DashboardItemType } from '../../../shared/model/dashboard-item-type';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
