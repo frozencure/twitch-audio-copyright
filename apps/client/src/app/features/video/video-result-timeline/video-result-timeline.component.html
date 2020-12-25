@@ -1,7 +1,36 @@
 <div class="segment-bar">
-  <ng-container *ngFor="let colorTuple of colorDictionary">
-    <div class="segment" [ngStyle]="{'width': durationToPercentage(colorTuple.item) + '%',
-    'backgroundColor': colorTuple.color,
-    'left': secondsToPercentage(colorTuple.item.identificationStart) + '%'}"></div>
+  <ng-container *ngFor="let song of songs">
+    <div class="segment" id="segment" [ngStyle]="{'width': durationToPercentage(song) + '%',
+    'backgroundColor': getColorForLabel(song.label),
+    'left': secondsToPercentage(song.identificationStart) + '%'}"
+         [mdePopoverTriggerFor]="appPopover"
+         mdePopoverTriggerOn="hover" mdePopoverEnterDelay="100" mdePopoverLeaveDelay="0"></div>
+
+    <mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false">
+      <mat-card>
+        <mat-card-content>
+          <div class="frow column-start">
+            <h2>{{song.title}}</h2>
+            <div>
+              <mat-icon inline class="vertical-middle mr-3">audiotrack</mat-icon>
+              {{song.album}}
+            </div>
+            <div>
+              <mat-icon inline class="vertical-middle mr-3">group</mat-icon>
+              {{song.artists}}
+            </div>
+            <div>
+              <mat-icon inline class="vertical-middle mr-3">album</mat-icon>
+              {{song.label.name}}
+            </div>
+            <div>
+              <mat-icon inline class="vertical-middle mr-3">timer</mat-icon>
+              {{durationPipe(songDuration(song))}} out of {{durationPipe(song.totalSongDurationInSeconds)}}
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mde-popover>
   </ng-container>
 </div>
+
