@@ -16,6 +16,7 @@ import { TwitchService } from '../../core/services/twitch.service';
 import { VideoResultsModule } from '../video/video-results/video-results.module';
 import { VideoResultsDetailModule } from '../video/video-results-detail/video-results-detail.module';
 import { SpinnerService } from '../../shared/spinner-dialog/spinner.service';
+import { HttpErrorInterceptor } from '../../core/services/http-error.interceptor.';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -33,7 +34,7 @@ import { SpinnerService } from '../../shared/spinner-dialog/spinner.service';
     VideoResultsModule,
     VideoResultsDetailModule
   ],
-  providers: [CookieService, DashboardService, TwitchService],
+  providers: [CookieService, DashboardService, TwitchService, HttpErrorInterceptor],
   exports: [DashboardComponent]
 })
 export class DashboardModule {
