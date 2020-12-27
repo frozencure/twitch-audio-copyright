@@ -2,15 +2,16 @@ export class TimeConversion {
 
   static secondsToHoursMinutesSeconds(seconds: number, alwaysDisplayHours = false): string {
     const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor(seconds % 3600 / 60);
+    const remainingMinutes = Math.floor(seconds % 3600 / 60);
     const remainingSeconds = Math.floor(seconds % 3600 % 60);
 
     let hoursDisplay = hours > 0 ? hours.toString() + ':' : '';
-    if(alwaysDisplayHours) {
+    if (alwaysDisplayHours) {
       hoursDisplay = hours > 0 ? hours.toString() + ':' : '0:';
     }
     const minutesDisplay =
-      minutes > 0 ? (minutes > 9 ? minutes.toString() : '0' + minutes.toString()) + ':' : '00:';
+      remainingMinutes > 0 ? (remainingMinutes > 9 ? remainingMinutes.toString() : '0' + remainingMinutes.toString())
+        + ':' : '00:';
     const secondsDisplay = remainingSeconds > 0 ?
       (remainingSeconds > 9 ? remainingSeconds.toString() : '0' + remainingSeconds.toString()) : '00';
     return hoursDisplay + minutesDisplay + secondsDisplay;

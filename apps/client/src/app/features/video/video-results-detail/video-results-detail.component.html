@@ -6,7 +6,12 @@
                              [songsDuration]="songsDuration()"></app-video-result-card>
       <app-video-result-timeline [songs]="identifiedSongs"
                                  [video]="video"
-                                 class="col-md-1-1"></app-video-result-timeline>
+                                 [labelColors]="labelColors"
+                                 class="mb-10 col-md-1-1"></app-video-result-timeline>
+      <ng-container *ngFor="let labelColor of labelColors">
+        <app-video-label-card [labelColor]="labelColor" [songs]="songsByLabel(labelColor.item)"
+                              class="label-card"></app-video-label-card>
+      </ng-container>
     </div>
   </div>
 </ng-container>

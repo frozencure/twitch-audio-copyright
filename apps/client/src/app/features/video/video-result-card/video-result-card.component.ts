@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Video } from '@twitch-audio-copyright/data';
-import { videoSquareThumbnailUrl, videoThumbnailUrl } from '../../../utils/video.manager';
+import { videoThumbnailUrl } from '../../../utils/video.manager';
 
 @Component({
   selector: 'app-video-result-card',
@@ -20,4 +20,25 @@ export class VideoResultCardComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
+  goToVideo(video: Video) {
+    window.open(video.url);
+  }
+
+  durationPercentage(): string {
+    const percentage = Math.round(100 * this.songsDuration / this.video.durationInSeconds);
+    return `${percentage}%`;
+  }
+
+  unpublishVideo(video: Video) {
+
+  }
+
+  removeVideo(video: Video) {
+
+  }
+
+  keepVideo(video: Video) {
+
+  }
 }

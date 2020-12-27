@@ -12,12 +12,12 @@
           <div class="frow column-start">
             <h2>{{song.title}}</h2>
             <div>
-              <mat-icon inline class="vertical-middle mr-3">audiotrack</mat-icon>
+              <mat-icon inline class="vertical-middle mr-3">art_track</mat-icon>
               {{song.album}}
             </div>
             <div>
               <mat-icon inline class="vertical-middle mr-3">group</mat-icon>
-              {{song.artists}}
+              {{song.artists.join(', ')}}
             </div>
             <div>
               <mat-icon inline class="vertical-middle mr-3">album</mat-icon>

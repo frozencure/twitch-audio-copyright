@@ -11,21 +11,17 @@ export class VideoResultTimelineComponent implements OnInit {
 
   @Input() songs: IdentifiedSong[];
   @Input() video: Video;
-  labelColorDictionary: ColorTuple<Label>[];
+  @Input() labelColors: ColorTuple<Label>[];
 
   constructor() {
   }
 
   ngOnInit(): void {
-    const uniqueLabels = [...new Set(this.songs.map(song => song.label))];
-    const colorPaletteGenerator = new ColorPaletteGenerator(uniqueLabels, 50, 50);
-    this.labelColorDictionary = colorPaletteGenerator.generateColors();
-    console.log(this.labelColorDictionary);
   }
 
   getColorForLabel(label: Label): string {
-    return this.labelColorDictionary
-      .find(colortTuple => colortTuple.item.name === label.name).color;
+    return this.labelColors
+      .find(colorTuple => colorTuple.item.name === label.name).color;
   }
 
   durationToPercentage(song: IdentifiedSong): number {
@@ -38,11 +34,14 @@ export class VideoResultTimelineComponent implements OnInit {
   }
 
   songDuration(song: IdentifiedSong): number {
-    return song.identificationEnd - song.identificationStart;
+    const duration = song.identificationEnd - song.identificationStart;
+    if(duration > song.totalSongDurationInSeconds) {
+      return song.totalSongDurationInSeconds;
+    }
+    return duration;
   }
 
   durationPipe(seconds: number): string {
     return TimeConversion.secondsToHoursMinutesSeconds(seconds, false);
   }
-
 }

@@ -1,6 +1,6 @@
 <div class="frow-container mt-20">
   <div class="frow centered">
-    <div class="frow column-start min-width-700">
+    <div class="frow column-start">
       <mat-form-field appearance="fill">
         <mat-label>Filter videos</mat-label>
         <mat-select (selectionChange)="onSelect($event.value)" [(value)]="selectedValue">
@@ -12,7 +12,7 @@
       </mat-form-field>
       <ng-container *ngIf="!isLoading; else loading">
         <ng-container *ngIf="videos.length > 0; else empty">
-          <div *ngFor="let video of videos">
+          <div *ngFor="let video of videos" class="col-md-1-1">
             <mat-card class="no-padding mb-10">
               <div class="frow row-between">
                 <img class="mr-10" src="{{getThumbnailUrl(video.thumbnailUrl, '177', '100')}}"
@@ -39,7 +39,8 @@
               </span>
                 </div>
                 <button class="mr-20" mat-flat-button color="primary"
-                        [routerLink]="['/dashboard', 'video-results', video.id]">Go to results</button>
+                        [routerLink]="['/dashboard', 'video-results', video.id]">Go to results
+                </button>
               </div>
             </mat-card>
           </div>
@@ -50,7 +51,7 @@
 </div>
 
 <ng-template #loading>
-  <div class="frow centered mb-10 mt-10 min-width-700">
+  <div class="frow centered col-md-1-1 mb-10 mt-10">
     <mat-spinner color="primary"></mat-spinner>
   </div>
 </ng-template>

@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SubSink } from 'subsink';
-import { IdentifiedSong, Video } from '@twitch-audio-copyright/data';
+import { IdentifiedSong, Label, Video } from '@twitch-audio-copyright/data';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { combineLatest, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { ColorPaletteGenerator, ColorTuple } from '../../../shared/model/color-palette-generator';
 
 @Component({
   selector: 'app-video-results-detail',
@@ -16,6 +17,7 @@ export class VideoResultsDetailComponent implements OnInit, OnDestroy {
   private subSink = new SubSink();
   isLoading: boolean;
   identifiedSongs: IdentifiedSong[];
+  labelColors: ColorTuple<Label>[];
   video: Video;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -28,6 +30,7 @@ export class VideoResultsDetailComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       this.identifiedSongs = songsAndVideo[0];
       this.video = songsAndVideo[1];
+      this.labelColors = this.getColorLabels(songsAndVideo[0]);
     });
   }
 
@@ -38,6 +41,18 @@ export class VideoResultsDetailComponent implements OnInit, OnDestroy {
   songsDuration(): number {
     return this.identifiedSongs.map(song => song.identificationEnd - song.identificationStart)
       .reduce((a, b) => a + b);
+  }
+
+  songsByLabel(label: Label): IdentifiedSong[] {
+    return this.identifiedSongs.filter(song => song.label.name === label.name);
+  }
+
+  private getColorLabels(songs: IdentifiedSong[]): ColorTuple<Label>[] {
+    const labels = songs.map(song => song.label);
+    const uniqueLabels = [...new Map(labels.map(label =>
+      [label.name, label])).values()];
+    const colorPaletteGenerator = new ColorPaletteGenerator(uniqueLabels, 50, 50);
+    return colorPaletteGenerator.generateColors();
   }
 
 
