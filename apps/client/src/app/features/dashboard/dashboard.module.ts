@@ -15,6 +15,7 @@ import { LiveContainerModule } from '../live-container/live-container.module';
 import { TwitchService } from '../../core/services/twitch.service';
 import { VideoResultsModule } from '../video/video-results/video-results.module';
 import { VideoResultsDetailModule } from '../video/video-results-detail/video-results-detail.module';
+import { SpinnerService } from '../../shared/spinner-dialog/spinner.service';
 
 @NgModule({
   declarations: [DashboardComponent],

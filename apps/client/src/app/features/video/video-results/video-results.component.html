@@ -4,10 +4,11 @@
       <mat-form-field appearance="fill">
         <mat-label>Filter videos</mat-label>
         <mat-select (selectionChange)="onSelect($event.value)" [(value)]="selectedValue">
-          <mat-option value="{{UserActionType.NEEDS_ACTION}}">Needs action</mat-option>
+          <mat-option value="{{UserActionType.NEEDS_ACTION}}">Needs review</mat-option>
           <mat-option value="{{UserActionType.REMOVED}}">Removed</mat-option>
-          <mat-option value="{{UserActionType.NO_ACTION_TAKEN}}">No action taken</mat-option>
-          <mat-option value="{{UserActionType.NO_ACTION_NEEDED}}">No action needed</mat-option>
+          <mat-option value="{{UserActionType.KEPT}}">Saved as public</mat-option>
+          <mat-option value="{{UserActionType.NO_ACTION_NEEDED}}">No review needed</mat-option>
+          <mat-option value="{{UserActionType.UNPUBLISHED}}">Unpublished</mat-option>
         </mat-select>
       </mat-form-field>
       <ng-container *ngIf="!isLoading; else loading">

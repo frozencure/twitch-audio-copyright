@@ -71,4 +71,13 @@ export class VideoResultsDetailComponent implements OnInit, OnDestroy {
       })
     );
   }
+
+  onVideoUpdate(video: Video) {
+    this.video = video;
+  }
+
+  onChangeLoading(isLoading: boolean) {
+    console.log(isLoading);
+    this.isLoading = isLoading;
+  }
 }

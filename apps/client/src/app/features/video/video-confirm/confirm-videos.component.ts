@@ -5,7 +5,7 @@ import { TimeConversion } from '@twitch-audio-copyright/data';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { TwitchVideo } from '@twitch-audio-copyright/data';
 import { map } from 'rxjs/operators';
-import { DownloadDialogComponent } from '../../download-dialog/download-dialog.component';
+import { DownloadDialogComponent } from '../../../shared/download-dialog/download-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -39,7 +39,6 @@ export class ConfirmVideosComponent {
       .pipe(map(response => response.videoDownloads.map(result => {
         return { item: result.video, status: result.status, error: result.error };
       }))).subscribe(results => {
-      console.log(results);
       this.isLoading = false;
       this.dialog.open(DownloadDialogComponent, {
         data: { type: 'video', results: results },

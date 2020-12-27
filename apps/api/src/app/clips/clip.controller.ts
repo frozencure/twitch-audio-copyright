@@ -4,7 +4,6 @@ import { User } from '../utils/decorators';
 import { UserCookieModel } from '../auth/model/user-cookie-model';
 import { Clip, IdentifiedSong, PartialClipDto, ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
 import { ClipsService } from '../database/clip/clips.service';
-import { UpdateResult } from 'typeorm';
 import { UserNotFoundError } from '../database/errors';
 import { NoUserDatabaseHttpError, UnknownDatabaseHttpError, UnknownHttpError } from '../errors';
 
@@ -34,10 +33,12 @@ export class ClipController {
   @Patch(':id')
   @UseGuards(TokenGuard)
   public async update(@Body() updateModel: PartialClipDto,
-                      @Param('id') clipId: string): Promise<UpdateResult> {
+                      @Param('id') clipId: string): Promise<Clip> {
     updateModel.id = clipId;
     try {
-      return await this.clipsService.updateClip(updateModel);
+      await this.clipsService.updateClip(updateModel);
+      const clip = await this.clipsService.findOne(clipId);
+      return clip.toClipDto();
     } catch (e) {
       Logger.error(e);
       throw new UnknownDatabaseHttpError(e.message);

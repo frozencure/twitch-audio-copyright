@@ -5,8 +5,11 @@ import { Store } from '@ngxs/store';
 import { UserModel } from '../../store/auth.state';
 import {
   Clip,
-  ClipsDownloadResponseModel, IdentifiedSong,
+  ClipsDownloadResponseModel,
+  IdentifiedSong,
   LiveSongsResults,
+  PartialClipDto,
+  PartialVideoDto,
   ProcessingProgress,
   TwitchClip,
   TwitchVideo,
@@ -37,6 +40,14 @@ export class DashboardService {
 
   public getVideo(videoId: number): Observable<Video> {
     return this.http.get<Video>(`api/videos/${videoId}`);
+  }
+
+  public updateVideo(video: PartialVideoDto): Observable<Video> {
+    return this.http.patch<Video>(`api/videos/${video.id}`, video);
+  }
+
+  public updateClip(clip: PartialClipDto): Observable<Clip> {
+    return this.http.patch<Clip>(`api/clips/${clip.id}`, clip);
   }
 
   public getClip(clipId: number): Observable<Clip> {

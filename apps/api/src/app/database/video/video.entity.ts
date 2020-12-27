@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 
 import UserEntity from '../user/user.entity';
 import IdentifiedSongEntity from '../identified-song/identified-song.entity';
 import { ProcessingProgress, TwitchVideoDto, UserActionType, VideoType } from '@twitch-audio-copyright/data';
+import { Video } from '@twitch-audio-copyright/data';
 
 @Entity('video')
 export default class VideoEntity extends BaseEntity {
@@ -47,4 +48,9 @@ export default class VideoEntity extends BaseEntity {
     video.userAction = userActionType;
     return video;
   }
+
+  toVideoDto(): Video {
+    return Object.assign(new Video(), this);
+  }
+
 }

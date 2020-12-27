@@ -8,7 +8,9 @@
         <mat-icon class="vertical-middle mr-5">assessment</mat-icon>
         <div class="mat-h3 mb-0 mr-10">{{songCount}} detected songs</div>
         <mat-icon class="vertical-middle mr-5">timer</mat-icon>
-        <div class="mat-h3 mb-0">{{durationPercentage()}}</div>
+        <div class="mat-h3 mb-0 mr-10">{{durationPercentage()}}</div>
+        <mat-icon class="vertical-middle mr-5">video_label</mat-icon>
+        <div class="mat-h3 mb-0 mr-10">{{video.userAction | titlecase}}</div>
       </div>
 
       <div>
@@ -18,7 +20,7 @@
         </span>
         <span class="mr-5">
           <mat-icon inline class="vertical-middle">schedule</mat-icon>
-          {{video.durationInSeconds}}
+          {{durationPipe(video.durationInSeconds)}}
         </span>
         <span class="mr-5">
           <mat-icon inline class="vertical-middle">visibility</mat-icon>
@@ -30,16 +32,18 @@
         </span>
       </div>
     </div>
-    <div class="frow column-center mr-10">
-      <button mat-flat-button color="accent" class="mb-10 mt-10 col-md-1-1"
-              (click)="unpublishVideo(video);$event.stopPropagation()">Unpublish video
-      </button>
-      <button mat-flat-button color="accent" class="mb-10 col-md-1-1"
-              (click)="keepVideo(video);$event.stopPropagation()">Keep video
-      </button>
-      <button mat-flat-button color="warn" class="mb-10 col-md-1-1"
-              (click)="removeVideo(video);$event.stopPropagation()">Delete video
-      </button>
-    </div>
+    <ng-container *ngIf="video.userAction === UserActionType.NEEDS_ACTION">
+      <div class="frow column-center mr-10">
+        <button mat-flat-button color="accent" class="mb-10 mt-10 col-md-1-1"
+                (click)="unpublishVideo(video);$event.stopPropagation()">Unpublish video
+        </button>
+        <button mat-flat-button color="accent" class="mb-10 col-md-1-1"
+                (click)="keepVideo(video);$event.stopPropagation()">Keep video
+        </button>
+        <button mat-flat-button color="warn" class="mb-10 col-md-1-1"
+                (click)="removeVideo(video);$event.stopPropagation()">Delete video
+        </button>
+      </div>
+    </ng-container>
   </div>
 </mat-card>

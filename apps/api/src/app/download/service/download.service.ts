@@ -1,6 +1,6 @@
 import { HttpService, Injectable, Logger } from '@nestjs/common';
 import { from, interval, Observable } from 'rxjs';
-import { filter, map, mergeMap, takeWhile, tap } from 'rxjs/operators';
+import { filter, mergeMap, takeWhile, tap } from 'rxjs/operators';
 import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { VodVideoFile } from '../model/vod-file';
@@ -8,12 +8,14 @@ import { VodDownloadDto } from '../model/vod-download-dto';
 import { getClipUrl } from '../../utils/url.manager';
 import { ClipFile } from '../model/clip-file';
 import ClipEntity from '../../database/clip/clip.entity';
+import { TwitchService } from '../../twitch/twitch.service';
 
 @Injectable()
 export class DownloadService {
 
   constructor(private httpService: HttpService,
-              @InjectQueue('download') private readonly downloadQueue: Queue) {
+              @InjectQueue('download') private readonly downloadQueue: Queue,
+              private twitchService: TwitchService) {
   }
 
   public scheduleVideoDownloadJob(vodId: number, authToken: string, outputPath: string,
@@ -35,19 +37,8 @@ export class DownloadService {
     return from(this.downloadQueue.add('download-clip', clipDownload)) as Observable<Job<ClipFile>>;
   }
 
-  private static createHeaders(authToken: string) {
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `OAuth ${authToken}`
-    };
-  }
-
   private getVodDownloadModel(vodId: number, authToken: string, intervalPeriod: number): Observable<VodDownloadDto> {
-    const vodDownloadObs = this.httpService.get(`https://api.twitch.tv/v5/vods/${vodId}/download`, {
-      headers: DownloadService.createHeaders(authToken)
-    }).pipe(
-      map(r => r.data)
-    ) as Observable<VodDownloadDto>;
+    const vodDownloadObs = this.twitchService.downloadVideo(authToken, vodId);
     return interval(intervalPeriod).pipe(
       mergeMap(() => vodDownloadObs),
       tap(vodDownload => Logger.debug(`Vod download url: ${vodDownload.download_url}`)),

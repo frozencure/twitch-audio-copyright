@@ -3,7 +3,8 @@
     <div class="frow column-center">
       <app-video-result-card [video]="video"
                              [songCount]="identifiedSongs.length"
-                             [songsDuration]="songsDuration()"></app-video-result-card>
+                             [songsDuration]="songsDuration()"
+      (refreshEmitter)="onVideoUpdate($event)"></app-video-result-card>
       <app-video-result-timeline [songs]="identifiedSongs"
                                  [video]="video"
                                  [labelColors]="labelColors"
