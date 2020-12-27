@@ -1,0 +1,67 @@
+<mat-card (click)="toggleCollapse()" style="cursor: pointer">
+  <div class="label-container frow row-between">
+    <div class="frow row-start">
+      <div class="label-color mr-20" [ngStyle]="{'background-color':labelColor.color}"></div>
+      <div class="frow column-start">
+        <h2>{{labelColor.item.name}}</h2>
+        <div>
+          <ng-container *ngIf="labelColor.item.beginYear">
+            <span class="mr-5">
+              <mat-icon inline class="vertical-middle">event</mat-icon>
+              Since {{labelColor.item.beginYear}}
+            </span>
+          </ng-container>
+          <ng-container *ngIf="labelColor.item.country">
+            <span class="mr-5">
+              <mat-icon inline class="vertical-middle">place</mat-icon>
+              {{labelColor.item.country}}
+            </span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="labelColor.item.wikipediaUrl">
+      <button mat-raised-button (click)="goToWikipedia(labelColor.item);$event.stopPropagation()">Wikipedia</button>
+    </ng-container>
+  </div>
+  <div class="frow centered">
+    <ng-container *ngIf="!isCollapsed; else unfold">
+      <mat-icon>expand_more</mat-icon>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="isCollapsed">
+    <mat-divider inset class="mb-10"></mat-divider>
+    <div *ngFor="let song of songs" class="frow row-start mb-10">
+      <div class="col-md-1-4">
+        <div>
+          <mat-icon inline class="vertical-middle">audiotrack</mat-icon>
+          {{song.title}}
+        </div>
+      </div>
+      <div class="col-md-1-4">
+        <div>
+          <mat-icon inline class="vertical-middle">group</mat-icon>
+          {{song.artists.join(', ')}}
+        </div>
+      </div>
+      <div class="col-md-1-4">
+        <div>
+          <mat-icon inline class="vertical-middle">art_track</mat-icon>
+          {{song.album}}
+        </div>
+      </div>
+      <div class="col-md-1-4">
+        <div>
+          <mat-icon inline class="vertical-middle">access_time</mat-icon>
+          {{durationPipe(song.identificationStart, true)}} -
+          {{durationPipe(song.identificationEnd, true)}}
+        </div>
+      </div>
+    </div>
+    <mat-divider inset class="mb-10"></mat-divider>
+  </ng-container>
+</mat-card>
+
+<ng-template #unfold>
+  <mat-icon style="transform: rotate(180deg)">expand_more</mat-icon>
+</ng-template>

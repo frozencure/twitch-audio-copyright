@@ -1,0 +1,45 @@
+<mat-card class="video-card m-20">
+  <div class="frow row-start">
+    <img src="{{getVideoThumbnail(video.thumbnailUrl, '260', '150')}}"
+         class="mr-10" alt="alt-text">
+    <div class="frow column-start mr-50">
+      <h2 (click)="goToVideo(video)" class="video-title">{{video.title}}</h2>
+      <div class="mr-5 mb-10 frow row-start">
+        <mat-icon class="vertical-middle mr-5">assessment</mat-icon>
+        <div class="mat-h3 mb-0 mr-10">{{songCount}} detected songs</div>
+        <mat-icon class="vertical-middle mr-5">timer</mat-icon>
+        <div class="mat-h3 mb-0">{{durationPercentage()}}</div>
+      </div>
+
+      <div>
+        <span class="mr-5">
+          <mat-icon inline class="vertical-middle">event</mat-icon>
+          {{video.createdAt | date}}
+        </span>
+        <span class="mr-5">
+          <mat-icon inline class="vertical-middle">schedule</mat-icon>
+          {{video.durationInSeconds}}
+        </span>
+        <span class="mr-5">
+          <mat-icon inline class="vertical-middle">visibility</mat-icon>
+          {{video.views}}
+        </span>
+        <span class="mr-5">
+          <mat-icon inline class="vertical-middle">videocam</mat-icon>
+          {{video.type | titlecase}}
+        </span>
+      </div>
+    </div>
+    <div class="frow column-center mr-10">
+      <button mat-flat-button color="accent" class="mb-10 mt-10 col-md-1-1"
+              (click)="unpublishVideo(video);$event.stopPropagation()">Unpublish video
+      </button>
+      <button mat-flat-button color="accent" class="mb-10 col-md-1-1"
+              (click)="keepVideo(video);$event.stopPropagation()">Keep video
+      </button>
+      <button mat-flat-button color="warn" class="mb-10 col-md-1-1"
+              (click)="removeVideo(video);$event.stopPropagation()">Delete video
+      </button>
+    </div>
+  </div>
+</mat-card>

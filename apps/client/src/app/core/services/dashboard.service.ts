@@ -5,7 +5,7 @@ import { Store } from '@ngxs/store';
 import { UserModel } from '../../store/auth.state';
 import {
   Clip,
-  ClipsDownloadResponseModel,
+  ClipsDownloadResponseModel, IdentifiedSong,
   LiveSongsResults,
   ProcessingProgress,
   TwitchClip,
@@ -35,6 +35,14 @@ export class DashboardService {
     });
   }
 
+  public getVideo(videoId: number): Observable<Video> {
+    return this.http.get<Video>(`api/videos/${videoId}`);
+  }
+
+  public getClip(clipId: number): Observable<Clip> {
+    return this.http.get<Clip>(`api/clips/${clipId}`);
+  }
+
   public getClips(progress?: ProcessingProgress, userAction?: UserActionType): Observable<Clip[]> {
     let params = {};
     if (progress && userAction) {
@@ -47,6 +55,14 @@ export class DashboardService {
     return this.http.get<Clip[]>('api/clips', {
       params: params
     });
+  }
+
+  public getVideoSongs(videoId: number): Observable<IdentifiedSong[]> {
+    return this.http.get<IdentifiedSong[]>(`api/videos/${videoId}/songs`);
+  }
+
+  public getClipSongs(clipId: string): Observable<IdentifiedSong[]> {
+    return this.http.get<IdentifiedSong[]>(`api/clips/${clipId}/songs`);
   }
 
   public getLiveSongs(): Observable<LiveSongsResults> {

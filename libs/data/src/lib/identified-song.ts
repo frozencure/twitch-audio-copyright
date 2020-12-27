@@ -1,3 +1,5 @@
+import { Label } from './label';
+
 export class IdentifiedSong {
   id: number;
   acrId: string;
@@ -7,7 +9,7 @@ export class IdentifiedSong {
   identificationScore: number;
   identificationStart: number;
   identificationEnd: number;
-  label: string;
+  label: Label;
   album: string;
   artists: string[];
   isrcId?: string;

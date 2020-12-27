@@ -1,0 +1,19 @@
+.segment-bar {
+  width: 100%;
+  background-color: grey;
+  border-radius: 10px;
+  height: 15px;
+  position: relative;
+}
+
+.segment {
+  height: 15px;
+  position: absolute;
+  border-radius: 10px;
+  transition: 0.3s ease;
+}
+
+.segment:hover {
+  transform: scaleY(1.25);
+  filter: brightness(125%);
+}
