@@ -1,6 +1,6 @@
 import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
 
-export interface Clip {
+export class Clip {
   id: string;
   title: string;
   embedUrl: string;

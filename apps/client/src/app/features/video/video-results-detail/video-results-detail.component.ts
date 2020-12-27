@@ -71,4 +71,8 @@ export class VideoResultsDetailComponent implements OnInit, OnDestroy {
       })
     );
   }
+
+  onVideoUpdate(video: Video) {
+    this.video = video;
+  }
 }

@@ -4,5 +4,6 @@ export enum ErrorCode {
   UnknownDatabaseError = 11,
   NoUserDatabaseError = 12,
   NoActiveMonitorError = 13,
-  AcrCloudError = 21
+  AcrCloudError = 21,
+  TwitchError = 22
 }

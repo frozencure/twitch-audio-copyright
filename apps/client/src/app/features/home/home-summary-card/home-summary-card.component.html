@@ -13,11 +13,11 @@
       </div>
       <div class="mr-20">
         <h1 class="bold-64">{{needActionsItems.length}}</h1>
-        <h3>{{typeAsString() | titlecase}} need actions</h3>
+        <h3>{{typeAsString() | titlecase}} need review</h3>
       </div>
       <div class="mr-20">
         <h1 class="bold-64">{{itemsInQueue.length}}</h1>
-        <h3>{{typeAsString() | titlecase}} in queue</h3>
+        <h3>{{typeAsString() | titlecase}} in progress</h3>
       </div>
       <button mat-flat-button (click)="onAnalyzeMore()" color="primary">Analyze more {{typeAsString()}}</button>
     </div>

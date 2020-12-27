@@ -11,7 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { DownloadDialogModule } from '../../download-dialog/download-dialog.module';
+import { DownloadDialogModule } from '../../../shared/download-dialog/download-dialog.module';
 
 @NgModule({
   declarations: [ClipContainerComponent, ClipTableComponent, ClipConfirmComponent],

@@ -64,3 +64,15 @@ export class AcrCloudHttpError extends HttpException {
     super(model, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
+
+export class TwitchHttpError extends HttpException {
+
+  private static ErrorCode = ErrorCode.TwitchError;
+  private static UserMessage = 'An error occurred while contacting the Twitch service. Please try again later.';
+
+  constructor(developerMessage: string, moreInfo?: string) {
+    const model = new HttpExceptionModel(developerMessage, HttpStatus.INTERNAL_SERVER_ERROR,
+      TwitchHttpError.UserMessage, TwitchHttpError.ErrorCode, moreInfo);
+    super(model, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}

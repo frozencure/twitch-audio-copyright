@@ -4,7 +4,7 @@ import { HelixClip, HelixGame } from 'twitch';
 import { Observable } from 'rxjs';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DownloadDialogComponent } from '../../download-dialog/download-dialog.component';
+import { DownloadDialogComponent } from '../../../shared/download-dialog/download-dialog.component';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -46,7 +46,6 @@ export class ClipConfirmComponent implements OnInit {
         return { item: result.clip, status: result.status, error: result.error };
       }))).subscribe(results => {
       this.isLoading = false;
-      console.log(results);
       this.dialog.open(DownloadDialogComponent, {
         data: { type: 'clip', results: results },
         disableClose: true,

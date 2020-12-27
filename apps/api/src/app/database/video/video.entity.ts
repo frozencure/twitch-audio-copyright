@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 
 import UserEntity from '../user/user.entity';
 import IdentifiedSongEntity from '../identified-song/identified-song.entity';
 import { ProcessingProgress, TwitchVideoDto, UserActionType, VideoType } from '@twitch-audio-copyright/data';
+import { Video } from '@twitch-audio-copyright/data';
 
 @Entity('video')
 export default class VideoEntity extends BaseEntity {
@@ -19,7 +20,7 @@ export default class VideoEntity extends BaseEntity {
   @Column('timestamp') createdAt: Date;
   @Column('timestamp') publishedAt: Date;
   @Column({ type: 'enum', enum: ProcessingProgress, default: ProcessingProgress.QUEUED }) progress: ProcessingProgress;
-  @Column({ type: 'enum', enum: UserActionType, default: UserActionType.NO_ACTION_NEEDED }) userAction: UserActionType;
+  @Column({ type: 'enum', enum: UserActionType, default: UserActionType.NO_REVIEW_NEEDED }) userAction: UserActionType;
 
   @ManyToOne(() => UserEntity, user => user.videos)
   user: UserEntity;
@@ -28,7 +29,7 @@ export default class VideoEntity extends BaseEntity {
   identifiedSongs: IdentifiedSongEntity[];
 
   static FromTwitchVideo(videoDto: TwitchVideoDto, user: UserEntity, progress = ProcessingProgress.QUEUED,
-                         userActionType = UserActionType.NO_ACTION_NEEDED): VideoEntity {
+                         userActionType = UserActionType.NO_REVIEW_NEEDED): VideoEntity {
     const video = new VideoEntity();
     video.id = videoDto.id;
     video.title = videoDto.title;
@@ -47,4 +48,9 @@ export default class VideoEntity extends BaseEntity {
     video.userAction = userActionType;
     return video;
   }
+
+  toVideoDto(): Video {
+    return Object.assign(new Video(), this);
+  }
+
 }

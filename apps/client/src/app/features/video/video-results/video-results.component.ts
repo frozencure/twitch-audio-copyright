@@ -18,7 +18,7 @@ export class VideoResultsComponent implements OnInit, OnDestroy {
   isLoading = false;
   UserActionType = UserActionType;
   getThumbnailUrl = videoThumbnailUrl;
-  selectSubject = new BehaviorSubject(UserActionType.NEEDS_ACTION);
+  selectSubject = new BehaviorSubject(UserActionType.NEEDS_REVIEW);
   selectedValue: string;
 
   constructor(private dashboardService: DashboardService) {
