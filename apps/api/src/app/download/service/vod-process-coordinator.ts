@@ -100,7 +100,7 @@ export class VodProcessCoordinator {
       await this.videosService.updateVideo({
         id: vodId,
         progress: ProcessingProgress.COMPLETED,
-        userAction: UserActionType.NEEDS_ACTION
+        userAction: UserActionType.NEEDS_REVIEW
       });
     } else {
       await this.videosService.updateVideo({

@@ -12,12 +12,13 @@ import { VideoLabelCardComponent } from '../video-label-card/video-label-card.co
 import { MatDividerModule } from '@angular/material/divider';
 import { ConfirmDialogModule } from '../../../shared/confirm-dialog/confirm-dialog.module';
 import { SpinnerDialogModule } from '../../../shared/spinner-dialog/spinner-dialog.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [VideoResultsDetailComponent, VideoResultCardComponent,
     VideoResultTimelineComponent, VideoLabelCardComponent],
   imports: [CommonModule, MatProgressSpinnerModule, MatCardModule, MatIconModule, MatButtonModule,
-    MdePopoverModule, MatDividerModule, ConfirmDialogModule, SpinnerDialogModule],
+    MdePopoverModule, MatDividerModule, ConfirmDialogModule, SpinnerDialogModule, MatTooltipModule],
   exports: [VideoResultsDetailComponent]
 })
 export class VideoResultsDetailModule {

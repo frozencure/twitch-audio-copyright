@@ -64,7 +64,7 @@ export class ClipProcessCoordinator {
       await this.clipsService.updateClip({
         id: clipId,
         progress: ProcessingProgress.COMPLETED,
-        userAction: UserActionType.NEEDS_ACTION
+        userAction: UserActionType.NEEDS_REVIEW
       });
     } else {
       await this.clipsService.updateClip({

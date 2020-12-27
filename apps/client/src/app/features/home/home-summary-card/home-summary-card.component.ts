@@ -32,8 +32,10 @@ export class HomeSummaryCardComponent implements OnInit, OnDestroy {
       tap(() => this.isLoading = false)
     ).subscribe((items: Array<Video | Clip>) => {
       this.analyzedItems = items.filter(item => item.progress === ProcessingProgress.COMPLETED);
-      this.itemsInQueue = items.filter(item => item.progress === ProcessingProgress.QUEUED);
-      this.needActionsItems = items.filter(item => item.userAction === UserActionType.NEEDS_ACTION);
+      this.itemsInQueue = items
+        .filter(item => item.progress === ProcessingProgress.QUEUED
+          || item.progress === ProcessingProgress.IN_PROGRESS);
+      this.needActionsItems = items.filter(item => item.userAction === UserActionType.NEEDS_REVIEW);
     });
   }
 

@@ -90,7 +90,7 @@ export class VideoResultCardComponent {
       data: {
         contentTitle: 'Remove video',
         contentText: `Are you sure you want to remove ${video.title}?` +
-          ` This action will remove the video from Twitch and is irreversible.`,
+          ` This will irreversibly remove the video from your Twitch channel.`,
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel'
       }
@@ -123,7 +123,7 @@ export class VideoResultCardComponent {
           break;
         case ConfirmAction.CONFIRM:
           this.spinnerService.showSpinner();
-          this.onUpdateVideo(UserActionType.KEPT);
+          this.onUpdateVideo(UserActionType.PUBLIC);
           break;
       }
     });

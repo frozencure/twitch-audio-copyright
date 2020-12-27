@@ -52,7 +52,7 @@ export class VideoController {
       const video = await this.videosService.findOne(videoId);
       return video.toVideoDto();
     } catch (e) {
-      Logger.error(e);
+      Logger.error(e.message);
       throw new UnknownDatabaseHttpError(e.message);
     }
   }
@@ -64,14 +64,15 @@ export class VideoController {
       try {
         await this.twitchService.unpublishVideo(authToken, videoId);
       } catch (e) {
+        Logger.error(e.message);
         throw new TwitchHttpError(`Video could not be unpublished. Status (${e.response.status}, ` +
           `${e.response.statusText}) received from Twitch API.`);
       }
     } else if (updateModel.userAction === UserActionType.REMOVED) {
       try {
         await this.twitchService.deleteVideo(authToken, videoId);
-        console.log(`Video removed.`)
       } catch (e) {
+        Logger.error(e);
         throw new TwitchHttpError(`Video could not be removed. Status (${e.response.status}, ` +
           `${e.response.statusText}) received from Twitch API.`);
       }

@@ -1,7 +1,7 @@
 export enum UserActionType {
-  NO_ACTION_NEEDED = 'no-action-needed',
-  NEEDS_ACTION = 'needs-action',
+  NO_REVIEW_NEEDED = 'no-review-needed',
+  NEEDS_REVIEW = 'needs-action',
   REMOVED = 'removed',
-  KEPT = 'no-action',
+  PUBLIC = 'public',
   UNPUBLISHED = 'unpublished'
 }

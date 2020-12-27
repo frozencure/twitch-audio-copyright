@@ -15,7 +15,7 @@ export default class ClipEntity extends BaseEntity {
   @Column('timestamp') createdAt: Date;
   @Column('text') thumbnailUrl: string;
   @Column({ type: 'enum', enum: ProcessingProgress, default: ProcessingProgress.QUEUED }) progress: ProcessingProgress;
-  @Column({ type: 'enum', enum: UserActionType, default: UserActionType.NO_ACTION_NEEDED }) userAction: UserActionType;
+  @Column({ type: 'enum', enum: UserActionType, default: UserActionType.NO_REVIEW_NEEDED }) userAction: UserActionType;
 
   @ManyToOne(() => UserEntity, user => user.clips)
   user: UserEntity;
@@ -24,7 +24,7 @@ export default class ClipEntity extends BaseEntity {
   identifiedSongs: IdentifiedSongEntity[];
 
   static FromTwitchClip(twitchClipDto: TwitchClipDto, user: UserEntity, progress = ProcessingProgress.QUEUED,
-                        userActionType = UserActionType.NO_ACTION_NEEDED): ClipEntity {
+                        userActionType = UserActionType.NO_REVIEW_NEEDED): ClipEntity {
     const clip = new ClipEntity();
     clip.id = twitchClipDto.id;
     clip.title = twitchClipDto.title;

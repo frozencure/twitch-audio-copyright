@@ -7,8 +7,9 @@
       <div class="mr-5 mb-10 frow row-start">
         <mat-icon class="vertical-middle mr-5">assessment</mat-icon>
         <div class="mat-h3 mb-0 mr-10">{{songCount}} detected songs</div>
-        <mat-icon class="vertical-middle mr-5">timer</mat-icon>
-        <div class="mat-h3 mb-0 mr-10">{{durationPercentage()}}</div>
+        <mat-icon class="vertical-middle mr-5">volume_up</mat-icon>
+        <div class="mat-h3 mb-0 mr-10"
+             matTooltip="Percentage of video that contains identified audio.">{{durationPercentage()}}</div>
         <mat-icon class="vertical-middle mr-5">video_label</mat-icon>
         <div class="mat-h3 mb-0 mr-10">{{video.userAction | titlecase}}</div>
       </div>
@@ -32,13 +33,13 @@
         </span>
       </div>
     </div>
-    <ng-container *ngIf="video.userAction === UserActionType.NEEDS_ACTION">
+    <ng-container *ngIf="video.userAction === UserActionType.NEEDS_REVIEW">
       <div class="frow column-center mr-10">
         <button mat-flat-button color="accent" class="mb-10 mt-10 col-md-1-1"
                 (click)="unpublishVideo(video);$event.stopPropagation()">Unpublish video
         </button>
         <button mat-flat-button color="accent" class="mb-10 col-md-1-1"
-                (click)="keepVideo(video);$event.stopPropagation()">Keep video
+                (click)="keepVideo(video);$event.stopPropagation()">Keep public
         </button>
         <button mat-flat-button color="warn" class="mb-10 col-md-1-1"
                 (click)="removeVideo(video);$event.stopPropagation()">Delete video
