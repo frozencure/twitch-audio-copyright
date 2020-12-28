@@ -1,0 +1,94 @@
+<div class="frow-container mt-20">
+  <div class="frow centered">
+    <div class="frow column-start">
+      <mat-form-field appearance="fill">
+        <mat-label>Filter clips</mat-label>
+        <mat-select (selectionChange)="onSelect($event.value)" [(value)]="selectedUserAction">
+          <mat-option value="{{UserActionType.NEEDS_REVIEW}}">Needs review</mat-option>
+          <mat-option value="{{UserActionType.PUBLIC}}">Public</mat-option>
+          <mat-option value="{{UserActionType.NO_REVIEW_NEEDED}}">No review needed</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <ng-container *ngIf="!isLoading; else loading">
+        <ng-container *ngIf="clips.length > 0; else empty">
+          <div *ngFor="let clip of clips" class="col-md-1-1">
+            <mat-expansion-panel class="mb-20" [disabled]="clip.identifiedSongs.length === 0">
+              <mat-expansion-panel-header>
+                <img class="mr-10" src="{{clip.thumbnailUrl}}" width="200" height="112"
+                     alt="image-alt" />
+                <div class="frow column-start mr-10 mt-10">
+                  <h3 class="mb-5">{{clip.title}}</h3>
+                  <span class="mb-5">
+                      <span class="mr-5">
+                        <mat-icon inline class="vertical-middle">event</mat-icon>
+                        {{clip.createdAt | date}}
+                      </span>
+                      <span class="mr-5">
+                        <mat-icon inline class="vertical-middle">visibility</mat-icon>
+                        {{clip.viewCount}}
+                      </span>
+                      <span class="mr-5">
+                        <mat-icon inline class="vertical-middle">videocam</mat-icon>
+                        {{clip.userAction | titlecase}}
+                      </span>
+                    </span>
+                  <button *ngIf="clip.userAction === UserActionType.NEEDS_REVIEW"
+                          (click)="reviewClip(clip);$event.stopPropagation()"
+                          mat-stroked-button>Mark as reviewed</button>
+                </div>
+              </mat-expansion-panel-header>
+              <ng-container *ngFor="let song of clip.identifiedSongs">
+                <mat-divider inset class="mt-10 mb-5"></mat-divider>
+                <div class="frow row-evenly">
+                  <div class="frow direction-column">
+                    <div>
+                      <mat-icon inline class="vertical-middle mr-3">audiotrack</mat-icon>
+                      {{song.title}}
+                    </div>
+                    <div>
+                      <mat-icon inline class="vertical-middle mr-3">art_track</mat-icon>
+                      {{song.album}}
+                    </div>
+                    <div>
+                      <mat-icon inline class="vertical-middle mr-3">group</mat-icon>
+                      {{song.artists.join(', ')}}
+                    </div>
+                  </div>
+                  <div class="frow direction-column">
+                    <div>
+                      <mat-icon inline class="vertical-middle mr-3">album</mat-icon>
+                      {{song.label.name}}
+                    </div>
+                    <div *ngIf="song.label.country">
+                      <mat-icon inline class="vertical-middle mr-3">place</mat-icon>
+                      {{song.label.country}}
+                    </div>
+                    <div *ngIf="song.label.beginYear">
+                      <mat-icon inline class="vertical-middle mr-3">event</mat-icon>
+                      {{song.label.beginYear}}
+                    </div>
+                  </div>
+                  <button mat-stroked-button *ngIf="song.label.wikipediaUrl"
+                  (click)="openWindow(song.label.wikipediaUrl)">
+                    Wikipedia
+                  </button>
+                </div>
+              </ng-container>
+            </mat-expansion-panel>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #loading>
+  <div class="frow centered col-md-1-1 mb-10 mt-10">
+    <mat-spinner color="primary"></mat-spinner>
+  </div>
+</ng-template>
+
+<ng-template #empty>
+  <h2>No clips to show.</h2>
+</ng-template>

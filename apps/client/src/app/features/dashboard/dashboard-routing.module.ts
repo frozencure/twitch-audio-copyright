@@ -8,6 +8,7 @@ import { HomeContainerResolver } from '../home/home-container/home-container.res
 import { LiveContainerComponent } from '../live-container/live-container.component';
 import { VideoResultsComponent } from '../video/video-results/video-results.component';
 import { VideoResultsDetailComponent } from '../video/video-results-detail/video-results-detail.component';
+import { ClipResultsComponent } from '../clip/clip-results/clip-results.component';
 
 const routes: Routes = [
   {
@@ -19,7 +20,8 @@ const routes: Routes = [
       { path: 'video-results', component: VideoResultsComponent },
       { path: 'live', component: LiveContainerComponent },
       { path: '', redirectTo: 'home' },
-      { path: 'video-results/:id', component: VideoResultsDetailComponent }
+      { path: 'video-results/:id', component: VideoResultsDetailComponent },
+      { path: 'clip-results', component: ClipResultsComponent }
     ]
   }
 ];
