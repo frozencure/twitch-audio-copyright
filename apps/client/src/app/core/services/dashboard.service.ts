@@ -54,14 +54,15 @@ export class DashboardService {
     return this.http.get<Clip>(`api/clips/${clipId}`);
   }
 
-  public getClips(progress?: ProcessingProgress, userAction?: UserActionType): Observable<Clip[]> {
+  public getClips(progress?: ProcessingProgress,
+                  userAction?: UserActionType, withSongs = false): Observable<Clip[]> {
     let params = {};
     if (progress && userAction) {
-      params = { progress: progress, action: userAction };
+      params = { progress: progress, action: userAction, songs: withSongs };
     } else if (progress) {
-      params = { progress: progress };
+      params = { progress: progress, songs: withSongs };
     } else if (userAction) {
-      params = { action: userAction };
+      params = { action: userAction, songs: withSongs };
     }
     return this.http.get<Clip[]>('api/clips', {
       params: params

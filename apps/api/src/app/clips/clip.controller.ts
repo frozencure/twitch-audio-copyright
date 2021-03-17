@@ -16,10 +16,12 @@ export class ClipController {
   @Get()
   @UseGuards(TokenGuard)
   public async getClips(@User() user: UserCookieModel,
+                        @Query('songs') withSongs = false,
                         @Query('progress') progress?: ProcessingProgress,
                         @Query('action') action?: UserActionType): Promise<Clip[]> {
     try {
-      return await this.clipsService.findAll(user.id, progress, action);
+      const clipEntities = await this.clipsService.findAll(withSongs, user.id, progress, action);
+      return clipEntities.map(clip => clip.toClipDto());
     } catch (e) {
       Logger.error(e);
       if (e instanceof UserNotFoundError) {
@@ -61,7 +63,8 @@ export class ClipController {
   @UseGuards(TokenGuard)
   public async getClip(@Param('id') clipId: string): Promise<Clip> {
     try {
-      return await this.clipsService.findOne(clipId);
+      const clipEntity = await this.clipsService.findOne(clipId);
+      return clipEntity.toClipDto();
     } catch (e) {
       Logger.error(e);
       throw new UnknownDatabaseHttpError(e.message);

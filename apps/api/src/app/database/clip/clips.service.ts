@@ -33,9 +33,17 @@ export class ClipsService {
     });
   }
 
-  async findAll(userId: string, progress?: ProcessingProgress,
+  async findAll(withSongs = false, userId: string, progress?: ProcessingProgress,
                 actionType?: UserActionType): Promise<ClipEntity[]> {
-    const user = await this.usersService.findOne(userId, ['clips']);
+    let user;
+    if(withSongs) {
+      user = await this.usersService.findOne(userId,
+        ['clips', 'clips.identifiedSongs',
+          'clips.identifiedSongs.label', 'clips.identifiedSongs.album',
+          'clips.identifiedSongs.artists', 'clips.identifiedSongs.label.metadata']);
+    } else {
+      user = await this.usersService.findOne(userId, ['clips']);
+    }
     if (!user) throw new UserNotFoundError(`User ${userId} does not exist in the database.`);
     let clips = user.clips;
     if (progress) {

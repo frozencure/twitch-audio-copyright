@@ -1,4 +1,4 @@
-import { ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
+import { IdentifiedSong, ProcessingProgress, UserActionType } from '@twitch-audio-copyright/data';
 
 export class Clip {
   id: string;
@@ -11,6 +11,7 @@ export class Clip {
   thumbnailUrl: string;
   progress: ProcessingProgress;
   userAction: UserActionType;
+  identifiedSongs?: IdentifiedSong[]
 }
 
 export interface PartialClipDto {

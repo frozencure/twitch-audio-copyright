@@ -17,6 +17,7 @@ import { VideoResultsModule } from '../video/video-results/video-results.module'
 import { VideoResultsDetailModule } from '../video/video-results-detail/video-results-detail.module';
 import { SpinnerService } from '../../shared/spinner-dialog/spinner.service';
 import { HttpErrorInterceptor } from '../../core/services/http-error.interceptor.';
+import { ClipResultsModule } from '../clip/clip-results/clip-results.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -32,7 +33,8 @@ import { HttpErrorInterceptor } from '../../core/services/http-error.interceptor
     HomeContainerModule,
     LiveContainerModule,
     VideoResultsModule,
-    VideoResultsDetailModule
+    VideoResultsDetailModule,
+    ClipResultsModule
   ],
   providers: [CookieService, DashboardService, TwitchService, HttpErrorInterceptor],
   exports: [DashboardComponent]

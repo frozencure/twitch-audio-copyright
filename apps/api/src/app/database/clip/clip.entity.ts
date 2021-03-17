@@ -41,6 +41,10 @@ export default class ClipEntity extends BaseEntity {
   }
 
   toClipDto(): Clip {
+    if (this.identifiedSongs) {
+      const identifiedSongs = this.identifiedSongs.map(song => song.toIdentifiedSongDto());
+      return Object.assign(new Clip(), this, { identifiedSongs: identifiedSongs });
+    }
     return Object.assign(new Clip(), this);
   }
 }
