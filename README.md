@@ -61,7 +61,7 @@ Run `ng run landing-page:serve-ssr` in the root folder of the project.
     ![Dashboard Screen](./screenshots/dashboard.png)
     ## - audio analysis of Twitch VODs
     ## - view of copyright songs found in your Twitch VODs
-    ![VODs Screen](./screenshots/vod-results.png)
+    ![VODs Screen](./screenshots/video-results.png)
     ## - audio analysis of your Twitch clips
     ![Clips Analyze Screen](./screenshots/analyze-clips.png)
     ## - view of copyright songs found in your Twitch clips
