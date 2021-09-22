@@ -1,98 +1,90 @@
-# TwitchAudioCopyright
+# Instructions for running the web server and Angular client
 
-This project was generated using [Nx](https://nx.dev).
 
-<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+### 1. Setting the up the local environment
 
-🔎 **Nx is a set of Extensible Dev Tools for Monorepos.**
+Run `sudo docker-compose` up inside the root folder of the project.
+This command will download a download and initialize the PostgreSQL sever and Redis in-memory database necessary for running the app.
 
-## Quick Start & Documentation
+### 2. Install all the necessary npm dependencies
+    
+Run `npm install` in the root folder of the project.
 
-[Nx Documentation](https://nx.dev/angular)
+### 3. Make sure you have an `.env` file in the root folder with all necessary API keys and secrets. See `example.env` for more details.
 
-[10-minute video showing all Nx features](https://nx.dev/angular/getting-started/what-is-nx)
+You will need an active ACR Cloud developer account and a Twitch Developer account for this to work
 
-[Interactive Tutorial](https://nx.dev/angular/tutorial/01-create-application)
+### 4. Start the NestJS server
 
-## Adding capabilities to your workspace
+Run `ng run api:serve` in the root folder of the project.
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+### 5. Start the Angular web client
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+Run `ng run client:serve` in the root folder of the project.
 
-Below are our core plugins:
+### 6. Go to `http://localhost:4200/` and login with your Twitch account. You will be now able to start analysing your Twitch VODs and clips.
 
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
+<br><br>
 
-There are also many [community plugins](https://nx.dev/nx-community) you could add.
+# Instructions for running the landing page client
 
-## Generate an application
+### 1. Install all the necessary npm dependencies
+    
+Run `npm install` in the root folder of the project.
 
-Run `ng g @nrwl/angular:app my-app` to generate an application.
+### 2. Run the Angular Universal landing page client
 
-> You can use any of the plugins above to generate applications as well.
+Run `ng run landing-page:serve-ssr` in the root folder of the project.
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
 
-## Generate a library
+<br><br>
 
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
+# Project structure
 
-> You can also use any of the plugins above to generate libraries as well.
+## NestJS server and API
 
-Libraries are sharable across libraries and applications. They can be imported from `@twitch-audio-copyright/mylib`.
+- can be found in `./apps/api/`
+- Includes the following functionality:
+    - downloading of VODs and clips
+    - extraction of audio from clips and VOD chunks using 'ffmpeg'
+    - creation of audio fingerprint for the ACR Cloud API
+    - communication with ACR cloud API for analysis of audio fingerprints
 
-## Development server
 
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+## Angular web client
 
-## Code scaffolding
+- can be found in `./apps/client/`
+- Includes the following features:
+    ## - login/logout with Twitch account
+    ![Login Screen](./screenshots/login.png)
+    ## - dashboard with overview of all clips and VODs
+    ![Dashboard Screen](./screenshots/dashboard.png)
+    ## - audio analysis of Twitch VODs
+    ## - view of copyright songs found in your Twitch VODs
+    ![VODs Screen](./screenshots/login.png)
+    ## - audio analysis of your Twitch clips
+    ![Clips Analyze Screen](./screenshots/analyze-clips.png)
+    ## - view of copyright songs found in your Twitch clips
+    ![Clips Results Screen](./screenshots/clips-results.png)
+    ## - Live analysis: real-time audio analysis of your Twitch streams
 
-Run `ng g component my-component --project=my-app` to generate a new component.
 
-## Build
+## Angular Universal landing page
 
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+- can be found in `./apps/landing-page/`
+- potential landing page of the project
+- ![Landing Page Top Screen](./screenshots/landing-page-1.png)
+- ![Landing Page Bottom Screen](./screenshots/landing-page-2.png)
 
-## Running unit tests
+<br><br>
+# Demos
 
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+## Analyze more clips
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+![Analyze More Clips Demo](./screenshots/add-clips-demo.gif)
 
-## Running end-to-end tests
+## See VOD analysis results
 
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+![Vod Analysis Results Demo](./screenshots/see-video-results-demo.gif)
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
 
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
-
-## ☁ Nx Cloud
-
-### Computation Memoization in the Cloud
-
-<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
